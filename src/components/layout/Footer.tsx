@@ -32,6 +32,7 @@ const Footer = () => {
             <div>
               <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-700 mb-4">Compliance</p>
               <ul className="space-y-2 text-[10px] font-bold text-gray-500 uppercase tracking-tight">
+                <li><Link href="/docs" className="hover:text-blue-500 transition-colors">Documentation</Link></li>
                 <li><Link href="/privacy" className="hover:text-blue-500 transition-colors">Privacy</Link></li>
                 <li><Link href="/terms" className="hover:text-blue-500 transition-colors">Terms</Link></li>
                 <li><Link href="/security" className="hover:text-blue-500 transition-colors">Audit</Link></li>

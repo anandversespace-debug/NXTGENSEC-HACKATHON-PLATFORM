@@ -7,8 +7,14 @@ import LayoutWrapper from '@/components/layout/LayoutWrapper';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'NxtGenSec Dev Division | Developer Ecosystem',
-  description: 'A platform for developers to showcase projects, participate in hackathons, and engage with the community.',
+  title: 'NxtGenSec Dev Division | Innovation Ecosystem',
+  description: 'A professional decentralized hub for developers to showcase innovations, participate in global sprint challenges, and manage technical audits.',
+  keywords: ['NxtGenSec', 'Innovation', 'Developer Hub', 'Hackathons', 'Project Showcase', 'Audit'],
+  authors: [{ name: 'NxtGenSec Team' }],
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
