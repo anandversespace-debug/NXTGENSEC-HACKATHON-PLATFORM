@@ -19,12 +19,11 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const { user, setUser } = useAuthStore();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const emailFromUrl = searchParams.get('email');
   
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -353,5 +352,17 @@ export default function OnboardingPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+         <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Synchronizing Identity Protocol...</div>
+      </div>
+    }>
+      <OnboardingContent />
+    </Suspense>
   );
 }

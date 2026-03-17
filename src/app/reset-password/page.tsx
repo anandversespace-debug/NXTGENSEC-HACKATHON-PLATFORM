@@ -16,8 +16,9 @@ import {
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || '';
@@ -194,5 +195,17 @@ export default function ResetPasswordPage() {
           <span className="text-[8px] font-bold text-gray-600 uppercase tracking-widest italic">Channel Secured via SHA-256 Rotation</span>
        </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+         <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Initializing Secure Channel...</div>
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
