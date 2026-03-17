@@ -1,24 +1,8 @@
 {
   "version": 2,
-  "name": "nxtgensec-production",
+  "name": "nxtgensec-frontend",
   "cleanUrls": true,
   "trailingSlash": false,
-  "framework": "nextjs",
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/.next",
-  "functions": {
-    "BACKEND/index.js": {
-      "runtime": "@vercel/node",
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/BACKEND/index.js"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
