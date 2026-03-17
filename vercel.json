@@ -1,0 +1,92 @@
+{
+  "version": 2,
+  "name": "nxtgensec-production",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "framework": "nextjs",
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/.next",
+  "functions": {
+    "BACKEND/index.js": {
+      "runtime": "@vercel/node",
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/BACKEND/index.js"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), browsing-topics=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).(jpg|jpeg|gif|png|svg|webp|ico|css|js)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "images": {
+    "sizes": [
+      640,
+      750,
+      828,
+      1080,
+      1200,
+      1920,
+      2048,
+      3840
+    ],
+    "domains": [
+      "res.cloudinary.com",
+      "nczqvdeehanfqjkxsxqk.supabase.co"
+    ],
+    "remotePatterns": [
+      {
+        "protocol": "https",
+        "hostname": "res.cloudinary.com",
+        "port": "",
+        "pathname": "/**"
+      },
+      {
+        "protocol": "https",
+        "hostname": "*.supabase.co",
+        "port": "",
+        "pathname": "/storage/v1/object/public/**"
+      }
+    ]
+  }
+}
