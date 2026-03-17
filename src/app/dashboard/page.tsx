@@ -4,8 +4,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { useAppStore } from '@/store/useAppStore';
-import { LayoutDashboard, FolderCode, Trophy, MessageSquare, Settings, Bell, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, FolderCode, Trophy, MessageSquare, Settings, Bell, ExternalLink, Terminal } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const DashboardPage = () => {
   const { user } = useAppStore();
