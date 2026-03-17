@@ -27,6 +27,12 @@ export interface UserProfile {
   role: 'admin' | 'judge' | 'developer' | 'viewer';
   avatar_url?: string;
   bio?: string;
+  location?: string;
+  github?: string;
+  twitter?: string;
+  portfolio?: string;
+  skills?: string[];
+  onboarded?: boolean;
   social_links?: {
     github?: string;
     twitter?: string;

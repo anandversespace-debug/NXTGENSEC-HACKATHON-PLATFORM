@@ -1,52 +1,51 @@
 'use client';
 
 import { useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { setUser, setLoading } = useAuthStore();
+  const setUser = useAuthStore((state) => state.setUser);
+  const setLoading = useAuthStore((state) => state.setLoading);
+
+  const router = require('next/navigation').useRouter();
 
   useEffect(() => {
-    // Check active sessions and sets the user
     const checkUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          setUser({
-            id: session.user.id,
-            email: session.user.email || '',
-            name: session.user.user_metadata.full_name || session.user.email?.split('@')[0] || 'User',
-            role: (session.user.user_metadata.role as any) || 'developer',
-            username: session.user.user_metadata.username || session.user.email?.split('@')[0] || 'user',
-          });
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/users/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (res.ok) {
+          const userData = await res.json();
+          setUser(userData);
+          
+          // Redirect to onboarding if not completed and not already on onboarding page
+          if (userData && !userData.onboarded && window.location.pathname !== '/onboarding') {
+            router.push('/onboarding');
+          }
+        } else {
+          localStorage.removeItem('token');
+          setUser(null);
         }
       } catch (error) {
-        console.error('Error checking auth session:', error);
+        console.error('Error checking custom auth session:', error);
       } finally {
         setLoading(false);
       }
     };
 
     checkUser();
-
-    // Listen for changes on auth state (logged in, signed out, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          name: session.user.user_metadata.full_name || session.user.email?.split('@')[0] || 'User',
-          role: (session.user.user_metadata.role as any) || 'developer',
-          username: session.user.user_metadata.username || session.user.email?.split('@')[0] || 'user',
-        });
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [setUser, setLoading]);
+  }, [setUser, setLoading, router]);
 
   return <>{children}</>;
 };

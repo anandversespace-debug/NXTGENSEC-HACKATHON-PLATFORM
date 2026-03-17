@@ -16,63 +16,69 @@ import {
   MapPin,
   Calendar,
   Activity,
-  Award
+  Award,
+  Send
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('developer');
+  const [inviting, setInviting] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const users = [
-    { 
-      id: 'u1', 
-      name: 'Alex Chen', 
-      username: 'cipher_nexus',
-      email: 'alex@dev.com', 
-      role: 'admin', 
-      status: 'active', 
-      joined: '2024-01-12',
-      contributions: 4850,
-      skills: ['Rust', 'Wasm', 'Kernel'],
-      bio: 'Security architect focusing on zero-trust infrastructure.'
-    },
-    { 
-      id: 'u2', 
-      name: 'Sarah Miller', 
-      username: 'block_sarah',
-      email: 'sarah@dev.com', 
-      role: 'judge', 
-      status: 'active', 
-      joined: '2024-02-05',
-      contributions: 1200,
-      skills: ['Solidity', 'Audit'],
-      bio: 'DeFi security researcher and smart contract auditor.'
-    },
-    { 
-      id: 'u3', 
-      name: 'Jake Ross', 
-      username: 'jake_r',
-      email: 'jake@dev.com', 
-      role: 'developer', 
-      status: 'active', 
-      joined: '2024-03-01',
-      contributions: 850,
-      skills: ['Next.js', 'Go'],
-      bio: 'Fullstack developer specializing in decentralized frontends.'
-    },
-    { 
-      id: 'u4', 
-      name: 'Emma Wilson', 
-      username: 'em_codes',
-      email: 'emma@dev.com', 
-      role: 'developer', 
-      status: 'flagged', 
-      joined: '2024-03-10',
-      contributions: 120,
-      skills: ['Python', 'ML'],
-      bio: 'Data scientist exploring AI-driven threat detection.'
-    },
-  ];
+  React.useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+          }
+        });
+        if(res.ok) {
+          const data = await res.json();
+          setUsers(data);
+        }
+      } catch (err) {
+        console.error('Failed to sync node identities:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if(!inviteEmail) return;
+    setInviting(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/mail/invite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify({ email: inviteEmail, role: inviteRole })
+      });
+      if(res.ok) {
+        alert('Platform Invitation dispatched securely.');
+        setShowInviteModal(false);
+        setInviteEmail('');
+      } else {
+        const d = await res.json();
+        alert('Auth Error: ' + d.error);
+      }
+    } catch(err) {
+      console.error(err);
+      alert('Network transmission failed');
+    } finally {
+      setInviting(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -91,6 +97,13 @@ const AdminUsers = () => {
             <Search className="w-3.5 h-3.5" />
           </button>
         </div>
+        <button 
+           onClick={() => setShowInviteModal(true)}
+           className="btn-primary py-2 px-6 ml-4 text-[10px] flex items-center space-x-2"
+        >
+           <Mail className="w-3.5 h-3.5" />
+           <span>Issue Invitation</span>
+        </button>
       </header>
 
       <div className="bg-[#0c0c0c] border border-white/5 rounded-lg overflow-hidden">
@@ -152,6 +165,64 @@ const AdminUsers = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Admin Invite New User Modal */}
+      <AnimatePresence>
+        {showInviteModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+             <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               onClick={() => setShowInviteModal(false)}
+               className="absolute inset-0 bg-black/70 backdrop-blur-md"
+             />
+             <motion.div 
+               initial={{ opacity: 0, scale: 0.95 }}
+               animate={{ opacity: 1, scale: 1 }}
+               exit={{ opacity: 0, scale: 0.95 }}
+               className="relative w-full max-w-sm bg-[#080808] border border-white/10 rounded-xl shadow-2xl overflow-hidden"
+             >
+                <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                   <h2 className="text-sm font-bold uppercase tracking-widest text-white italic">Dispatch Invitation</h2>
+                   <button onClick={() => setShowInviteModal(false)} className="text-gray-500 hover:text-white"><X className="w-4 h-4" /></button>
+                </div>
+                <form onSubmit={handleInvite} className="p-6 space-y-4">
+                   <div>
+                      <label className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2 block">Target Email</label>
+                      <input 
+                        type="email" 
+                        required 
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                        className="w-full bg-[#050505] border border-white/10 rounded-lg p-3 text-xs text-white focus:border-blue-500 focus:outline-none"
+                        placeholder="developer@node.com"
+                      />
+                   </div>
+                   <div>
+                      <label className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2 block">Clearance Role</label>
+                      <select 
+                        value={inviteRole}
+                        onChange={(e) => setInviteRole(e.target.value)}
+                        className="w-full bg-[#050505] border border-white/10 rounded-lg p-3 text-xs text-white uppercase tracking-wider font-bold appearance-none focus:border-blue-500 focus:outline-none"
+                      >
+                         <option value="developer">Developer Node</option>
+                         <option value="judge">Auditor / Judge</option>
+                         <option value="admin">System Admin</option>
+                      </select>
+                   </div>
+                   <button 
+                     type="submit" 
+                     disabled={inviting || !inviteEmail}
+                     className="w-full btn-primary py-3 disabled:opacity-50 flex items-center justify-center space-x-2 mt-2"
+                   >
+                     {inviting ? <span className="text-[10px]">Processing...</span> : <><span>Transmit Token</span> <Send className="w-3.5 h-3.5 inline-block" /></>}
+                   </button>
+                </form>
+             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* User QuickView Modal */}
       <AnimatePresence>

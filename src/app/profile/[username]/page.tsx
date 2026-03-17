@@ -17,16 +17,26 @@ const PublicProfilePage = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/${params.username}`);
-        if (!userRes.ok) throw new Error('User not found');
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        
+        // Fetch user profile by username
+        const userRes = await fetch(`${baseUrl}/users/profile/${params.username}`);
+        if (!userRes.ok) throw new Error('User not found in registry.');
         const userData = await userRes.json();
         setProfile(userData);
 
-        const projectsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/projects`);
-        const projectsData = await projectsRes.json();
-        setProjects(projectsData.filter((p: any) => p.created_by === userData.id));
+        // Fetch all projects and filter by author (or add a filtered endpoint in future)
+        // For now, let's just fetch projects and filter here
+        const projRes = await fetch(`${baseUrl}/projects`);
+        if (projRes.ok) {
+           const allProjects = await projRes.json();
+           const userProjects = allProjects
+             .filter((p: any) => (p.created_by?._id || p.created_by) === (userData._id || userData.id))
+             .map((p: any) => ({ ...p, id: p._id }));
+           setProjects(userProjects);
+        }
       } catch (err) {
-        console.error(err);
+        console.error('Failed to fetch profile data:', err);
         router.push('/hub');
       } finally {
         setLoading(false);
@@ -37,7 +47,9 @@ const PublicProfilePage = () => {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-      <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-10 h-10 bg-blue-600 rounded flex items-center justify-center animate-pulse shadow-2xl shadow-blue-500/20">
+         <Shield className="w-5 h-5 text-white animate-spin" />
+      </div>
     </div>
   );
 
@@ -46,7 +58,7 @@ const PublicProfilePage = () => {
   return (
     <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505]">
       <div className="max-w-6xl mx-auto">
-        <Link href="/hub" className="flex items-center space-x-2 text-gray-600 hover:text-white transition-colors mb-10 group">
+        <Link href="/projects" className="flex items-center space-x-2 text-gray-600 hover:text-white transition-colors mb-10 group">
            <ArrowLeft className="w-4 h-4" />
            <span className="text-[10px] font-bold uppercase tracking-widest">Return to Network Registry</span>
         </Link>
@@ -58,17 +70,17 @@ const PublicProfilePage = () => {
                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-transparent to-blue-600"></div>
                  <div className="relative mb-6">
                     <div className="w-24 h-24 rounded border border-white/5 bg-white/[0.02] mx-auto overflow-hidden flex items-center justify-center text-3xl font-black text-gray-400 italic shadow-2xl">
-                       {profile.name[0]}
+                       {profile.name?.[0] || 'U'}
                     </div>
                     <div className="absolute -bottom-1 right-1/2 translate-x-12 bg-blue-600 p-1.5 rounded border border-[#0c0c0c] shadow-lg">
                        <Shield className="w-3.5 h-3.5 text-white" />
                     </div>
                  </div>
-                 <h1 className="text-xl font-bold mb-1 uppercase tracking-tight italic">{profile.name}</h1>
+                 <h1 className="text-xl font-bold mb-1 uppercase tracking-tight italic text-white">{profile.name}</h1>
                  <p className="text-blue-500 font-bold text-[10px] tracking-widest uppercase mb-8">NODE_REF: {profile.username}</p>
                  
                  <div className="flex flex-wrap gap-1.5 justify-center mb-10">
-                    {profile.skills.slice(0, 5).map((skill: string) => (
+                    {profile.skills?.slice(0, 5).map((skill: string) => (
                       <span key={skill} className="px-2 py-0.5 bg-white/[0.02] border border-white/5 rounded text-[8px] font-bold text-gray-600 uppercase tracking-tighter">
                          {skill}
                       </span>
@@ -95,13 +107,13 @@ const PublicProfilePage = () => {
                        <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-600 uppercase tracking-tight">
                           <Twitter className="w-3.5 h-3.5" /> <span>Social_Node</span>
                        </div>
-                       <span className="text-[9px] font-bold text-gray-400">@cipher_dev</span>
+                       <span className="text-[9px] font-bold text-blue-400 capitalize">{profile.twitter || 'Not Linked'}</span>
                     </div>
                     <div className="flex items-center justify-between py-2 border-b border-white/[0.03]">
                        <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-600 uppercase tracking-tight">
                           <Globe className="w-3.5 h-3.5" /> <span>Global_URI</span>
                        </div>
-                       <span className="text-[9px] font-bold text-blue-500 uppercase tracking-tighter">NXG.SPACE</span>
+                       <span className="text-[9px] font-bold text-blue-500 uppercase tracking-tighter">{profile.portfolio ? 'LINKED' : 'OFFLINE'}</span>
                     </div>
                  </div>
               </div>
@@ -111,9 +123,9 @@ const PublicProfilePage = () => {
            <div className="lg:col-span-2 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                  {[
-                   { label: 'Ecosystem Points', value: profile.contributions.toLocaleString() + ' CP', icon: Award },
+                   { label: 'Ecosystem Points', value: (profile.contributions || 0).toLocaleString() + ' CP', icon: Award },
                    { label: 'Nodes Created', value: projects.length.toString(), icon: Code },
-                   { label: 'Network Origin', value: new Date(profile.created_at).getFullYear().toString(), icon: User }
+                   { label: 'Network Origin', value: new Date(profile.createdAt || Date.now()).getFullYear().toString(), icon: User }
                  ].map((stat, i) => (
                    <div key={i} className="bg-[#0c0c0c] border border-white/5 p-6 flex flex-col items-center text-center rounded-lg">
                       <stat.icon className="w-4 h-4 text-blue-600 mb-4" />
@@ -144,7 +156,7 @@ const PublicProfilePage = () => {
                          <p className="text-gray-600 text-[10px] mb-6 line-clamp-2 leading-snug uppercase tracking-tighter">{project.description}</p>
                          <div className="flex items-center justify-between pt-4 border-t border-white/[0.02]">
                             <div className="flex space-x-1.5">
-                               {project.tech_stack.slice(0, 2).map(t => (
+                               {project.tech_stack?.slice(0, 2).map(t => (
                                  <span key={t} className="px-1.5 py-0.5 bg-white/[0.02] border border-white/5 rounded text-[8px] font-bold text-gray-600 uppercase tracking-tighter">{t}</span>
                                ))}
                             </div>
@@ -152,6 +164,11 @@ const PublicProfilePage = () => {
                          </div>
                       </motion.div>
                     ))}
+                    {projects.length === 0 && (
+                       <div className="col-span-full py-20 text-center bg-white/[0.01] border border-dashed border-white/5 rounded-lg">
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-gray-600 italic">No node deployments archived by this entity.</p>
+                       </div>
+                    )}
                  </div>
               </div>
 
@@ -160,7 +177,7 @@ const PublicProfilePage = () => {
                     <Terminal className="w-24 h-24" />
                  </div>
                  <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-6 underline underline-offset-8 decoration-white/5">Engineering Roadmap</h2>
-                 <p className="text-gray-600 text-[11px] font-medium uppercase tracking-tighter leading-snug mb-8 max-w-lg">Actively developing decentralized identity protocols and zero-knowledge proof verification systems for enterprise security environments.</p>
+                 <p className="text-gray-600 text-[11px] font-medium uppercase tracking-tighter leading-snug mb-8 max-w-lg">{profile.bio || 'Entity has not established a public engineering roadmap.'}</p>
                  <div className="flex items-center space-x-6">
                     <div className="flex -space-x-2">
                        {[1,2,3,4].map(i => (

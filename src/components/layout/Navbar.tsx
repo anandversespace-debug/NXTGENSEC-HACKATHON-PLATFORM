@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Shield, Search, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/useAuthStore';
-import { supabase } from '@/lib/supabase';
 
 const navItems = [
   { name: 'Projects', href: '/projects' },
@@ -18,7 +17,10 @@ const navItems = [
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, role, isAuthenticated, logout } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const role = useAuthStore((state) => state.role);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const logout = useAuthStore((state) => state.logout);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,8 +30,10 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    // Clear cookie by setting it to past
+    document.cookie = "nxg_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     logout();
   };
 
@@ -57,7 +61,7 @@ const Navbar = () => {
             <Link
               key={item.name}
               href={item.href}
-              className="nav-link"
+              className="nav-link text-sm font-bold uppercase text-gray-400 hover:text-white transition-colors tracking-widest px-2 py-1"
             >
               {item.name}
             </Link>
@@ -110,6 +114,7 @@ const Navbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
+            key="mobile-menu"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}

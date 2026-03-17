@@ -1,130 +1,179 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
-import { useAppStore } from '@/store/useAppStore';
-import { LayoutDashboard, FolderCode, Trophy, MessageSquare, Settings, Bell, ExternalLink, Terminal } from 'lucide-react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { LayoutDashboard, FolderCode, Trophy, MessageSquare, Settings, Bell, ExternalLink, Terminal, Gavel, Activity, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-const DashboardPage = () => {
-  const { user } = useAppStore();
+export default function DashboardPage() {
+  const user = useAuthStore((state) => state.user);
+  const role = useAuthStore((state) => state.role) || 'viewer';
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    { label: 'Active Projects', value: '3', icon: FolderCode, color: 'text-blue-500' },
-    { label: 'Events Joined', value: '2', icon: Trophy, color: 'text-violet-500' },
-    { label: 'Total Points', value: '1,240', icon: Bell, color: 'text-emerald-500' },
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/users/stats`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (!res.ok) throw new Error('Failed to fetch telemetry data.');
+        const data = await res.json();
+        setStats(data);
+      } catch (err) {
+        console.error('Fetch Stats Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const statItems = [
+    { label: 'Active Node Projects', value: stats?.activeProjects || 0, icon: FolderCode, color: 'text-blue-500' },
+    { label: 'Sprints Participated', value: stats?.eventsJoined || 0, icon: Trophy, color: 'text-violet-500' },
+    { label: 'Reputation Balance', value: (stats?.totalPoints || 0).toLocaleString(), icon: Activity, color: 'text-emerald-500' },
   ];
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505]">
-        <div className="max-w-6xl mx-auto">
-          {/* Dashboard Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-            <div>
-              <p className="text-label mb-2">User Workspace</p>
-              <h1 className="text-2xl font-bold uppercase tracking-tight italic mb-3 flex items-center space-x-3">
-                <LayoutDashboard className="w-5 h-5 text-blue-600" />
-                <span>Developer Dashboard</span>
-              </h1>
-              <p className="text-gray-500 text-[11px] font-bold uppercase tracking-tighter">Identity: {user?.name || 'Node_Active'} // Status: Backbone Online</p>
-            </div>
-            <div className="flex items-center space-x-3">
-               <button className="p-2 bg-[#0c0c0c] border border-white/5 rounded hover:bg-white/[0.05] transition-colors relative group">
-                  <Bell className="w-4 h-4 text-gray-500 group-hover:text-blue-500 transition-colors" />
-                  <span className="absolute top-2 right-2 w-1 h-1 bg-blue-600 rounded-full animate-pulse"></span>
-               </button>
-               <Link href="/profile" className="btn-secondary flex items-center space-x-2">
-                 <span>Identity Profile</span>
-                 <ExternalLink className="w-3 h-3" />
-               </Link>
-            </div>
-          </div>
+    <div className="space-y-12">
+      {/* Dashboard Header */}
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-2 flex items-center space-x-4">
+             <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center">
+                <LayoutDashboard className="w-6 h-6 text-blue-500" />
+             </div>
+             <span>{role} Matrix</span>
+          </h1>
+          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] italic flex items-center">
+             <Activity className="w-3.5 h-3.5 mr-2 text-blue-500 animate-pulse" />
+             NODE_IDENTITY: <span className="text-gray-300 ml-1">@{user?.username || 'ANON'}</span> 
+             <span className="mx-3 opacity-20">|</span> 
+             STATUS: <span className="text-emerald-500 ml-1">ENCRYPTED_ONLINE</span>
+          </p>
+        </div>
+        <div className="flex items-center space-x-4">
+            <button className="p-3 bg-[#0c0c0c] border border-white/5 rounded-xl hover:bg-white/[0.05] hover:border-blue-500/20 transition-all relative group">
+              <Bell className="w-4 h-4 text-gray-700 group-hover:text-blue-500 transition-colors" />
+              <span className="absolute top-3 right-3 w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span>
+            </button>
+            <Link href="/dashboard/profile" className="bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/5 flex items-center space-x-3 transition-all italic">
+              <span>Sync Profile</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
+        </div>
+      </header>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-            {stats.map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
-                className="bg-[#0c0c0c] border border-white/5 p-6 rounded-lg flex items-center space-x-6 hover:border-white/10 transition-colors"
-              >
-                <div className="p-3 rounded bg-white/[0.02] border border-white/[0.03]">
-                  <stat.icon className={cn("w-5 h-5", stat.color)} />
-                </div>
-                <div>
-                   <p className="text-xl font-black text-white italic tracking-tight">{stat.value}</p>
-                   <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">{stat.label}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {loading ? (
+          [1,2,3].map(i => (
+            <div key={i} className="h-32 bg-[#0c0c0c] border border-white/5 rounded-2xl animate-pulse" />
+          ))
+        ) : (
+          statItems.map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-[#0c0c0c] border border-white/5 p-8 rounded-2xl flex items-center space-x-8 hover:border-blue-500/20 hover:bg-white/[0.01] transition-all relative overflow-hidden group shadow-2xl"
+            >
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="p-4 rounded-xl bg-[#050505] border border-white/5 group-hover:border-blue-500/30 transition-colors shadow-inner">
+                <stat.icon className={cn("w-6 h-6", stat.color)} />
+              </div>
+              <div>
+                  <p className="text-3xl font-black text-white italic tracking-tighter group-hover:text-blue-400 transition-colors">{stat.value}</p>
+                  <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest mt-1 italic">{stat.label}</p>
+              </div>
+            </motion.div>
+          ))
+        )}
+      </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Quick Actions */}
-            <div className="lg:col-span-1 space-y-6">
-               <div className="bg-[#0c0c0c] border border-white/5 p-6 rounded-lg">
-                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-6 flex items-center space-x-2">
-                    <Terminal className="w-3.5 h-3.5" />
-                    <span>Quick Access</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Quick Actions */}
+        <div className="lg:col-span-1 space-y-6">
+            <div className="bg-[#0c0c0c] border border-white/5 p-8 rounded-3xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-6 opacity-[0.02]">
+                 <Terminal className="w-20 h-20" />
+              </div>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 mb-8 flex items-center space-x-3 italic">
+                <Terminal className="w-4 h-4 text-blue-500" />
+                <span>Quick Access Nodes</span>
+              </h3>
+              <div className="space-y-3">
+                  <Link href="/dashboard/projects/new" className="flex items-center justify-between p-5 bg-[#050505] border border-white/5 rounded-2xl hover:bg-blue-600/10 hover:border-blue-500/30 transition-all group/item">
+                    <div className="flex items-center space-x-4">
+                       <FolderCode className="w-4 h-4 text-gray-700 group-hover/item:text-blue-500 transition-colors" />
+                       <span className="text-[10px] font-black uppercase tracking-widest text-gray-600 group-hover/item:text-white transition-colors italic">Deploy Node</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-800 group-hover/item:text-blue-500 transition-colors" />
+                  </Link>
+                  <Link href="/dashboard/hackathons" className="flex items-center justify-between p-5 bg-[#050505] border border-white/5 rounded-2xl hover:bg-emerald-600/10 hover:border-emerald-500/30 transition-all group/item">
+                    <div className="flex items-center space-x-4">
+                       <Trophy className="w-4 h-4 text-gray-700 group-hover/item:text-emerald-500 transition-colors" />
+                       <span className="text-[10px] font-black uppercase tracking-widest text-gray-600 group-hover/item:text-white transition-colors italic">Registry List</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-800 group-hover/item:text-emerald-500 transition-colors" />
+                  </Link>
+                  <Link href="/dashboard/settings" className="flex items-center justify-between p-5 bg-[#050505] border border-white/5 rounded-2xl hover:bg-indigo-600/10 hover:border-indigo-500/30 transition-all group/item">
+                    <div className="flex items-center space-x-4">
+                       <Settings className="w-4 h-4 text-gray-700 group-hover/item:text-indigo-500 transition-colors" />
+                       <span className="text-[10px] font-black uppercase tracking-widest text-gray-600 group-hover/item:text-white transition-colors italic">Sys Preferences</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-800 group-hover/item:text-indigo-500 transition-colors" />
+                  </Link>
+              </div>
+            </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="lg:col-span-2">
+            <div className="bg-[#0c0c0c] border border-white/5 p-10 rounded-3xl relative group">
+              <div className="flex items-center justify-between mb-10 pb-6 border-b border-white/[0.03]">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 flex items-center space-x-3 italic">
+                    <MessageSquare className="w-4 h-4 text-blue-500" />
+                    <span>Recent Matrix Operations</span>
                   </h3>
-                  <div className="space-y-2">
-                     <Link href="/projects/new" className="flex items-center space-x-3 p-3 bg-white/[0.01] border border-white/[0.02] rounded-md hover:bg-white/[0.05] hover:border-white/5 transition-all group">
-                        <FolderCode className="w-4 h-4 text-gray-600 group-hover:text-blue-500 transition-colors" />
-                        <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-500 group-hover:text-gray-200">Deploy Node</span>
-                     </Link>
-                     <Link href="/hackathons" className="flex items-center space-x-3 p-3 bg-white/[0.01] border border-white/[0.02] rounded-md hover:bg-white/[0.05] hover:border-white/5 transition-all group">
-                        <Trophy className="w-4 h-4 text-gray-600 group-hover:text-blue-500 transition-colors" />
-                        <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-500 group-hover:text-gray-200">Registry List</span>
-                     </Link>
-                     <Link href="/settings" className="flex items-center space-x-3 p-3 bg-white/[0.01] border border-white/[0.02] rounded-md hover:bg-white/[0.05] hover:border-white/5 transition-all group">
-                        <Settings className="w-4 h-4 text-gray-600 group-hover:text-blue-500 transition-colors" />
-                        <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-500 group-hover:text-gray-200">System Preferences</span>
-                     </Link>
-                  </div>
-               </div>
-            </div>
-
-            {/* Recent Activity */}
-            <div className="lg:col-span-2">
-               <div className="bg-[#0c0c0c] border border-white/5 p-8 rounded-lg">
-                  <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.02]">
-                     <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-600 flex items-center space-x-2">
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        <span>Recent Operations</span>
-                     </h3>
-                     <button className="text-[9px] text-gray-700 font-bold uppercase hover:text-blue-500 transition-colors">Audit History →</button>
-                  </div>
-                  
-                  <div className="space-y-4">
-                     {[
-                       { title: 'Node "SecureVault" parameters updated', time: '2h ago', status: 'verified' },
-                       { title: 'Subscribed to CyberShield sprint challenge', time: '1d ago', status: 'active' },
-                       { title: 'Identity credential verification complete', time: '3d ago', status: 'verified' }
-                     ].map((item, i) => (
-                       <div key={i} className="flex items-start space-x-4 p-4 bg-white/[0.01] border border-white/[0.02] hover:border-white/5 rounded-md transition-all group">
-                          <div className="w-2 h-2 mt-1 rounded-full bg-blue-600/30 group-hover:bg-blue-600 transition-colors"></div>
-                          <div className="flex-grow">
-                             <p className="text-[11px] font-bold text-gray-400 group-hover:text-white transition-colors uppercase tracking-tight">{item.title}</p>
-                             <div className="flex items-center justify-between mt-2">
-                                <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest">{item.time}</p>
-                                <span className="text-[8px] font-bold uppercase tracking-tighter text-gray-600 bg-white/5 px-1.5 py-0.5 rounded">{item.status}</span>
-                             </div>
+                  <button className="text-[9px] text-gray-700 font-black uppercase tracking-[0.1em] hover:text-blue-500 transition-colors italic">Audit History →</button>
+              </div>
+              
+              <div className="space-y-4">
+                  {[
+                    { title: 'Node architectural parameters synchronized', time: '2h ago', status: 'VERIFIED', icon: Activity },
+                    { title: 'Subscribed to upcoming protocol sprint', time: '1d ago', status: 'ACTIVE', icon: Trophy },
+                    { title: 'Identity credential rotation successful', time: '3d ago', status: 'VERIFIED', icon: Gavel }
+                  ].map((item, i) => (
+                    <motion.div 
+                      key={i} 
+                      whileHover={{ x: 6 }}
+                      className="flex items-center space-x-6 p-5 bg-[#050505] border border-white/5 hover:border-blue-500/20 rounded-2xl transition-all shadow-inner group/log"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center text-gray-800 group-hover/log:border-blue-500/20 group-hover/log:text-blue-500 transition-all">
+                         <item.icon className="w-4 h-4" />
+                      </div>
+                      <div className="flex-grow">
+                          <p className="text-[11px] font-bold text-gray-400 group-hover/log:text-white transition-colors uppercase tracking-tight italic">{item.title}</p>
+                          <div className="flex items-center justify-between mt-3">
+                            <p className="text-[9px] text-gray-700 font-black uppercase tracking-widest">:: LOG_TIMESTAMP: {item.time}</p>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/5 px-2.5 py-1 rounded border border-blue-500/10 italic shadow-2xl">{item.status}</span>
                           </div>
-                       </div>
-                     ))}
-                  </div>
-               </div>
+                      </div>
+                    </motion.div>
+                  ))}
+              </div>
             </div>
-          </div>
         </div>
       </div>
-    </ProtectedRoute>
+    </div>
   );
-};
-
-export default DashboardPage;
+}

@@ -9,6 +9,7 @@ interface AuthState {
   setUser: (user: UserProfile | null) => void;
   setLoading: (isLoading: boolean) => void;
   logout: () => void;
+  updateRole: (role: 'admin' | 'judge' | 'developer' | 'viewer' | null) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -24,4 +25,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   }),
   setLoading: (isLoading) => set({ isLoading }),
   logout: () => set({ user: null, role: null, isAuthenticated: false, isLoading: false }),
+  updateRole: (role) => set((state) => ({ 
+    role, 
+    user: state.user && role ? { ...state.user, role } : state.user 
+  })),
 }));

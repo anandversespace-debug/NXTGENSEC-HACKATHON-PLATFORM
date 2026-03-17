@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Lock, LogIn, Github, Shield, ShieldAlert } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { Mail, Lock, LogIn, Shield, ShieldAlert } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
@@ -19,24 +18,40 @@ const LoginPage = () => {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const endpoint = baseUrl.endsWith('/api') ? '/auth/login' : '/api/auth/login';
 
-    if (error) {
-      setError(error.message);
+      const res = await fetch(`${baseUrl}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Authentication failure.');
+      }
+
+      // Store JWT token
+      localStorage.setItem('token', data.token);
+      
+      // Update global auth state
+      const { useAuthStore } = await import('@/store/useAuthStore');
+      useAuthStore.getState().setUser(data.user);
+
+      if (data.user && !data.user.onboarded) {
+         router.push('/onboarding');
+      } else {
+         router.push('/dashboard');
+      }
+    } catch (err: any) {
+      setError(err.message);
       setLoading(false);
-    } else {
-      router.push('/dashboard');
     }
   };
 
-  const handleGithubLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'github',
-    });
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center py-20 px-6 bg-[#050505]">
@@ -91,6 +106,11 @@ const LoginPage = () => {
                 />
               </div>
             </div>
+            <div className="flex justify-end pt-1">
+              <Link href="/forgot-password" className="text-[9px] font-bold text-gray-500 hover:text-blue-500 uppercase tracking-widest transition-colors inline-block">
+                Forget Encryption Key?
+              </Link>
+            </div>
 
             <button
               type="submit"
@@ -101,23 +121,6 @@ const LoginPage = () => {
               <span>{loading ? 'Authenticating...' : 'Establish Link'}</span>
             </button>
           </form>
-
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/[0.03]"></div>
-            </div>
-            <div className="relative flex justify-center text-[9px] uppercase tracking-widest">
-              <span className="bg-[#0c0c0c] px-3 text-gray-700">Secondary Protocols</span>
-            </div>
-          </div>
-
-          <button
-            onClick={handleGithubLogin}
-            className="w-full py-2.5 px-4 bg-[#080808] border border-white/5 rounded-md hover:bg-white/[0.05] transition-all flex items-center justify-center space-x-3 text-gray-500 hover:text-white text-[10px] font-bold uppercase tracking-widest"
-          >
-            <Github className="w-3.5 h-3.5" />
-            <span>GitHub_Auth</span>
-          </button>
 
           <p className="mt-8 text-center text-[9px] font-bold text-gray-700 uppercase tracking-widest">
             Identity Not Found?{' '}

@@ -20,9 +20,15 @@ const ProjectsPage = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/projects`);
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/projects`);
+        if (!res.ok) throw new Error('System failed to synchronize projects.');
         const data = await res.json();
-        setProjects(data);
+        const transformedData = data.map((p: any) => ({
+          ...p,
+          id: p._id
+        }));
+        setProjects(transformedData);
       } catch (err) {
         console.error('Failed to fetch projects:', err);
       } finally {
@@ -88,6 +94,7 @@ const ProjectsPage = () => {
             <AnimatePresence mode="popLayout">
               {filteredProjects.length > 0 ? (
                 <motion.div 
+                   key="projects-grid"
                    layout
                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
                 >
@@ -97,6 +104,7 @@ const ProjectsPage = () => {
                 </motion.div>
               ) : (
                 <motion.div 
+                  key="empty-state"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="flex flex-col items-center justify-center py-32 text-center"

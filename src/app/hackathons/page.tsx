@@ -1,41 +1,45 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Users, Trophy, ChevronRight, Clock, Shield } from 'lucide-react';
 import { Hackathon } from '@/types';
 import Link from 'next/link';
 
 const HackathonsPage = () => {
-  const hackathons: Hackathon[] = [
-    {
-      id: 'h1',
-      title: 'CyberShield Global 2024',
-      description: 'Join elite developers to build the next generation of firewall technology. Focus on real-time threat detection and automated response.',
-      start_date: '2024-04-15',
-      end_date: '2024-04-17',
-      prize_pool: '10,000 CP',
-      registration_link: '/register/h1'
-    },
-    {
-      id: 'h2',
-      title: 'DeFi Security Sprint',
-      description: 'Audit and secure decentralized finance protocols. Identify vulnerabilities in smart contracts and develop mitigation strategies.',
-      start_date: '2024-05-20',
-      end_date: '2024-05-22',
-      prize_pool: '25,000 CP',
-      registration_link: '/register/h2'
-    },
-    {
-      id: 'h3',
-      title: 'AI Trust Hackathon',
-      description: 'Building transparent and fair AI systems. Explore methods for explainability and bias detection in large language models.',
-      start_date: '2024-06-10',
-      end_date: '2024-06-12',
-      prize_pool: '15,000 CP',
-      registration_link: '/register/h3'
-    }
-  ];
+  const [hackathons, setHackathons] = useState<Hackathon[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHackathons = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/hackathons`);
+        if (!res.ok) throw new Error('System failed to synchronize hackathons.');
+        const data = await res.json();
+        
+        // Transform MongoDB _id to id
+        const transformedData = data.map((h: any) => ({
+          ...h,
+          id: h._id
+        }));
+        setHackathons(transformedData);
+      } catch (err) {
+        console.error('Failed to fetch hackathons:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHackathons();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505] flex items-center justify-center">
+        <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase">Synchronizing Event Nodes...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505]">
@@ -49,39 +53,41 @@ const HackathonsPage = () => {
           </p>
         </div>
 
-        {/* Featured Card */}
-        <div className="bg-[#0c0c0c] border border-white/5 rounded-lg mb-12 overflow-hidden hover:border-blue-500/20 transition-all group">
-          <div className="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between">
-            <div className="mb-8 md:mb-0 md:mr-8 flex-grow">
-              <div className="flex items-center space-x-2 mb-4">
-                 <Shield className="w-3.5 h-3.5 text-blue-500" />
-                 <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-500/80">Featured Deployment</span>
+        {/* Featured Card (Taking first hackathon as featured if exists) */}
+        {hackathons.length > 0 && (
+          <div className="bg-[#0c0c0c] border border-white/5 rounded-lg mb-12 overflow-hidden hover:border-blue-500/20 transition-all group">
+            <div className="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between">
+              <div className="mb-8 md:mb-0 md:mr-8 flex-grow">
+                <div className="flex items-center space-x-2 mb-4">
+                   <Shield className="w-3.5 h-3.5 text-blue-500" />
+                   <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-500/80">Featured Deployment</span>
+                </div>
+                <h2 className="text-xl md:text-2xl font-bold mb-4 uppercase tracking-tight italic text-white underline underline-offset-8 decoration-blue-500/20">{hackathons[0].title}</h2>
+                <p className="text-gray-500 text-[11px] mb-8 max-w-lg font-medium uppercase tracking-tighter leading-snug">
+                  {hackathons[0].description}
+                </p>
+                <div className="flex flex-wrap gap-10 text-[10px] text-gray-600 font-bold uppercase tracking-widest mb-10">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="w-3.5 h-3.5 text-blue-500/50" />
+                    <span>{new Date(hackathons[0].start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(hackathons[0].end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Clock className="w-3.5 h-3.5 text-blue-500/50" />
+                    <span>48H Sprint</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                     <Users className="w-3.5 h-3.5 text-blue-500/50" />
+                     <span>Global Hub</span>
+                  </div>
+                </div>
+                <Link href={`/hackathons/${hackathons[0].id}`} className="btn-primary px-8 py-3">Register Node</Link>
               </div>
-              <h2 className="text-xl md:text-2xl font-bold mb-4 uppercase tracking-tight italic text-white underline underline-offset-8 decoration-blue-500/20">CyberShield Global 2024</h2>
-              <p className="text-gray-500 text-[11px] mb-8 max-w-lg font-medium uppercase tracking-tighter leading-snug">
-                The flagship event of the division. 10,000 CP reputation grant, 500+ participating nodes, and senior auditor mentorship.
-              </p>
-              <div className="flex flex-wrap gap-10 text-[10px] text-gray-600 font-bold uppercase tracking-widest mb-10">
-                <div className="flex items-center space-x-2">
-                  <Calendar className="w-3.5 h-3.5 text-blue-500/50" />
-                  <span>APR 15-17</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-3.5 h-3.5 text-blue-500/50" />
-                  <span>48H Sprint</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                   <Users className="w-3.5 h-3.5 text-blue-500/50" />
-                   <span>Global Hub</span>
-                </div>
+              <div className="w-full md:w-1/4 aspect-square bg-white/[0.01] rounded-lg border border-white/[0.03] flex items-center justify-center relative group-hover:scale-105 transition-transform duration-700">
+                 <Trophy className="w-16 h-16 text-blue-500/10 group-hover:text-blue-500/20 transition-colors" />
               </div>
-              <Link href="/hackathons/register" className="btn-primary">Register Node</Link>
-            </div>
-            <div className="w-full md:w-1/4 aspect-square bg-white/[0.01] rounded-lg border border-white/[0.03] flex items-center justify-center relative group-hover:scale-105 transition-transform duration-700">
-               <Trophy className="w-16 h-16 text-blue-500/10 group-hover:text-blue-500/20 transition-colors" />
             </div>
           </div>
-        </div>
+        )}
 
         {/* Events List */}
         <div className="space-y-4">
@@ -114,7 +120,7 @@ const HackathonsPage = () => {
                     <p className="text-sm font-bold text-white italic">{hack.prize_pool}</p>
                   </div>
                   <Link 
-                    href="/hackathons/register"
+                    href={`/hackathons/${hack.id}`}
                     className="p-2 border border-white/5 bg-white/[0.02] rounded-md hover:bg-blue-600 hover:text-white transition-all text-gray-600 shadow-lg shadow-black/20"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -123,6 +129,12 @@ const HackathonsPage = () => {
               </div>
             </motion.div>
           ))}
+          {hackathons.length === 0 && (
+             <div className="py-20 text-center">
+                <Trophy className="w-12 h-12 text-gray-800 mx-auto mb-4 opacity-50" />
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 italic">No active hackathon deployments detected in the network.</p>
+             </div>
+          )}
         </div>
       </div>
     </div>

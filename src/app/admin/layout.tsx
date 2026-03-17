@@ -20,16 +20,17 @@ import { cn } from '@/lib/utils';
 
 const AdminSidebar = () => {
   const pathname = usePathname();
-  const { role } = useAuthStore();
+  const role = useAuthStore((state) => state.role);
 
   const menuItems = [
     { name: 'Overview', href: '/admin', icon: BarChart3, roles: ['admin'] },
     { name: 'Users', href: '/admin/users', icon: Users, roles: ['admin'] },
-    { name: 'Inbox', href: '/admin/inbox', icon: Mail, roles: ['admin'] },
     { name: 'Projects', href: '/admin/projects', icon: FolderLock, roles: ['admin'] },
     { name: 'Hackathons', href: '/admin/hackathons', icon: Trophy, roles: ['admin'] },
-    { name: 'Judging', href: '/admin/judging', icon: Gavel, roles: ['admin', 'judge'] },
-    { name: 'Settings', href: '/admin/settings', icon: Settings, roles: ['admin'] },
+    { name: 'Submissions', href: '/admin/submissions', icon: Gavel, roles: ['admin'] },
+    { name: 'Blogs', href: '/admin/blogs', icon: LayoutDashboard, roles: ['admin'] },
+    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3, roles: ['admin'] },
+    { name: 'Announcements', href: '/admin/notifications', icon: Mail, roles: ['admin'] },
   ];
 
   const effectiveRole = role || 'admin'; 
