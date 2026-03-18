@@ -3,11 +3,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Rocket, Code, Users, Trophy, Shield } from 'lucide-react';
+import Link from 'next/link';
 
 const Hero = () => {
   return (
     <section className="relative pt-40 pb-20 overflow-hidden border-b border-white/[0.02]">
-      {/* Background Grid - Minimalist */}
+      {/* Background Grid */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-blue-600/[0.03] blur-[120px] rounded-full -z-10" />
 
@@ -19,33 +20,28 @@ const Hero = () => {
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center"
           >
-            <div className="flex items-center space-x-2 px-3 py-1 bg-white/[0.03] border border-white/5 rounded-full mb-8">
-              <Shield className="w-3 h-3 text-blue-500" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
-                Ecosystem Node v1.0
-              </span>
-            </div>
+            
             
             <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight uppercase italic leading-[1.1]">
-              Secure the <span className="text-blue-600">Future</span><br />
-              of Development
+              Build the <span className="text-blue-600">Future</span><br />
+              of Innovation
             </h1>
             
             <p className="max-w-xl mx-auto text-sm text-gray-500 mb-10 font-medium leading-relaxed uppercase tracking-tighter">
-              Explore elite project nodes, participate in global security sprints, and integrate with the next generation of development pioneers.
+              Discover amazing projects, compete in hackathons, and connect with developers building the next big thing.
             </p>
 
             <div className="flex items-center justify-center space-x-4">
-              <button className="btn-primary">
-                Init Deployment
-              </button>
-              <button className="btn-secondary">
-                View Manual
-              </button>
+              <Link href="/projects" className="btn-primary">
+                Explore Projects
+              </Link>
+              <Link href="/docs" className="btn-secondary">
+                Read the Docs
+              </Link>
             </div>
           </motion.div>
 
-          {/* Minimal Stats */}
+          {/* Stats */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -53,10 +49,10 @@ const Hero = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-24 w-full"
           >
             {[
-              { label: 'Active Projects', value: '542', icon: Code },
-              { label: 'Global Events', value: '18', icon: Trophy },
-              { label: 'Network Nodes', value: '2.4k', icon: Users },
-              { label: 'Uptime Status', value: '99.9%', icon: Shield },
+              { label: 'Projects Built', value: '500+', icon: Code },
+              { label: 'Hackathons Hosted', value: '18', icon: Trophy },
+              { label: 'Developers Joined', value: '2.4k', icon: Users },
+              { label: 'Platform Uptime', value: '99.9%', icon: Shield },
             ].map((stat, idx) => (
               <div key={idx} className="bg-[#080808] border border-white/5 p-6 rounded group hover:bg-white/[0.01] transition-colors">
                 <div className="flex items-center justify-between mb-4">

@@ -36,7 +36,7 @@ const HackathonsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505] flex items-center justify-center">
-        <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase">Synchronizing Event Nodes...</div>
+        <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase">Loading Hackathons...</div>
       </div>
     );
   }
@@ -46,10 +46,10 @@ const HackathonsPage = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-16">
-          <p className="text-label mb-2">Operational Events</p>
-          <h1 className="text-2xl font-bold uppercase tracking-tight italic mb-3">Global Hackathons</h1>
+          <p className="text-label mb-2">Events</p>
+          <h1 className="text-2xl font-bold uppercase tracking-tight italic mb-3">Hackathons</h1>
           <p className="text-gray-500 text-[11px] font-bold uppercase tracking-tighter leading-snug max-w-xl">
-            Compete in world-class challenges, solve critical security problems, and win prestigious node reputation grants.
+            Compete in exciting challenges, solve real problems, and win prizes along the way.
           </p>
         </div>
 
@@ -60,7 +60,7 @@ const HackathonsPage = () => {
               <div className="mb-8 md:mb-0 md:mr-8 flex-grow">
                 <div className="flex items-center space-x-2 mb-4">
                    <Shield className="w-3.5 h-3.5 text-blue-500" />
-                   <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-500/80">Featured Deployment</span>
+                   <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-500/80">Featured Event</span>
                 </div>
                 <h2 className="text-xl md:text-2xl font-bold mb-4 uppercase tracking-tight italic text-white underline underline-offset-8 decoration-blue-500/20">{hackathons[0].title}</h2>
                 <p className="text-gray-500 text-[11px] mb-8 max-w-lg font-medium uppercase tracking-tighter leading-snug">
@@ -77,10 +77,10 @@ const HackathonsPage = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                      <Users className="w-3.5 h-3.5 text-blue-500/50" />
-                     <span>Global Hub</span>
+                     <span>Participants</span>
                   </div>
                 </div>
-                <Link href={`/hackathons/${hackathons[0].id}`} className="btn-primary px-8 py-3">Register Node</Link>
+                <Link href={`/hackathons/${hackathons[0].id}`} className="btn-primary px-8 py-3">Join Hackathon</Link>
               </div>
               <div className="w-full md:w-1/4 aspect-square bg-white/[0.01] rounded-lg border border-white/[0.03] flex items-center justify-center relative group-hover:scale-105 transition-transform duration-700">
                  <Trophy className="w-16 h-16 text-blue-500/10 group-hover:text-blue-500/20 transition-colors" />
@@ -93,7 +93,7 @@ const HackathonsPage = () => {
         <div className="space-y-4">
           <div className="flex items-center space-x-2 mb-8 ml-1">
              <Trophy className="w-3.5 h-3.5 text-gray-700" />
-             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600">Event Registry</p>
+             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600">All Events</p>
           </div>
           {hackathons.map((hack, idx) => (
             <motion.div
@@ -132,7 +132,7 @@ const HackathonsPage = () => {
           {hackathons.length === 0 && (
              <div className="py-20 text-center">
                 <Trophy className="w-12 h-12 text-gray-800 mx-auto mb-4 opacity-50" />
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 italic">No active hackathon deployments detected in the network.</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 italic">No hackathons available right now. Check back soon!</p>
              </div>
           )}
         </div>

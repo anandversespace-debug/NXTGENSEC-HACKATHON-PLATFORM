@@ -25,7 +25,8 @@ const LoginPage = () => {
       const res = await fetch(`${baseUrl}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
+        credentials: 'include'
       });
 
       const data = await res.json();
@@ -42,9 +43,9 @@ const LoginPage = () => {
       useAuthStore.getState().setUser(data.user);
 
       if (data.user && !data.user.onboarded) {
-         router.push('/onboarding');
+         window.location.href = '/onboarding';
       } else {
-         router.push('/dashboard');
+         window.location.href = '/dashboard';
       }
     } catch (err: any) {
       setError(err.message);
@@ -65,8 +66,8 @@ const LoginPage = () => {
              <div className="w-10 h-10 bg-blue-600 rounded flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-900/40">
                 <Shield className="w-5 h-5 text-white" />
              </div>
-            <h1 className="text-xl font-bold mb-1 uppercase tracking-tight italic">Identity Link</h1>
-            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Platform Credential Verification</p>
+            <h1 className="text-xl font-bold mb-1 uppercase tracking-tight italic">Sign In</h1>
+            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Access Your Account</p>
           </div>
 
           {error && (
@@ -78,13 +79,13 @@ const LoginPage = () => {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="text-[9px] font-bold text-gray-700 uppercase tracking-widest mb-1.5 block ml-1">Credential_Email</label>
+              <label className="text-[9px] font-bold text-gray-700 uppercase tracking-widest mb-1.5 block ml-1">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700 font-bold" />
                 <input
                   type="email"
                   className="w-full bg-[#080808] border border-white/5 rounded-md py-2.5 pl-10 pr-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/30 transition-all font-mono"
-                  placeholder="USER_AUTH_ID"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -93,7 +94,7 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label className="text-[9px] font-bold text-gray-700 uppercase tracking-widest mb-1.5 block ml-1">Encryption_Key</label>
+              <label className="text-[9px] font-bold text-gray-700 uppercase tracking-widest mb-1.5 block ml-1">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
                 <input
@@ -108,7 +109,7 @@ const LoginPage = () => {
             </div>
             <div className="flex justify-end pt-1">
               <Link href="/forgot-password" className="text-[9px] font-bold text-gray-500 hover:text-blue-500 uppercase tracking-widest transition-colors inline-block">
-                Forget Encryption Key?
+                Forgot Password?
               </Link>
             </div>
 
@@ -118,14 +119,14 @@ const LoginPage = () => {
               className="bg-blue-600 hover:bg-blue-500 text-white w-full py-3 rounded-md text-[10px] font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center space-x-2 shadow-lg shadow-blue-900/20 disabled:opacity-50 mt-8"
             >
               <LogIn className="w-3.5 h-3.5" />
-              <span>{loading ? 'Authenticating...' : 'Establish Link'}</span>
+              <span>{loading ? 'Signing in...' : 'Sign In'}</span>
             </button>
           </form>
 
           <p className="mt-8 text-center text-[9px] font-bold text-gray-700 uppercase tracking-widest">
-            Identity Not Found?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-blue-600 hover:text-blue-500 underline underline-offset-4 decoration-blue-500/20">
-              Create Node
+              Sign Up
             </Link>
           </p>
         </div>

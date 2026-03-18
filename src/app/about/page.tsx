@@ -8,16 +8,17 @@ import {
   Cpu, 
   Network,
   Users,
-  Code2
+  Code2,
+  ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AboutPage() {
   const stats = [
-    { label: 'Active Developer Nodes', value: '12,500+', icon: Users },
-    { label: 'Identified Vulnerabilities', value: '450+', icon: ShieldCheck },
-    { label: 'Total Audited Repositories', value: '3,200+', icon: Terminal },
-    { label: 'Secured Capital (USD)', value: '$1.2M+', icon: Cpu },
+    { label: 'Community Members', value: '12,500+', icon: Users },
+    { label: 'Bug Reports', value: '450+', icon: ShieldCheck },
+    { label: 'Projects Audited', value: '3,200+', icon: Terminal },
+    { label: 'Prizes Awarded', value: '$1.2M+', icon: Cpu },
   ];
 
   return (
@@ -43,17 +44,17 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white leading-tight"
+            className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white leading-tight"
           >
-            Securing the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Decentralized</span> Future
+            Securing the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 text-left">Modern</span> Future
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-gray-400 text-sm md:text-base leading-relaxed font-medium"
+            className="text-gray-400 text-xs md:text-sm leading-relaxed font-medium uppercase tracking-tight text-left"
           >
-            NxtGenSec is an elite architectural verification platform. We unite top-tier cryptographic researchers, system engineers, and security auditors to harden Web3 protocols through competitive sprints and zero-trust evaluation mechanisms.
+            NxtGenSec is a security and development platform. We bring together developers and security experts to build better software through community events and collaborative project reviews.
           </motion.p>
         </section>
 
@@ -69,9 +70,9 @@ export default function AboutPage() {
                      whileInView={{ opacity: 1, y: 0 }}
                      viewport={{ once: true }}
                      transition={{ delay: idx * 0.1 }}
-                     className="bg-[#0c0c0c] border border-white/5 rounded-2xl p-6 text-center group hover:border-white/10 transition-colors"
+                     className="bg-[#0c0c0c] border border-white/5 rounded-2xl p-6 text-left group hover:border-white/10 transition-colors"
                    >
-                      <div className="w-10 h-10 rounded bg-blue-500/5 border border-blue-500/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-blue-500/10 transition-all duration-500">
+                      <div className="w-10 h-10 rounded bg-blue-500/5 border border-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500/10 transition-all duration-500">
                          <Icon className="w-5 h-5 text-blue-500" />
                       </div>
                       <h3 className="text-2xl md:text-3xl font-black text-white italic tracking-tight">{stat.value}</h3>
@@ -88,22 +89,22 @@ export default function AboutPage() {
              initial={{ opacity: 0, x: -30 }}
              whileInView={{ opacity: 1, x: 0 }}
              viewport={{ once: true }}
-             className="space-y-6"
+             className="space-y-6 text-left"
            >
               <div className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-2">
                  <Network className="w-3.5 h-3.5 text-blue-500" />
-                 <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Our Methodology</span>
+                 <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Our Method</span>
               </div>
-              <h2 className="text-3xl font-black italic uppercase tracking-tight text-white">Crowdsourced Cryptographic Resilience.</h2>
-              <div className="space-y-4 text-sm text-gray-400 leading-relaxed font-medium">
+              <h2 className="text-2xl font-black italic uppercase tracking-tight text-white leading-tight">Collective Intelligence for Better Code.</h2>
+              <div className="space-y-4 text-xs text-gray-400 leading-relaxed font-medium uppercase tracking-tight">
                 <p>
-                  Traditional security audits are slow, centralized, and struggle to scale with the exponential growth of zero-knowledge technologies and smart contracts. 
+                  Building secure software should be a community effort. We believe that by bringing together thousands of developers, we can find and fix issues faster than any single team.
                 </p>
                 <p>
-                  We built NxtGenSec to gamify and decentralize the auditing process. By hosting elite Hackathons disguised as structural integrity tests, we deploy thousands of independent developer nodes against codebases simultaneously. 
+                  NxtGenSec gamifies the development process. Through hackathons and project reviews, we allow developers to earn reputation and prizes while making the digital world a safer place for everyone.
                 </p>
                 <p>
-                  If a vulnerability exists in the topology, the collective intelligence of the network will find it.
+                  Join us in our mission to build a more secure and transparent digital ecosystem.
                 </p>
               </div>
            </motion.div>
@@ -126,14 +127,14 @@ export default function AboutPage() {
                  </div>
                  <pre className="text-[10px] font-mono text-gray-400 leading-wider overflow-x-hidden">
                     <code>
-                      <span className="text-blue-400">import</span> {'{'} GuardianCore {'}'} <span className="text-blue-400">from</span> '@nxtgensec/core';<br/><br/>
-                      <span className="text-purple-400">const</span> initProtocol = <span className="text-blue-400">async</span> () ={'>'} {'{'}<br/>
-                      &nbsp;&nbsp;<span className="text-gray-500">// Initialize distributed network layer</span><br/>
-                      &nbsp;&nbsp;<span className="text-amber-300">await</span> GuardianCore.syncNodes();<br/>
-                      &nbsp;&nbsp;<span className="text-amber-300">await</span> GuardianCore.verifyState();<br/><br/>
+                      <span className="text-blue-400">import</span> {'{'} SecurityCore {'}'} <span className="text-blue-400">from</span> '@nxtgensec/core';<br/><br/>
+                      <span className="text-purple-400">const</span> initPlatform = <span className="text-blue-400">async</span> () ={'>'} {'{'}<br/>
+                      &nbsp;&nbsp;<span className="text-gray-500">// Connect to community network</span><br/>
+                      &nbsp;&nbsp;<span className="text-amber-300">await</span> SecurityCore.syncMembers();<br/>
+                      &nbsp;&nbsp;<span className="text-amber-300">await</span> SecurityCore.auditProject();<br/><br/>
                       &nbsp;&nbsp;<span className="text-blue-400">return</span> {'{'}<br/>
-                      &nbsp;&nbsp;&nbsp;&nbsp;status: <span className="text-emerald-400">'SECURE'</span>,<br/>
-                      &nbsp;&nbsp;&nbsp;&nbsp;nodes_active: <span className="text-blue-400">true</span><br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;status: <span className="text-emerald-400">'Ready'</span>,<br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;active: <span className="text-blue-400">true</span><br/>
                       &nbsp;&nbsp;{'}'};<br/>
                       {'}'};
                     </code>
@@ -149,22 +150,16 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="text-center py-12 border-t border-white/5"
         >
-           <h2 className="text-2xl font-black italic uppercase tracking-tight text-white mb-6">Ready to Initialize Your Node?</h2>
+           <h2 className="text-2xl font-black italic uppercase tracking-tight text-white mb-6">Ready to Join the Community?</h2>
            <Link 
              href="/signup"
-             className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] uppercase tracking-widest rounded-lg shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all"
+             className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] uppercase tracking-widest rounded-lg shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all italic"
            >
-             Establish Identity <ChevronRight className="w-4 h-4 ml-2" />
+             Create Account <ChevronRight className="w-4 h-4 ml-2" />
            </Link>
         </motion.section>
 
       </div>
     </div>
   );
-}
-
-function ChevronRight(props: any) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-  )
 }

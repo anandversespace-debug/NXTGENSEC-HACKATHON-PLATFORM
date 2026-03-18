@@ -51,13 +51,13 @@ const ProjectsPage = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="max-w-xl">
-            <p className="text-label mb-2">Global Registry</p>
-            <h1 className="text-2xl font-bold uppercase tracking-tight italic mb-3">Project Ecosystem</h1>
-            <p className="text-gray-500 text-[11px] font-bold uppercase tracking-tighter leading-snug">The decentralized repository for platform innovations. audit, contribute, and deploy secure solutions.</p>
+            <p className="text-label mb-2">Browse</p>
+            <h1 className="text-2xl font-bold uppercase tracking-tight italic mb-3">All Projects</h1>
+            <p className="text-gray-500 text-[11px] font-bold uppercase tracking-tighter leading-snug">Explore innovative projects built by our community. Search, filter, and contribute to what interests you.</p>
           </div>
           <Link href="/projects/new" className="bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-6 rounded text-[10px] font-bold uppercase tracking-widest transition-all flex items-center space-x-2">
             <Plus className="w-3.5 h-3.5" />
-            <span>Init Innovation</span>
+            <span>Add Project</span>
           </Link>
         </div>
 
@@ -67,7 +67,7 @@ const ProjectsPage = () => {
             <SearchBar 
               value={searchQuery} 
               onChange={setSearchQuery} 
-              placeholder="Search ecosystem nodes..." 
+              placeholder="Search projects..." 
             />
             <button className="flex items-center justify-center space-x-2 bg-white/[0.02] border border-white/5 rounded-lg px-6 py-2 transition-all hover:bg-white/5">
               <Terminal className="w-3.5 h-3.5 text-gray-600" />
@@ -113,7 +113,7 @@ const ProjectsPage = () => {
                       <Search className="w-5 h-5 text-gray-800" />
                    </div>
                    <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-1">0 Results Found</h3>
-                   <p className="text-[10px] text-gray-700 font-bold uppercase tracking-tighter">No nodes matching specified search parameters.</p>
+                   <p className="text-[10px] text-gray-700 font-bold uppercase tracking-tighter">No projects match your search criteria.</p>
                 </motion.div>
               )}
             </AnimatePresence>

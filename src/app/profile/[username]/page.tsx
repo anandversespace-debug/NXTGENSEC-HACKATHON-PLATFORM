@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { User, Github, Globe, Award, Code, Shield, Mail, ArrowLeft, Twitter, ExternalLink, Terminal } from 'lucide-react';
+import { User, Github, Globe, Award, Code, Shield, Mail, ArrowLeft, Twitter, ExternalLink, Terminal, Activity, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { Project } from '@/types';
 
@@ -21,12 +21,11 @@ const PublicProfilePage = () => {
         
         // Fetch user profile by username
         const userRes = await fetch(`${baseUrl}/users/profile/${params.username}`);
-        if (!userRes.ok) throw new Error('User not found in registry.');
+        if (!userRes.ok) throw new Error('User not found.');
         const userData = await userRes.json();
         setProfile(userData);
 
-        // Fetch all projects and filter by author (or add a filtered endpoint in future)
-        // For now, let's just fetch projects and filter here
+        // Fetch projects by author
         const projRes = await fetch(`${baseUrl}/projects`);
         if (projRes.ok) {
            const allProjects = await projRes.json();
@@ -37,7 +36,7 @@ const PublicProfilePage = () => {
         }
       } catch (err) {
         console.error('Failed to fetch profile data:', err);
-        router.push('/hub');
+        router.push('/community');
       } finally {
         setLoading(false);
       }
@@ -58,9 +57,9 @@ const PublicProfilePage = () => {
   return (
     <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505]">
       <div className="max-w-6xl mx-auto">
-        <Link href="/projects" className="flex items-center space-x-2 text-gray-600 hover:text-white transition-colors mb-10 group">
+        <Link href="/community" className="flex items-center space-x-2 text-gray-600 hover:text-white transition-colors mb-10 group">
            <ArrowLeft className="w-4 h-4" />
-           <span className="text-[10px] font-bold uppercase tracking-widest">Return to Network Registry</span>
+           <span className="text-[10px] font-bold uppercase tracking-widest">Back to Community</span>
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -77,7 +76,7 @@ const PublicProfilePage = () => {
                     </div>
                  </div>
                  <h1 className="text-xl font-bold mb-1 uppercase tracking-tight italic text-white">{profile.name}</h1>
-                 <p className="text-blue-500 font-bold text-[10px] tracking-widest uppercase mb-8">NODE_REF: {profile.username}</p>
+                 <p className="text-blue-500 font-bold text-[10px] tracking-widest uppercase mb-8">@{profile.username}</p>
                  
                  <div className="flex flex-wrap gap-1.5 justify-center mb-10">
                     {profile.skills?.slice(0, 5).map((skill: string) => (
@@ -89,31 +88,31 @@ const PublicProfilePage = () => {
 
                  <div className="grid grid-cols-2 gap-2 pt-8 border-t border-white/[0.03]">
                     <a href={profile.github} target="_blank" className="flex items-center justify-center space-x-2 py-2.5 bg-white/[0.02] border border-white/5 rounded-md hover:bg-white/[0.05] transition-colors">
-                       <Github className="w-3.5 h-3.5 text-gray-600" /> <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Source</span>
+                       <Github className="w-3.5 h-3.5 text-gray-600" /> <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">GitHub</span>
                     </a>
                     <button className="flex items-center justify-center space-x-2 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition-colors shadow-lg shadow-blue-900/40">
-                       <Mail className="w-3.5 h-3.5" /> <span className="text-[10px] font-bold uppercase tracking-widest">Connect</span>
+                       <Mail className="w-3.5 h-3.5" /> <span className="text-[10px] font-bold uppercase tracking-widest">Message</span>
                     </button>
                  </div>
               </div>
 
-              <div className="bg-[#0c0c0c] border border-white/5 p-6 rounded-lg">
+              <div className="bg-[#0c0c0c] border border-white/5 p-6 rounded-lg text-left">
                  <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-700 mb-6 flex items-center space-x-2">
-                    <Terminal className="w-3.5 h-3.5" />
-                    <span>Metadata_Links</span>
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>Social Links</span>
                  </p>
                  <div className="space-y-4">
                     <div className="flex items-center justify-between py-2 border-b border-white/[0.03]">
                        <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-600 uppercase tracking-tight">
-                          <Twitter className="w-3.5 h-3.5" /> <span>Social_Node</span>
+                          <Twitter className="w-3.5 h-3.5" /> <span>Twitter</span>
                        </div>
-                       <span className="text-[9px] font-bold text-blue-400 capitalize">{profile.twitter || 'Not Linked'}</span>
+                       <span className="text-[9px] font-bold text-blue-400">@{profile.twitter || 'none'}</span>
                     </div>
                     <div className="flex items-center justify-between py-2 border-b border-white/[0.03]">
                        <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-600 uppercase tracking-tight">
-                          <Globe className="w-3.5 h-3.5" /> <span>Global_URI</span>
+                          <Globe className="w-3.5 h-3.5" /> <span>Website</span>
                        </div>
-                       <span className="text-[9px] font-bold text-blue-500 uppercase tracking-tighter">{profile.portfolio ? 'LINKED' : 'OFFLINE'}</span>
+                       <span className="text-[9px] font-bold text-blue-500 uppercase tracking-tighter">{profile.portfolio ? 'VISIT' : 'NONE'}</span>
                     </div>
                  </div>
               </div>
@@ -123,12 +122,12 @@ const PublicProfilePage = () => {
            <div className="lg:col-span-2 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                  {[
-                   { label: 'Ecosystem Points', value: (profile.contributions || 0).toLocaleString() + ' CP', icon: Award },
-                   { label: 'Nodes Created', value: projects.length.toString(), icon: Code },
-                   { label: 'Network Origin', value: new Date(profile.createdAt || Date.now()).getFullYear().toString(), icon: User }
+                   { label: 'Reputation', value: (profile.contributions || 0).toLocaleString(), icon: Zap },
+                   { label: 'Projects Built', value: projects.length.toString(), icon: Code },
+                   { label: 'Member Since', value: new Date(profile.createdAt || Date.now()).getFullYear().toString(), icon: User }
                  ].map((stat, i) => (
                    <div key={i} className="bg-[#0c0c0c] border border-white/5 p-6 flex flex-col items-center text-center rounded-lg">
-                      <stat.icon className="w-4 h-4 text-blue-600 mb-4" />
+                      <stat.icon className={cn("w-4 h-4 mb-4", stat.label === 'Reputation' ? "text-amber-500" : "text-blue-500")} />
                       <p className="text-xl font-black mb-1 italic text-gray-200">{stat.value}</p>
                       <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest">{stat.label}</p>
                    </div>
@@ -139,9 +138,9 @@ const PublicProfilePage = () => {
                  <div className="flex items-center justify-between px-1">
                     <div className="flex items-center space-x-2">
                        <Terminal className="w-3.5 h-3.5 text-blue-600" />
-                       <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Active Node Contribution</h2>
+                       <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Recent Projects</h2>
                     </div>
-                    <span className="text-[10px] text-gray-700 font-bold uppercase tracking-tighter italic">{projects.length} Entries Identified</span>
+                    <span className="text-[10px] text-gray-700 font-bold uppercase tracking-tighter italic">{projects.length} Found</span>
                  </div>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {projects.map((project, idx) => (
@@ -150,7 +149,7 @@ const PublicProfilePage = () => {
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: idx * 0.05 }}
-                        className="bg-[#0c0c0c] border border-white/5 p-6 hover:border-blue-500/20 transition-all group rounded-lg"
+                        className="bg-[#0c0c0c] border border-white/5 p-6 hover:border-blue-500/20 transition-all group rounded-lg text-left"
                       >
                          <h4 className="text-xs font-bold mb-2 group-hover:text-blue-500 transition-colors uppercase tracking-tight italic text-gray-300">{project.title}</h4>
                          <p className="text-gray-600 text-[10px] mb-6 line-clamp-2 leading-snug uppercase tracking-tighter">{project.description}</p>
@@ -166,25 +165,25 @@ const PublicProfilePage = () => {
                     ))}
                     {projects.length === 0 && (
                        <div className="col-span-full py-20 text-center bg-white/[0.01] border border-dashed border-white/5 rounded-lg">
-                          <p className="text-[9px] font-bold uppercase tracking-widest text-gray-600 italic">No node deployments archived by this entity.</p>
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-gray-600 italic">No projects found for this member.</p>
                        </div>
                     )}
                  </div>
               </div>
 
-              <div className="bg-[#0c0c0c] border border-white/5 p-8 rounded-lg relative overflow-hidden group">
+              <div className="bg-[#0c0c0c] border border-white/5 p-8 rounded-lg relative overflow-hidden group text-left">
                  <div className="absolute top-0 right-0 p-4 opacity-5">
-                    <Terminal className="w-24 h-24" />
+                    <User className="w-24 h-24" />
                  </div>
-                 <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-6 underline underline-offset-8 decoration-white/5">Engineering Roadmap</h2>
-                 <p className="text-gray-600 text-[11px] font-medium uppercase tracking-tighter leading-snug mb-8 max-w-lg">{profile.bio || 'Entity has not established a public engineering roadmap.'}</p>
+                 <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-6 underline underline-offset-8 decoration-white/5">Bio</h2>
+                 <p className="text-gray-600 text-[11px] font-medium uppercase tracking-tighter leading-snug mb-8 max-w-lg">{profile.bio || 'Member has not written a bio yet.'}</p>
                  <div className="flex items-center space-x-6">
                     <div className="flex -space-x-2">
                        {[1,2,3,4].map(i => (
-                         <div key={i} className="w-7 h-7 rounded border border-[#0c0c0c] bg-white/5 flex items-center justify-center text-[9px] font-bold text-gray-700">U{i}</div>
+                         <div key={i} className="w-7 h-7 rounded-full border-2 border-[#0c0c0c] bg-white/5 flex items-center justify-center text-[9px] font-bold text-gray-700">U{i}</div>
                        ))}
                     </div>
-                    <span className="text-[9px] text-gray-800 font-bold uppercase tracking-widest italic">Co-processing with 12 distinct nodes</span>
+                    <span className="text-[9px] text-gray-800 font-bold uppercase tracking-widest italic">Connected to various platform hubs</span>
                  </div>
               </div>
            </div>

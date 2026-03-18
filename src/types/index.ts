@@ -1,12 +1,19 @@
 export interface Project {
   id: string;
+  _id?: string;
   title: string;
   description: string;
   tech_stack: string[];
   github_url: string;
   demo_url?: string;
-  created_by: string;
+  image?: string;
+  created_by: string | { name: string; username: string };
   stars: number;
+  starred_by?: string[];
+  status?: 'pending' | 'auditing' | 'verified';
+  hackathon_id?: string;
+  score?: number;
+  createdAt?: string;
 }
 
 export interface Hackathon {

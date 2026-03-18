@@ -11,7 +11,8 @@ import {
   Medal,
   Search,
   ChevronDown,
-  User
+  User,
+  Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -27,11 +28,11 @@ const LeaderboardPage = () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
         const res = await fetch(`${baseUrl}/users/leaderboard`);
-        if (!res.ok) throw new Error('System failed to synchronize node registry.');
+        if (!res.ok) throw new Error('Failed to load leaderboard.');
         const data = await res.json();
         setDevelopers(data);
       } catch (err) {
-        console.error('Failed to fetch developer hub data:', err);
+        console.error('Failed to fetch leaderboard data:', err);
       } finally {
         setLoading(false);
       }
@@ -40,15 +41,9 @@ const LeaderboardPage = () => {
   }, []);
 
   const filteredDevelopers = developers.filter(dev => 
-    dev.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    dev.username.toLowerCase().includes(searchQuery.toLowerCase())
+    (dev.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || 
+    (dev.username?.toLowerCase() || '').includes(searchQuery.toLowerCase())
   );
-
-  const topThree = filteredDevelopers.slice(0, 3).sort((a, b) => {
-    // Return order: [Rank 2, Rank 1, Rank 3] for podium visual
-    if (a.contributions >= b.contributions) return 0; // Simplified for slice
-    return 0;
-  });
 
   // Manually reorder for podium: [Second, First, Third]
   const podiumOrder: any[] = [];
@@ -61,7 +56,7 @@ const LeaderboardPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505] flex items-center justify-center">
-        <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase">Synthesizing Reputation Matrix...</div>
+        <div className="text-blue-500 font-bold italic animate-pulse tracking-widest uppercase">Loading leaderboard...</div>
       </div>
     );
   }
@@ -75,13 +70,13 @@ const LeaderboardPage = () => {
           <div className="max-w-2xl">
             <div className="inline-flex items-center space-x-2 bg-blue-600/10 border border-blue-600/20 rounded-full px-4 py-1.5 mb-6">
               <Trophy className="w-4 h-4 text-blue-500" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Network Hierarchy</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-400">Rankings</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white mb-4">
-              Leaderboard <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500">Reputation Matrix</span>
+              Community <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500">Leaderboard</span>
             </h1>
-            <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xl uppercase tracking-tighter">
-              Real-time synchronization of the ecosystem's top contributors based on successful architectural audits, hackathon triumphs, and community reputation (CP).
+            <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xl uppercase tracking-tighter text-left">
+              Celebrating our top contributors based on successful projects, hackathon wins, and community reputation points.
             </p>
           </div>
           
@@ -104,6 +99,7 @@ const LeaderboardPage = () => {
         {/* Top 3 Podium */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end relative">
            {podiumOrder.map((user, idx) => {
+              // rank logic based on position: 0 is second, 1 is first, 2 is third
               const rank = podiumOrder.indexOf(user) === 1 ? 1 : podiumOrder.indexOf(user) === 0 ? 2 : 3;
               const isFirst = rank === 1;
               return (
@@ -152,13 +148,8 @@ const LeaderboardPage = () => {
 
                    <div className="w-full space-y-4">
                       <div className="bg-white/5 rounded-xl p-4 text-center border border-white/5 group-hover:border-white/10 transition-colors">
-                         <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-1">Combat Power</p>
-                         <p className="text-2xl font-black text-white italic tracking-tighter">{(user.contributions || 0).toLocaleString()} <span className="text-xs text-blue-500">CP</span></p>
-                      </div>
-                      <div className="flex gap-2">
-                         <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-lg p-2 text-center flex-grow">
-                            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest italic">1.2x Multiplier</span>
-                         </div>
+                         <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-1">Reputation Score</p>
+                         <p className="text-2xl font-black text-white italic tracking-tighter">{(user.contributions || 0).toLocaleString()} <span className="text-xs text-blue-500">Pts</span></p>
                       </div>
                    </div>
                 </motion.div>
@@ -166,23 +157,23 @@ const LeaderboardPage = () => {
            })}
         </div>
 
-        {/* Global Rankings Table */}
+        {/* Rankings Table */}
         <div className="bg-[#0c0c0c] border border-white/5 rounded-2xl overflow-hidden mt-20 text-white">
            <header className="p-8 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/[0.01]">
               <div className="flex items-center space-x-3">
                  <div className="w-10 h-10 rounded-lg bg-blue-600/10 border border-blue-600/20 flex items-center justify-center">
                     <Medal className="w-5 h-5 text-blue-500" />
                  </div>
-                 <div>
-                    <h3 className="text-base font-bold uppercase tracking-tight italic">Ecosystem Nodes</h3>
-                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Global contributor registry</p>
+                 <div className="text-left">
+                    <h3 className="text-base font-bold uppercase tracking-tight italic">All Members</h3>
+                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Global community rankings</p>
                  </div>
               </div>
               <div className="relative">
                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700" />
                  <input 
                    type="text" 
-                   placeholder="Search node alias..." 
+                   placeholder="Search members..." 
                    value={searchQuery}
                    onChange={(e) => setSearchQuery(e.target.value)}
                    className="bg-[#050505] border border-white/10 rounded-xl py-3 pl-12 pr-6 text-xs text-white focus:outline-none focus:border-blue-500/50 transition-all w-full md:w-64 font-medium"
@@ -195,10 +186,9 @@ const LeaderboardPage = () => {
                  <thead>
                     <tr className="bg-[#080808] border-b border-white/5">
                        <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Rank</th>
-                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Entity Identity</th>
-                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Classification</th>
-                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Delta</th>
-                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider text-right">Reputation (CP)</th>
+                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Member</th>
+                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Role</th>
+                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider text-right">Reputation</th>
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-white/[0.03]">
@@ -210,7 +200,7 @@ const LeaderboardPage = () => {
                       >
                          <td className="px-8 py-6">
                             <div className="w-10 h-10 rounded bg-[#050505] border border-white/10 flex items-center justify-center text-xs font-black text-gray-500 group-hover:text-white transition-colors">
-                               #{idx + 4}
+                                #{idx + 4}
                             </div>
                          </td>
                          <td className="px-8 py-6">
@@ -224,7 +214,7 @@ const LeaderboardPage = () => {
                                   <p className="text-xs font-bold text-gray-200 uppercase tracking-tight mb-0.5">{user.name}</p>
                                   <div className="flex items-center space-x-2">
                                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                     <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Node Active</span>
+                                     <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Active</span>
                                   </div>
                                </div>
                             </div>
@@ -232,16 +222,10 @@ const LeaderboardPage = () => {
                          <td className="px-8 py-6">
                             <span className="text-[9px] font-bold text-gray-400 border border-white/10 px-3 py-1 rounded-full uppercase tracking-widest bg-white/5">{user.role}</span>
                          </td>
-                         <td className="px-8 py-6">
-                            <div className="flex items-center space-x-1.5 text-[10px] font-black italic text-emerald-500">
-                               <TrendingUp className="w-3.5 h-3.5" />
-                               <span>NEW</span>
-                            </div>
-                         </td>
                          <td className="px-8 py-6 text-right">
                             <div className="flex flex-col items-end">
                                <span className="text-base font-black text-white italic tracking-tight">{(user.contributions || 0).toLocaleString()}</span>
-                               <span className="text-[8px] font-bold text-blue-500 uppercase tracking-widest mt-0.5">Verified Balance</span>
+                               <span className="text-[8px] font-bold text-blue-500 uppercase tracking-widest mt-0.5">Points</span>
                             </div>
                          </td>
                       </motion.tr>
@@ -252,7 +236,7 @@ const LeaderboardPage = () => {
            
            <div className="p-8 bg-[#080808] border-t border-white/5 text-center">
               <button className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-colors flex items-center justify-center space-x-2 mx-auto">
-                 <span>Load Remaining Matrix Entries</span>
+                 <span>Load More Members</span>
                  <ChevronDown className="w-4 h-4" />
               </button>
            </div>

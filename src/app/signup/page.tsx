@@ -37,13 +37,12 @@ export default function SignupPage() {
     setError(null);
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Cryptographic hashes do not match. Verify your encryption key.');
+      setError('Passwords do not match. Please check again.');
       setLoading(false);
       return;
     }
 
     try {
-      // 1. We call our custom backend register endpoint to ensure BOTH Auth and DB Sync
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const endpoint = baseUrl.endsWith('/api') ? '/auth/register' : '/api/auth/register';
 
@@ -62,7 +61,7 @@ export default function SignupPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'Identity initialization failed.');
+        throw new Error(data.error || 'Failed to create account.');
       }
 
       setSuccess(true);
@@ -83,7 +82,7 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-20 px-6 bg-[#050505] relative overflow-hidden">
-       {/* Ambient Backing Vectors */}
+       {/* Ambient Background */}
        <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-[0.03]">
           <div className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 bg-blue-500 rounded-full blur-[150px]"></div>
           <div className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-indigo-500 rounded-full blur-[150px]"></div>
@@ -95,15 +94,15 @@ export default function SignupPage() {
         className="w-full max-w-md relative z-10"
       >
         <div className="bg-[#0c0c0c] border border-white/5 p-8 md:p-10 rounded-2xl shadow-2xl relative overflow-hidden">
-           {/* Security Line Accent */}
+           {/* Accent Line */}
            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 to-indigo-600"></div>
 
           <div className="text-center mb-10">
              <div className="w-12 h-12 bg-white/[0.02] border border-white/10 rounded-xl flex items-center justify-center mx-auto mb-6 group hover:border-blue-500/30 transition-all duration-500">
                 <ShieldCheck className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />
              </div>
-            <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white mb-1">New Node <span className="text-blue-500">Initialization</span></h1>
-            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Establish Platform Identity Registry</p>
+            <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white mb-1">Create <span className="text-blue-500">Account</span></h1>
+            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Join the NxtGenSec Community</p>
           </div>
 
           {success ? (
@@ -114,12 +113,9 @@ export default function SignupPage() {
                   </div>
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-16 border-2 border-emerald-500/30 rounded-full animate-ping opacity-20"></div>
                </div>
-               <div>
-                  <h3 className="text-xl font-bold text-white uppercase tracking-tight mb-2">Node Registered</h3>
-                  <p className="text-xs text-gray-500 font-medium leading-relaxed">Identity synchronized. Check your terminal (email) for verification clearance.</p>
-               </div>
-               <div className="bg-[#050505] p-4 rounded-xl border border-white/5">
-                  <p className="text-[9px] font-mono text-emerald-500 uppercase tracking-widest break-all">ID_HASH: {btoa(formData.email).slice(0, 32)}...</p>
+               <div className="text-left">
+                  <h3 className="text-xl font-bold text-white uppercase tracking-tight mb-2 text-center">Registration Successful!</h3>
+                  <p className="text-xs text-gray-500 font-medium leading-relaxed text-center">Your account has been created. Please check your email for a verification link.</p>
                </div>
             </motion.div>
           ) : (
@@ -131,68 +127,68 @@ export default function SignupPage() {
                    className="bg-red-500/5 border border-red-500/10 text-red-500 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center space-x-3 mb-6"
                  >
                     <ShieldAlert className="w-4 h-4 shrink-0" />
-                    <span>{error}</span>
+                    <span className="text-left">{error}</span>
                  </motion.div>
                )}
 
               <div className="grid grid-cols-2 gap-4">
-                 <div className="space-y-2">
-                   <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Full Name</label>
-                   <div className="relative">
-                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
-                     <input
-                       type="text"
-                       name="name"
-                       required
-                       className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all font-medium"
-                       placeholder="Identity"
-                       value={formData.name}
-                       onChange={handleChange}
-                     />
-                   </div>
+                 <div className="space-y-2 text-left">
+                    <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Full Name</label>
+                    <div className="relative text-left">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
+                      <input
+                        type="text"
+                        name="name"
+                        required
+                        className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all font-medium"
+                        placeholder="John Doe"
+                        value={formData.name}
+                        onChange={handleChange}
+                      />
+                    </div>
                  </div>
-                 <div className="space-y-2">
-                   <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Entity Alias</label>
-                   <div className="relative">
-                     <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
-                     <input
-                       type="text"
-                       name="username"
-                       required
-                       className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-blue-500 focus:outline-none focus:border-blue-500/50 transition-all font-mono lowercase"
-                       placeholder="cipher_node"
-                       value={formData.username}
-                       onChange={handleChange}
-                     />
-                   </div>
+                 <div className="space-y-2 text-left">
+                    <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Username</label>
+                    <div className="relative text-left">
+                      <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
+                      <input
+                        type="text"
+                        name="username"
+                        required
+                        className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all font-medium"
+                        placeholder="johndoe"
+                        value={formData.username}
+                        onChange={handleChange}
+                      />
+                    </div>
                  </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Inbound Email</label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700 font-bold" />
+              <div className="space-y-2 text-left">
+                <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1 text-left">Email Address</label>
+                <div className="relative text-left">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
                   <input
                     type="email"
                     name="email"
                     required
                     className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all font-medium"
-                    placeholder="entity@network.io"
+                    placeholder="name@company.com"
                     value={formData.email}
                     onChange={handleChange}
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Encryption Key</label>
+              <div className="space-y-2 text-left">
+                <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
                   <input
                     type="password"
                     name="password"
                     required
-                    className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-white focus:outline-none focus:border-blue-500/50 transition-all"
+                    className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all font-medium"
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
@@ -200,15 +196,15 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Confirm Encryption</label>
+              <div className="space-y-2 text-left">
+                <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Confirm Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
+                  <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-700" />
                   <input
                     type="password"
                     name="confirmPassword"
                     required
-                    className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-white focus:outline-none focus:border-blue-500/50 transition-all"
+                    className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all font-medium"
                     placeholder="••••••••"
                     value={formData.confirmPassword}
                     onChange={handleChange}
@@ -219,48 +215,30 @@ export default function SignupPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl text-xs font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center space-x-2 shadow-xl shadow-blue-900/20 disabled:opacity-50 mt-8"
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl text-[10px] uppercase tracking-[0.3em] transition-all shadow-xl shadow-blue-900/20 flex items-center justify-center space-x-3 group disabled:opacity-50 mt-4 italic"
               >
                 {loading ? (
-                   <span className="animate-pulse">Synthesizing Node...</span>
+                  <span className="animate-pulse">Setting up account...</span>
                 ) : (
-                   <>
-                     <UserPlus className="w-4 h-4" />
-                     <span>Establish Node</span>
-                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                   </>
+                  <>
+                    <span>Create Account</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </>
                 )}
               </button>
             </form>
           )}
 
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/[0.03]"></div>
-            </div>
-            <div className="relative flex justify-center text-[9px] uppercase tracking-widest leading-none">
-              <span className="bg-[#0c0c0c] px-3 text-gray-700">Protocol Registry</span>
-            </div>
+          <div className="mt-8 text-center border-t border-white/[0.03] pt-6">
+            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
+              Already have an account?{' '}
+              <Link href="/login" className="text-blue-500 hover:text-blue-400 transition-colors ml-1 italic underline underline-offset-4 decoration-blue-500/20">
+                Sign In
+              </Link>
+            </p>
           </div>
-
-          <p className="text-center text-[9px] font-bold text-gray-700 uppercase tracking-widest">
-            Linked Identity?{' '}
-            <Link href="/login" className="text-blue-600 hover:text-blue-500 underline underline-offset-4 decoration-blue-500/20">
-              Access Interface
-            </Link>
-          </p>
         </div>
       </motion.div>
-      
-      {/* Platform Telemetry Footer */}
-      <div className="fixed bottom-10 flex items-center justify-center w-full space-x-12 opacity-30 select-none pointer-events-none">
-          {['AUTH_CORE_V2', 'DB_SYNC_ENABLED', 'SSL_HANDSHAKE_READY'].map(label => (
-             <div key={label} className="flex items-center space-x-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                <span className="text-[8px] font-black tracking-widest text-gray-400">{label}</span>
-             </div>
-          ))}
-      </div>
     </div>
   );
 }

@@ -27,9 +27,9 @@ const SearchPage = () => {
 
   const categories = [
     { id: 'all', label: 'All Resources', icon: Globe },
-    { id: 'projects', label: 'Architectural Nodes', icon: Code2 },
-    { id: 'hackathons', label: 'Security Sprints', icon: Trophy },
-    { id: 'developers', label: 'Entity Identity', icon: Users },
+    { id: 'projects', label: 'Projects', icon: Code2 },
+    { id: 'hackathons', label: 'Hackathons', icon: Trophy },
+    { id: 'developers', label: 'Members', icon: Users },
   ];
 
   const results = [
@@ -45,8 +45,8 @@ const SearchPage = () => {
     {
       id: 'r2',
       category: 'hackathons',
-      title: 'CyberShield Global 2024',
-      description: 'Annual flagship security sprint focused on decentralized protocol hardening.',
+      title: 'Global Hackathon 2024',
+      description: 'Annual flagship event focused on blockchain and protocol security.',
       tags: ['DeFi', 'Security', 'Web3'],
       metrics: '$100k Prize',
       link: '/hackathons/h1'
@@ -57,14 +57,14 @@ const SearchPage = () => {
       title: 'Alex "Cipher" Chen',
       description: 'Core Auditor specialized in zero-knowledge proof optimization.',
       tags: ['Auditor', 'Elite'],
-      metrics: '15.2k CP',
+      metrics: '15.2k Points',
       link: '/profile/alex-chen'
     },
     {
       id: 'r4',
       category: 'projects',
       title: 'L2 Scalability Bridge',
-      description: 'Cross-chain bridging protocol with mathematically verifiable state transitioning.',
+      description: 'Cross-chain bridging protocol with mathematically verifiable state transitions.',
       tags: ['Solidity', 'Go', 'Substrate'],
       metrics: '850 Stars',
       link: '/projects/l2-bridge'
@@ -85,8 +85,8 @@ const SearchPage = () => {
         {/* Search Input Section */}
         <section className="space-y-6">
           <div className="text-center md:text-left">
-            <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-2">Global Ecosystem <span className="text-blue-500">Search</span></h1>
-            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest leading-loose">Initialize query to locate entities, bounties, or architectural nodes.</p>
+            <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-2">Global <span className="text-blue-500">Search</span></h1>
+            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest leading-loose text-left">Search for members, hackathons, or projects across the platform.</p>
           </div>
 
           <div className="relative group shadow-2xl shadow-blue-900/10">
@@ -95,7 +95,7 @@ const SearchPage = () => {
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Query Identity, Project ID, or Sprint Identifier..." 
+              placeholder="Search by name, ID, or title..." 
               className="w-full bg-[#0c0c0c] border border-white/10 rounded-2xl py-6 pl-16 pr-8 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all font-medium"
             />
             <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center space-x-2">
@@ -136,12 +136,12 @@ const SearchPage = () => {
                      animate={{ opacity: 1, y: 0 }}
                      exit={{ opacity: 0, scale: 0.95 }}
                      transition={{ delay: idx * 0.05 }}
-                     className="bg-[#0c0c0c] border border-white/5 rounded-2xl p-6 group hover:border-white/10 transition-colors relative overflow-hidden"
+                     className="bg-[#0c0c0c] border border-white/5 rounded-2xl p-6 group hover:border-white/10 transition-colors relative overflow-hidden text-left"
                    >
                      {/* Category Specific Gradient Overlay */}
                      <div className={cn(
-                       "absolute top-0 right-0 w-[150px] h-full opacity-0 group-hover:opacity-10 transition-opacity blur-3xl",
-                       result.category === 'projects' ? 'bg-blue-600' : result.category === 'hackathons' ? 'bg-emerald-600' : 'bg-amber-600'
+                        "absolute top-0 right-0 w-[150px] h-full opacity-0 group-hover:opacity-10 transition-opacity blur-3xl",
+                        result.category === 'projects' ? 'bg-blue-600' : result.category === 'hackathons' ? 'bg-emerald-600' : 'bg-amber-600'
                      )}></div>
 
                      <div className="flex items-start justify-between gap-6 relative z-10">
@@ -154,7 +154,7 @@ const SearchPage = () => {
                            )}>
                               <CategoryIcon className="w-6 h-6" />
                            </div>
-                           <div>
+                           <div className="text-left">
                               <div className="flex items-center space-x-3 mb-1">
                                  <h3 className="text-sm font-black text-gray-200 uppercase tracking-tight group-hover:text-white transition-colors">{result.title}</h3>
                                  <span className="text-[8px] font-bold text-gray-600 uppercase tracking-[0.2em]">{result.category}</span>
@@ -186,10 +186,10 @@ const SearchPage = () => {
            {filteredResults.length === 0 && (
              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-20 text-center space-y-6">
                 <div className="w-16 h-16 bg-white/[0.02] border border-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <ShieldCheck className="w-8 h-8 text-gray-700" />
+                    <Search className="w-8 h-8 text-gray-700" />
                 </div>
-                <h3 className="text-lg font-black italic text-white uppercase tracking-tight">Access Prohibited or Zero Data</h3>
-                <p className="text-xs text-gray-500 font-medium">No entities matching this query were identified in the ecosystem registry.</p>
+                <h3 className="text-lg font-black italic text-white uppercase tracking-tight">No Results Found</h3>
+                <p className="text-xs text-gray-500 font-medium">We couldn't find anything matching your search in our records.</p>
              </motion.div>
            )}
         </div>
@@ -197,10 +197,10 @@ const SearchPage = () => {
         {/* Global Footer Quicklinks */}
         <section className="pt-12 border-t border-white/5 grid grid-cols-2 lg:grid-cols-4 gap-8">
            {[
-             { label: 'Network Blog', icon: Terminal, link: '/blog' },
-             { label: 'Community Hub', icon: Users, link: '/community' },
-             { label: 'Architecture', icon: Layout, link: '/projects' },
-             { label: 'Audit Sprints', icon: Trophy, link: '/hackathons' }
+             { label: 'Platform Blog', icon: Terminal, link: '/blog' },
+             { label: 'Community', icon: Users, link: '/community' },
+             { label: 'Projects', icon: Layout, link: '/projects' },
+             { label: 'Hackathons', icon: Trophy, link: '/hackathons' }
            ].map((quick, i) => (
              <Link key={i} href={quick.link} className="flex flex-col items-center group">
                 <div className="w-10 h-10 rounded-lg bg-[#0c0c0c] border border-white/5 flex items-center justify-center mb-3 group-hover:bg-blue-600/10 group-hover:border-blue-600/20 transition-all">

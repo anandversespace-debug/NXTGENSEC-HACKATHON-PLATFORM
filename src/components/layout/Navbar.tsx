@@ -8,10 +8,12 @@ import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const navItems = [
+  { name: 'Home', href: '/' },
   { name: 'Projects', href: '/projects' },
   { name: 'Hackathons', href: '/hackathons' },
-  { name: 'Developer Hub', href: '/hub' },
-  { name: 'Bulletin', href: '/blog' },
+  { name: 'Community', href: '/community' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Leaderboard', href: '/leaderboard' },
 ];
 
 const Navbar = () => {
@@ -30,11 +32,17 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const endpoint = baseUrl.endsWith('/api') ? '/auth/logout' : '/api/auth/logout';
+      await fetch(`${baseUrl}${endpoint}`, { credentials: 'include' });
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
     localStorage.removeItem('token');
-    // Clear cookie by setting it to past
-    document.cookie = "nxg_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     logout();
+    window.location.href = '/login';
   };
 
   return (
@@ -46,7 +54,7 @@ const Navbar = () => {
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2 group">
+        <Link href="/" className="flex items-center space-x-2 group shrink-0">
           <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center transition-transform duration-300 group-hover:scale-95 shadow-lg shadow-blue-900/20">
             <Shield className="text-white w-4 h-4" />
           </div>
@@ -56,12 +64,12 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-10">
+        <div className="hidden md:flex items-center space-x-8 lg:space-x-12">
           {navItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="nav-link text-sm font-bold uppercase text-gray-400 hover:text-white transition-colors tracking-widest px-2 py-1"
+              className="nav-link text-[11px] font-bold uppercase text-gray-400 hover:text-white transition-colors tracking-widest px-1 py-1"
             >
               {item.name}
             </Link>
@@ -69,34 +77,35 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Actions */}
-        <div className="hidden md:flex items-center space-x-6">
-          <button className="p-1.5 text-gray-500 hover:text-white transition-colors">
+        <div className="hidden md:flex items-center space-x-4 lg:space-x-6 shrink-0">
+          <Link href="/search" className="p-1.5 text-gray-500 hover:text-white transition-colors">
             <Search className="w-4 h-4" />
-          </button>
+          </Link>
           
           {isAuthenticated ? (
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-4 lg:space-x-6">
               {(role === 'admin' || role === 'judge') && (
-                <Link href="/admin" className="text-[10px] font-bold uppercase text-blue-500 hover:text-blue-400 tracking-[0.2em] transition-colors border-r border-white/10 pr-6">
-                  Terminal
+                <Link href="/admin" className="text-[10px] font-bold uppercase text-blue-500 hover:text-blue-400 tracking-[0.2em] transition-colors border-r border-white/10 pr-4 lg:pr-6">
+                  Admin
                 </Link>
               )}
-              <Link href="/dashboard" className="flex items-center space-x-2 groups text-xs font-bold text-gray-400 hover:text-white transition-colors">
+              <Link href="/dashboard" className="flex items-center space-x-2 text-xs font-bold text-gray-400 hover:text-white transition-colors">
                 <div className="w-6 h-6 rounded bg-white/5 border border-white/10 flex items-center justify-center text-[9px] font-bold text-gray-500">
                   {user?.name?.[0] || 'U'}
                 </div>
-                <span>Dashboard</span>
+                <span className="hidden lg:inline">Dashboard</span>
               </Link>
               <button 
                 onClick={handleLogout}
                 className="p-1.5 text-gray-600 hover:text-red-400 transition-colors"
+                title="Sign Out"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
           ) : (
             <Link href="/login" className="btn-primary text-[10px] px-5 py-2">
-              Join Portal
+              Sign In
             </Link>
           )}
         </div>
@@ -130,13 +139,21 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
-            {!isAuthenticated && (
+            {isAuthenticated ? (
+              <Link
+                href="/dashboard"
+                className="text-sm font-bold uppercase text-blue-500 hover:text-blue-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+            ) : (
               <Link
                 href="/login"
                 className="btn-primary text-center py-3 mt-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Join Portal
+                Sign In
               </Link>
             )}
           </motion.div>
