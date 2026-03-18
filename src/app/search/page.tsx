@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -20,163 +20,212 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
-const SearchPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+function SearchContent() {
+  const searchParams = useSearchParams();
+  const router = require('next/navigation').useRouter();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [activeCategory, setActiveCategory] = useState('all');
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Update URL search query as user types (debounced)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (searchQuery) {
+        params.set('q', searchQuery);
+      } else {
+        params.delete('q');
+      }
+      router.replace(`/search?${params.toString()}`, { scroll: false });
+    }, 400);
+    return () => clearTimeout(timeout);
+  }, [searchQuery, searchParams, router]);
 
   const categories = [
     { id: 'all', label: 'All Resources', icon: Globe },
     { id: 'projects', label: 'Projects', icon: Code2 },
-    { id: 'hackathons', label: 'Hackathons', icon: Trophy },
+    { id: 'hackathons', label: 'Events', icon: Trophy },
     { id: 'developers', label: 'Members', icon: Users },
   ];
 
-  const results: any[] = [];
-
-  const filteredResults = activeCategory === 'all' 
-    ? results 
-    : results.filter(r => r.category === activeCategory);
+  useEffect(() => {
+    const performSearch = async () => {
+      const query = searchParams.get('q') || '';
+      setLoading(true);
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/search?q=${encodeURIComponent(query)}&category=${activeCategory}`);
+        if (!res.ok) throw new Error('Search failed');
+        const data = await res.json();
+        setResults(data);
+      } catch (err) {
+        console.error('Search error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    performSearch();
+  }, [searchParams, activeCategory]);
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505] overflow-hidden">
-      {/* Search Header Background */}
-      <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-blue-600/5 to-transparent pointer-events-none opacity-50 blur-3xl"></div>
+       {/* Ambient Visuals */}
+       <div className="fixed top-0 left-0 w-full h-full pointer-events-none opacity-[0.02]">
+          <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-500 rounded-full blur-[200px]"></div>
+          <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-indigo-500 rounded-full blur-[200px]"></div>
+       </div>
 
-      <div className="max-w-4xl mx-auto space-y-12 relative z-10">
-        
-        {/* Search Input Section */}
-        <section className="space-y-6">
-          <div className="text-center md:text-left">
-            <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-2">Global <span className="text-blue-500">Search</span></h1>
-            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest leading-loose text-left">Search for members, hackathons, or projects across the platform.</p>
-          </div>
+      <div className="max-w-6xl mx-auto relative z-10">
+        <header className="mb-12 space-y-4">
+           <div className="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1">
+              <Search className="w-3 h-3 text-blue-500" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-blue-400 italic">Global Registry Search</span>
+           </div>
+           <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">Find your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">Next Sprint</span></h1>
+        </header>
 
-          <div className="relative group shadow-2xl shadow-blue-900/10">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-700 group-hover:text-blue-500 transition-colors" />
+        {/* Search Bar */}
+        <div className="relative mb-12">
             <input 
               type="text" 
+              placeholder="Search by project, tech stack, or member name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name, ID, or title..." 
-              className="w-full bg-[#0c0c0c] border border-white/10 rounded-2xl py-6 pl-16 pr-8 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all font-medium"
+              className="w-full bg-[#0c0c0c] border border-white/5 rounded-2xl py-6 pl-16 pr-8 text-lg font-bold text-white focus:outline-none focus:border-blue-500/30 transition-all shadow-2xl"
             />
-            <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-               <span className="text-[10px] font-bold text-gray-700 uppercase tracking-widest bg-white/5 border border-white/10 px-2 py-1 rounded">ESC</span>
-            </div>
-          </div>
-        </section>
-
-        {/* Category Toggles */}
-        <div className="flex bg-[#0c0c0c] border border-white/5 p-1 rounded-2xl overflow-x-auto">
-           {categories.map((cat) => {
-              const Icon = cat.icon;
-              return (
-                <button 
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={cn(
-                    "flex-grow flex items-center justify-center space-x-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] transition-all whitespace-nowrap",
-                    activeCategory === cat.id ? "bg-blue-600 text-white shadow-xl shadow-blue-900/20" : "text-gray-500 hover:text-gray-300"
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{cat.label}</span>
-                </button>
-              )
-           })}
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-700" />
         </div>
 
-        {/* Results Matrix */}
-        <div className="space-y-4">
-           <AnimatePresence mode="popLayout">
-              {filteredResults.map((result, idx) => {
-                 const CategoryIcon = categories.find(c => c.id === result.category)?.icon || Globe;
-                 return (
-                   <motion.div
-                     key={result.id}
-                     initial={{ opacity: 0, y: 10 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     exit={{ opacity: 0, scale: 0.95 }}
-                     transition={{ delay: idx * 0.05 }}
-                     className="bg-[#0c0c0c] border border-white/5 rounded-2xl p-6 group hover:border-white/10 transition-colors relative overflow-hidden text-left"
-                   >
-                     {/* Category Specific Gradient Overlay */}
-                     <div className={cn(
-                        "absolute top-0 right-0 w-[150px] h-full opacity-0 group-hover:opacity-10 transition-opacity blur-3xl",
-                        result.category === 'projects' ? 'bg-blue-600' : result.category === 'hackathons' ? 'bg-emerald-600' : 'bg-amber-600'
-                     )}></div>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+           {/* Sidebar Filters */}
+           <aside className="space-y-8">
+              <div>
+                 <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-6 flex items-center">
+                    <Filter className="w-3.5 h-3.5 mr-2" /> Categories
+                 </h3>
+                 <div className="space-y-2">
+                    {categories.map(cat => (
+                       <button
+                         key={cat.id}
+                         onClick={() => setActiveCategory(cat.id)}
+                         className={cn(
+                           "w-full flex items-center justify-between px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border italic",
+                           activeCategory === cat.id 
+                            ? "bg-blue-600/10 text-blue-400 border-blue-500/20 shadow-[0_0_15px_rgba(37,99,235,0.1)]" 
+                            : "bg-[#0c0c0c] text-gray-600 border-white/5 hover:border-white/10"
+                         )}
+                       >
+                          <div className="flex items-center space-x-3">
+                             <cat.icon className="w-3.5 h-3.5" />
+                             <span>{cat.label}</span>
+                          </div>
+                          <ChevronRight className={cn("w-3 h-3 transition-transform", activeCategory === cat.id ? "rotate-90" : "")} />
+                       </button>
+                    ))}
+                 </div>
+              </div>
 
-                     <div className="flex items-start justify-between gap-6 relative z-10">
-                        <div className="flex items-start space-x-6">
-                           <div className={cn(
-                             "w-12 h-12 rounded-xl flex items-center justify-center border transition-all",
-                             result.category === 'projects' ? "bg-blue-600/5 border-blue-600/10 text-blue-500 group-hover:bg-blue-600 group-hover:text-white" : 
-                             result.category === 'hackathons' ? "bg-emerald-500/5 border-emerald-500/10 text-emerald-500 group-hover:bg-emerald-600 group-hover:text-white" : 
-                             "bg-amber-500/5 border-amber-500/10 text-amber-500 group-hover:bg-amber-600 group-hover:text-white"
-                           )}>
-                              <CategoryIcon className="w-6 h-6" />
-                           </div>
-                           <div className="text-left">
-                              <div className="flex items-center space-x-3 mb-1">
-                                 <h3 className="text-sm font-black text-gray-200 uppercase tracking-tight group-hover:text-white transition-colors">{result.title}</h3>
-                                 <span className="text-[8px] font-bold text-gray-600 uppercase tracking-[0.2em]">{result.category}</span>
-                              </div>
-                              <p className="text-[11px] font-medium text-gray-500 max-w-lg mb-4 leading-relaxed line-clamp-2">{result.description}</p>
-                              
-                              <div className="flex flex-wrap gap-2">
-                                 {result.tags.map((tag: string) => (
-                                   <span key={tag} className="text-[8px] bg-white/[0.03] border border-white/5 px-2 py-0.5 rounded text-gray-500 font-bold uppercase tracking-widest">{tag}</span>
-                                 ))}
-                              </div>
-                           </div>
-                        </div>
+              <div className="bg-gradient-to-br from-[#0c0c0c] to-[#080808] border border-white/5 rounded-2xl p-6">
+                 <div className="flex items-center space-x-2 mb-4">
+                    <Zap className="w-4 h-4 text-amber-500" />
+                    <h3 className="text-[10px] font-black text-white uppercase tracking-widest italic">Live Telemetry</h3>
+                 </div>
+                 <div className="space-y-3">
+                    <div className="flex items-center justify-between text-[9px] font-bold">
+                       <span className="text-gray-600 uppercase">Latency</span>
+                       <span className="text-emerald-500">14ms</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[9px] font-bold">
+                       <span className="text-gray-600 uppercase">Search Load</span>
+                       <span className="text-blue-500">Normal</span>
+                    </div>
+                 </div>
+              </div>
+           </aside>
 
-                        <div className="flex flex-col items-end shrink-0 pt-1">
-                           <div className="text-right mb-4">
-                              <p className="text-[9px] font-black text-white italic tracking-tighter uppercase">{result.metrics}</p>
-                           </div>
-                           <Link href={result.link} className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-gray-500 hover:text-white transition-all transform group-hover:translate-x-1">
-                              <ArrowRight className="w-4 h-4" />
-                           </Link>
-                        </div>
-                     </div>
-                   </motion.div>
-                 )
-              })}
-           </AnimatePresence>
-
-           {filteredResults.length === 0 && (
-             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-20 text-center space-y-6">
-                <div className="w-16 h-16 bg-white/[0.02] border border-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Search className="w-8 h-8 text-gray-700" />
+           {/* Results Area */}
+           <div className="lg:col-span-3 space-y-6">
+             {loading ? (
+                <div className="py-20 text-center space-y-4">
+                   <Activity className="w-8 h-8 text-blue-500 mx-auto animate-spin opacity-50" />
+                   <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Scanning global project registry...</p>
                 </div>
-                <h3 className="text-lg font-black italic text-white uppercase tracking-tight">No Results Found</h3>
-                <p className="text-xs text-gray-500 font-medium">We couldn't find anything matching your search in our records.</p>
-             </motion.div>
-           )}
+             ) : (
+                <>
+                  <div className="flex items-center justify-between mb-8 border-b border-white/[0.03] pb-4">
+                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 italic">
+                        Found <span className="text-white">{results.length}</span> results in current sector
+                     </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <AnimatePresence mode='popLayout'>
+                      {results.map((result, idx) => (
+                        <motion.div
+                          layout
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ delay: idx * 0.05 }}
+                          key={result.id}
+                          className="group bg-[#0c0c0c] border border-white/5 rounded-2xl p-6 hover:border-blue-500/20 transition-all hover:shadow-2xl hover:shadow-blue-900/10 cursor-pointer relative overflow-hidden"
+                        >
+                          <Link href={result.link} className="flex flex-col md:flex-row md:items-center gap-6">
+                            <div className="bg-[#050505] p-4 rounded-xl border border-white/5 group-hover:border-blue-500/20 transition-colors">
+                               {result.category === 'projects' && <Code2 className="w-6 h-6 text-blue-500" />}
+                               {result.category === 'hackathons' && <Trophy className="w-6 h-6 text-amber-500" />}
+                               {result.category === 'developers' && <Users className="w-6 h-6 text-indigo-500" />}
+                            </div>
+
+                            <div className="flex-grow">
+                               <div className="flex items-center space-x-3 mb-1">
+                                  <span className="text-[8px] font-black px-2 py-0.5 rounded-full bg-white/5 text-gray-500 uppercase tracking-widest border border-white/5">{result.category}</span>
+                                  <span className="text-[8px] font-black text-blue-500 uppercase tracking-widest flex items-center italic">{result.metrics}</span>
+                               </div>
+                               <h3 className="text-lg font-black text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight italic">{result.title}</h3>
+                               <p className="text-[11px] font-medium text-gray-500 max-w-lg mb-4 leading-relaxed line-clamp-2">{result.description}</p>
+                               
+                               <div className="flex flex-wrap gap-2">
+                                  {result.tags && result.tags.map((tag: string) => (
+                                    <span key={tag} className="text-[8px] bg-white/[0.03] border border-white/5 px-2 py-0.5 rounded text-gray-500 font-bold uppercase tracking-widest">{tag}</span>
+                                  ))}
+                               </div>
+                            </div>
+
+                            <ArrowRight className="hidden md:block w-5 h-5 text-gray-800 group-hover:text-blue-500 transition-all transform group-hover:translate-x-1" />
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+
+                    {results.length === 0 && !loading && (
+                       <div className="py-20 text-center bg-[#0c0c0c] border border-dashed border-white/5 rounded-3xl">
+                          <Shield className="w-12 h-12 text-gray-800 mx-auto mb-6 opacity-30" />
+                          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic mb-2">Registry Entry Not Found</h3>
+                          <p className="text-[10px] text-gray-800 font-bold uppercase tracking-widest">No nodes matches your current search credentials.</p>
+                       </div>
+                    )}
+                  </div>
+                </>
+             )}
+           </div>
         </div>
-
-        {/* Global Footer Quicklinks */}
-        <section className="pt-12 border-t border-white/5 grid grid-cols-2 lg:grid-cols-4 gap-8">
-           {[
-             { label: 'Platform Blog', icon: Terminal, link: '/blog' },
-             { label: 'Community', icon: Users, link: '/community' },
-             { label: 'Projects', icon: Layout, link: '/projects' },
-             { label: 'Hackathons', icon: Trophy, link: '/hackathons' }
-           ].map((quick, i) => (
-             <Link key={i} href={quick.link} className="flex flex-col items-center group">
-                <div className="w-10 h-10 rounded-lg bg-[#0c0c0c] border border-white/5 flex items-center justify-center mb-3 group-hover:bg-blue-600/10 group-hover:border-blue-600/20 transition-all">
-                   <quick.icon className="w-4 h-4 text-gray-700 group-hover:text-blue-500 transition-colors" />
-                </div>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-gray-600 group-hover:text-gray-300 transition-colors">{quick.label}</span>
-             </Link>
-           ))}
-        </section>
-
       </div>
     </div>
   );
-};
+}
 
-export default SearchPage;
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+       <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+          <Activity className="w-10 h-10 text-blue-500 animate-spin opacity-50" />
+       </div>
+    }>
+       <SearchContent />
+    </Suspense>
+  );
+}
