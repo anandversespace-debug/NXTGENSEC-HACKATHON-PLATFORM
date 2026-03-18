@@ -32,7 +32,7 @@ const LoginPage = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'Authentication failure.');
+        throw new Error(data.error || 'Login failed.');
       }
 
       // Store JWT token
@@ -66,8 +66,8 @@ const LoginPage = () => {
              <div className="w-10 h-10 bg-blue-600 rounded flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-900/40">
                 <Shield className="w-5 h-5 text-white" />
              </div>
-            <h1 className="text-xl font-bold mb-1 uppercase tracking-tight italic">Sign In</h1>
-            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Access Your Account</p>
+            <h1 className="text-xl font-bold mb-1 uppercase tracking-tight italic">Login</h1>
+            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Welcome Back</p>
           </div>
 
           {error && (
@@ -119,7 +119,7 @@ const LoginPage = () => {
               className="bg-blue-600 hover:bg-blue-500 text-white w-full py-3 rounded-md text-[10px] font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center space-x-2 shadow-lg shadow-blue-900/20 disabled:opacity-50 mt-8"
             >
               <LogIn className="w-3.5 h-3.5" />
-              <span>{loading ? 'Signing in...' : 'Sign In'}</span>
+              <span>{loading ? 'Logging in...' : 'Login'}</span>
             </button>
           </form>
 

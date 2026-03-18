@@ -36,7 +36,7 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
         const res = await fetch(`${baseUrl}/projects/${params.id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!res.ok) throw new Error('Unrecognized node.');
+        if (!res.ok) throw new Error('Project not found.');
         const data = await res.json();
         setFormData({
           title: data.title || '',
@@ -59,13 +59,13 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      alert('Architectural modifications applied to node successfully.');
+      alert('Project updated successfully.');
     }, 800);
   };
 
   const handleDelete = () => {
-    if (confirm('CRITICAL ACTION: Are you sure you wish to dismantle this architectural node? This will remove it from all associated sprints and hackathons.')) {
-       alert('Payload destruct sequence initialized.');
+    if (confirm('Are you sure you want to delete this project? This will remove it from all hackathons.')) {
+       alert('Project deleted.');
        router.push('/dashboard/projects');
     }
   }
@@ -78,20 +78,20 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
     <div className="max-w-4xl mx-auto space-y-8 pb-10">
       <Link href="/dashboard/projects" className="flex items-center space-x-2 text-gray-500 hover:text-white transition-colors group w-fit">
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        <span className="text-[10px] font-bold uppercase tracking-widest">Abandon Edits</span>
+        <span className="text-[10px] font-bold uppercase tracking-widest">Cancel</span>
       </Link>
 
       <header className="flex items-center justify-between">
          <div>
-           <h1 className="text-xl font-bold mb-0.5">Reconfigure Node: {params.id}</h1>
-           <p className="text-xs text-gray-400 font-medium tracking-tight">Modify architectural parameters of an existing active project.</p>
+           <h1 className="text-xl font-bold mb-0.5">Edit Project</h1>
+           <p className="text-xs text-gray-400 font-medium tracking-tight">Update the details of your project.</p>
          </div>
          <button 
            onClick={handleDelete}
            className="text-[10px] font-bold uppercase tracking-widest text-red-500 bg-red-500/10 hover:bg-red-500 hover:text-white transition-colors border border-red-500/20 px-4 py-2 rounded-lg flex items-center space-x-2 shadow-[0_0_10px_rgba(239,68,68,0.1)]"
          >
            <Trash2 className="w-3.5 h-3.5" />
-           <span>Dismantle Node</span>
+           <span>Delete Project</span>
          </button>
       </header>
 
@@ -103,11 +103,11 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
               {/* Primary Params */}
               <div>
                  <h2 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center border-b border-white/[0.03] pb-4">
-                   <Rocket className="w-3.5 h-3.5 mr-2 text-amber-500" /> Primary Descriptors
+                   <Rocket className="w-3.5 h-3.5 mr-2 text-amber-500" /> Basic Details
                  </h2>
                  <div className="space-y-6">
                     <div>
-                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Project Identifier (Title)</label>
+                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Project Title</label>
                       <input 
                         type="text" 
                         name="title"
@@ -119,7 +119,7 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
                     </div>
 
                     <div>
-                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center ml-1"><FileText className="w-3 h-3 mr-1" /> Executive Summary</label>
+                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center ml-1"><FileText className="w-3 h-3 mr-1" /> Description</label>
                       <textarea 
                         name="description"
                         required
@@ -146,11 +146,11 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
               {/* Topology Links */}
               <div className="pt-4">
                  <h2 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center border-b border-white/[0.03] pb-4">
-                   <Globe className="w-3.5 h-3.5 mr-2" /> External Connectors
+                   <Globe className="w-3.5 h-3.5 mr-2" /> External Links
                  </h2>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">VCS Repository (GitHub)</label>
+                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">GitHub Link</label>
                       <div className="relative">
                         <Github className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                         <input 
@@ -163,7 +163,7 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
                       </div>
                     </div>
                     <div>
-                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Live Endpoint (Demo)</label>
+                      <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Demo Link</label>
                       <div className="relative">
                         <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                         <input 
@@ -184,7 +184,7 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
                    disabled={loading}
                    className="btn-primary bg-amber-600 hover:bg-amber-500 shadow-[0_0_20px_rgba(217,119,6,0.2)] py-3 px-8 text-xs font-bold uppercase tracking-widest flex items-center space-x-2 disabled:opacity-50"
                  >
-                    {loading ? <span className="animate-pulse">Locking Changes...</span> : <><span>Save Reconfiguration</span> <Save className="w-3.5 h-3.5" /></>}
+                    {loading ? <span className="animate-pulse">Saving...</span> : <><span>Save Changes</span> <Save className="w-3.5 h-3.5" /></>}
                  </button>
               </div>
            </div>

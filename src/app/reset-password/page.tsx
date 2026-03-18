@@ -36,13 +36,13 @@ function ResetPasswordForm() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Cryptographic hashes do not match. Please re-verify.');
+      setError('Passwords do not match. Please try again.');
       setIsLoading(false);
       return;
     }
 
     if (password.length < 6) {
-      setError('Password complexity insufficient. Minimum 6 characters required.');
+      setError('Password must be at least 6 characters long.');
       setIsLoading(false);
       return;
     }
@@ -64,10 +64,10 @@ function ResetPasswordForm() {
         setSuccess(true);
         setTimeout(() => router.push('/login'), 2000);
       } else {
-        setError(data.error || 'System failed to rotate cryptographic credentials.');
+        setError(data.error || 'Failed to reset password.');
       }
     } catch (err) {
-      setError('Inbound network failure. Node connection lost.');
+      setError('Network error. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -89,9 +89,9 @@ function ResetPasswordForm() {
                 <div className="absolute inset-0 bg-blue-600/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full"></div>
                 <Lock className="w-8 h-8 text-blue-500" />
              </div>
-             <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white mb-2">Rotate Access Keys</h1>
+             <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white mb-2">Set New Password</h1>
              <p className="text-xs text-gray-500 font-bold uppercase tracking-widest leading-loose">
-               Establishing secure channel for <span className="text-blue-500">{email || 'unidentified_node'}</span>
+               Resetting password for <span className="text-blue-500">{email || 'unknown user'}</span>
              </p>
           </header>
 
@@ -108,8 +108,8 @@ function ResetPasswordForm() {
                   <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6">
                      <ShieldCheck className="w-6 h-6 text-emerald-500" />
                   </div>
-                  <h3 className="text-lg font-bold text-white uppercase tracking-tight mb-2">Key Synchronized</h3>
-                  <p className="text-xs text-gray-400 font-medium">Redirecting to primary login gateway...</p>
+                  <h3 className="text-lg font-bold text-white uppercase tracking-tight mb-2">Password Updated</h3>
+                  <p className="text-xs text-gray-400 font-medium">Redirecting to login...</p>
                </motion.div>
              ) : (
                <form onSubmit={handleSubmit} className="space-y-6">
@@ -125,7 +125,7 @@ function ResetPasswordForm() {
                   )}
 
                   <div className="space-y-2">
-                     <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Establish New Payload</label>
+                     <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">New Password</label>
                      <div className="relative group">
                         <input 
                           type={showPassword ? 'text' : 'password'}
@@ -147,7 +147,7 @@ function ResetPasswordForm() {
                   </div>
 
                   <div className="space-y-2">
-                     <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Confirm Payload</label>
+                     <label className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Confirm Password</label>
                      <div className="relative group">
                         <input 
                           type={showPassword ? 'text' : 'password'}
@@ -168,10 +168,10 @@ function ResetPasswordForm() {
                        className="w-full group bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl text-xs font-bold uppercase tracking-[0.2em] shadow-xl shadow-blue-900/20 disabled:opacity-50 transition-all flex items-center justify-center space-x-2"
                      >
                         {isLoading ? (
-                           <span className="animate-pulse">Locking In...</span>
+                           <span className="animate-pulse">Saving...</span>
                         ) : (
                            <>
-                              <span>Authorize Rotation</span>
+                              <span>Save New Password</span>
                               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                            </>
                         )}
@@ -184,7 +184,7 @@ function ResetPasswordForm() {
           <div className="mt-8 text-center">
              <Link href="/login" className="flex items-center justify-center space-x-2 text-gray-600 hover:text-white transition-colors group">
                 <ArrowRight className="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Abort Process</span>
+                <span className="text-[10px] font-black uppercase tracking-widest">Back to Login</span>
              </Link>
           </div>
        </motion.div>
@@ -192,7 +192,7 @@ function ResetPasswordForm() {
        {/* System Telemetry Mock */}
        <div className="fixed bottom-6 left-6 flex items-center space-x-2 opacity-50">
           <Terminal className="w-3.5 h-3.5 text-blue-500" />
-          <span className="text-[8px] font-bold text-gray-600 uppercase tracking-widest italic">Channel Secured via SHA-256 Rotation</span>
+          <span className="text-[8px] font-bold text-gray-600 uppercase tracking-widest italic">Secure Connection</span>
        </div>
     </div>
   );
@@ -202,7 +202,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-         <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Initializing Secure Channel...</div>
+         <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Loading...</div>
       </div>
     }>
       <ResetPasswordForm />

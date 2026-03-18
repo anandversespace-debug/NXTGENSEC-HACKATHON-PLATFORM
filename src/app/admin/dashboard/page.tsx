@@ -56,7 +56,7 @@ const AdminOverview = () => {
 
   const statItems = [
     { label: 'Total Users', value: stats?.totalUsers ?? '—', icon: Users, color: 'text-blue-500' },
-    { label: 'Live Projects', value: stats?.totalProjects ?? '—', icon: FolderLock, color: 'text-violet-500' },
+    { label: 'Total Projects', value: stats?.totalProjects ?? '—', icon: FolderLock, color: 'text-violet-500' },
     { label: 'Active Events', value: stats?.activeHackathons ?? '—', icon: Trophy, color: 'text-amber-500' },
     { label: 'Pending Review', value: stats?.pendingSubmissions ?? '—', icon: Activity, color: 'text-emerald-500' },
   ];
@@ -65,7 +65,7 @@ const AdminOverview = () => {
     <div className="space-y-8">
       <header>
         <h1 className="text-xl font-bold mb-1">Dashboard Overview</h1>
-        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest leading-loose">Real-time platform activity.</p>
+        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest leading-loose">Real-time activity.</p>
       </header>
 
       {/* Stats Grid */}
@@ -97,7 +97,7 @@ const AdminOverview = () => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-sm font-bold flex items-center space-x-2 text-gray-300 italic uppercase tracking-tight">
               <AlertCircle className="w-4 h-4 text-amber-500" />
-              <span>Pending Review</span>
+              <span>Submissions</span>
             </h2>
             <Link href="/admin/projects" className="text-[10px] font-bold uppercase tracking-widest text-blue-500 hover:text-blue-400 transition-colors">All Projects</Link>
           </div>
@@ -125,7 +125,7 @@ const AdminOverview = () => {
                     <Link href={`/projects/${project._id}`} className="p-1.5 text-gray-600 hover:text-white transition-colors">
                       <Eye className="w-3.5 h-3.5" />
                     </Link>
-                    <Link href={`/admin/projects`} className="text-[9px] font-bold uppercase tracking-widest text-blue-500 px-3 py-1.5 hover:bg-blue-500/10 border border-blue-500/10 rounded transition-all">Audit</Link>
+                    <Link href={`/admin/projects`} className="text-[9px] font-bold uppercase tracking-widest text-blue-500 px-3 py-1.5 hover:bg-blue-500/10 border border-blue-500/10 rounded transition-all">Review</Link>
                   </div>
                 </div>
               ))}
@@ -140,13 +140,13 @@ const AdminOverview = () => {
 
         {/* System Status */}
         <div className="lg:col-span-1 border border-white/5 bg-[#0c0c0c] p-6 rounded-lg">
-          <h2 className="text-sm font-bold mb-6 text-gray-300 italic uppercase tracking-tight">System Hub</h2>
+          <h2 className="text-sm font-bold mb-6 text-gray-300 italic uppercase tracking-tight">Platform Status</h2>
           <div className="space-y-4">
             {[
-              { label: 'Auth Gateway', status: 'Healthy' },
-              { label: 'MongoDB Atlas', status: 'Connected' },
-              { label: 'Cloudinary CDN', status: 'Operational' },
-              { label: 'Nodemailer SMTP', status: 'Active' },
+              { label: 'Authentication', status: 'Healthy' },
+              { label: 'Database', status: 'Connected' },
+              { label: 'Images', status: 'Operational' },
+              { label: 'Email', status: 'Active' },
             ].map((s, i) => (
               <div key={i} className="flex items-center justify-between py-1 border-b border-white/[0.02] last:border-0">
                 <span className="text-xs text-gray-500 uppercase tracking-widest font-bold text-[10px]">{s.label}</span>
@@ -163,7 +163,7 @@ const AdminOverview = () => {
                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-500/50" />
                    <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Platform Status</p>
                 </div>
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter italic leading-relaxed">All core infrastructure components are operational and responding within tolerance.</p>
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter italic leading-relaxed">The platform is running smoothly.</p>
               </div>
             </div>
           </div>

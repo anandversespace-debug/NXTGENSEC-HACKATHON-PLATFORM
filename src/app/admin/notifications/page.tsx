@@ -20,16 +20,16 @@ export default function AdminNotificationsPage() {
   const history = [
     {
       id: 1,
-      target: 'All Nodes',
+      target: 'All Users',
       type: 'urgent',
-      message: 'Maintenance window initialized for DB indexing. Read-only mode active.',
+      message: 'System maintenance is starting soon. The site will be read-only for a short time.',
       timestamp: '2 hours ago',
     },
     {
       id: 2,
       target: 'Developers',
       type: 'info',
-      message: 'New CyberShield hackathon guidelines published.',
+      message: 'New rules for the CyberShield hackathon are now available.',
       timestamp: '1 day ago',
     }
   ];
@@ -49,14 +49,14 @@ export default function AdminNotificationsPage() {
       
       const data = await res.json();
       if (res.ok) {
-        alert(`Broadcast successful! Sent to ${data.count || 'all'} users.`);
+        alert(`Sent successfully! Sent to ${data.count || 'all'} users.`);
         setMessage('');
       } else {
-        alert(`Error: ${data.error || 'Failed to send broadcast'}`);
+        alert(`Error: ${data.error || 'Failed to send notification'}`);
       }
     } catch (err) {
       console.error(err);
-      alert('Internal transmission error.');
+      alert('Error sending notification.');
     } finally {
       setLoading(false);
     }
@@ -66,67 +66,67 @@ export default function AdminNotificationsPage() {
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold mb-0.5">Global Broadcast</h1>
-          <p className="text-xs text-gray-400 font-medium tracking-tight">Push system-wide announcements to all active identities.</p>
+          <h1 className="text-xl font-bold mb-0.5">Announce</h1>
+          <p className="text-xs text-gray-400 font-medium tracking-tight">Send a message to all members.</p>
         </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-         {/* Compose Broadcast */}
+         {/* New Message */}
          <div className="bg-[#0c0c0c] border border-white/5 rounded-xl p-6 lg:p-8">
             <div className="flex items-center space-x-3 mb-8 border-b border-white/[0.03] pb-4">
                <div className="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
                   <Megaphone className="w-4 h-4 text-blue-500" />
                </div>
-               <div>
-                  <h2 className="text-lg font-bold uppercase tracking-tight italic">Compose Broadcast</h2>
+                <div>
+                  <h2 className="text-lg font-bold uppercase tracking-tight italic">New Announcement</h2>
                </div>
             </div>
 
             <form onSubmit={handleSend} className="space-y-6">
                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1 flex items-center"><Users className="w-3 h-3 mr-1" /> Target Group</label>
+                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1 flex items-center"><Users className="w-3 h-3 mr-1" /> Send To</label>
                     <select 
                       value={target}
                       onChange={(e) => setTarget(e.target.value)}
                       className="w-full bg-[#050505] border border-white/10 rounded-lg py-2.5 px-4 text-[11px] font-bold uppercase text-gray-200 focus:outline-none focus:border-blue-500/50 appearance-none shadow-inner"
                     >
-                      <option value="all">All Ecosystem Nodes</option>
-                      <option value="developers">Active Developers</option>
-                      <option value="judges">Auditor Panel</option>
+                      <option value="all">All Users</option>
+                      <option value="developers">Developers</option>
+                      <option value="judges">Judges</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1 flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Severity Level</label>
+                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1 flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> Priority</label>
                     <select 
                       value={type}
                       onChange={(e) => setType(e.target.value)}
                       className="w-full bg-[#050505] border border-white/10 rounded-lg py-2.5 px-4 text-[11px] font-bold uppercase text-gray-200 focus:outline-none focus:border-blue-500/50 appearance-none shadow-inner"
                     >
-                      <option value="info">Standard Information</option>
-                      <option value="warning">System Warning</option>
-                      <option value="urgent">Critical Alert</option>
+                      <option value="info">Low</option>
+                      <option value="warning">Medium</option>
+                      <option value="urgent">High (Urgent)</option>
                     </select>
                   </div>
                </div>
 
                <div>
-                  <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Payload Content</label>
+                  <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Message</label>
                   <textarea 
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     required
                     className="w-full bg-[#050505] border border-white/10 rounded-lg py-3 px-4 text-xs font-mono text-gray-200 focus:outline-none focus:border-blue-500/50 resize-none shadow-inner"
-                    placeholder="Enter system announcement text..."
+                    placeholder="Type your message here..."
                   />
                </div>
 
                 <div className="pt-2 flex justify-end">
                   <button disabled={loading} type="submit" className="btn-primary py-3 px-6 text-[10px] flex items-center space-x-2 disabled:opacity-50">
                      <Send className="w-3.5 h-3.5" />
-                     <span>{loading ? 'Transmitting...' : 'Transmit Payload'}</span>
+                     <span>{loading ? 'Sending...' : 'Send Now'}</span>
                   </button>
                </div>
             </form>
@@ -138,8 +138,8 @@ export default function AdminNotificationsPage() {
                <div className="w-8 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center">
                   <History className="w-4 h-4 text-gray-500" />
                </div>
-               <div>
-                  <h2 className="text-lg font-bold uppercase tracking-tight italic text-gray-300">Transmission History</h2>
+                <div>
+                  <h2 className="text-lg font-bold uppercase tracking-tight italic text-gray-300">History</h2>
                </div>
             </div>
 

@@ -33,7 +33,7 @@ const Footer = () => {
             <div>
               <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-700 mb-4">Resources</p>
               <ul className="space-y-2 text-[10px] font-bold text-gray-500 uppercase tracking-tight">
-                <li><Link href="/docs" className="hover:text-blue-500 transition-colors">Documentation</Link></li>
+                <li><Link href="/docs" className="hover:text-blue-500 transition-colors">Docs</Link></li>
                 <li><Link href="/about" className="hover:text-blue-500 transition-colors">About Us</Link></li>
                 <li><Link href="/contact" className="hover:text-blue-500 transition-colors">Contact</Link></li>
                 <li><Link href="/terms" className="hover:text-blue-500 transition-colors">Terms</Link></li>
@@ -54,7 +54,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-white/[0.02] flex flex-col md:flex-row items-center justify-between text-[9px] font-bold uppercase tracking-widest text-gray-700">
           <p>© 2026 NxtGenSec. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-             <span className="flex items-center space-x-1.5"><div className="w-1 h-1 bg-emerald-500/50 rounded-full animate-pulse"></div><span>All Systems Online</span></span>
+             <span className="flex items-center space-x-1.5"><div className="w-1 h-1 bg-emerald-500/50 rounded-full animate-pulse"></div><span>Running Smoothly</span></span>
           </div>
         </div>
       </div>

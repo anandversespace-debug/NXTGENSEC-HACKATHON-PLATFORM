@@ -203,8 +203,8 @@ export default function Home() {
             <h2 className="text-xl font-bold uppercase tracking-tight mb-4">Ready to Get Started?</h2>
             <p className="text-xs text-gray-500 uppercase tracking-tighter mb-8 italic">Create your account, submit your projects, and join a growing community of innovators.</p>
             <div className="flex items-center justify-center space-x-4">
-               <Link href="/signup" className="btn-primary">Create Account</Link>
-               <Link href="/docs" className="btn-secondary">Read the Docs</Link>
+               <Link href="/signup" className="btn-primary">Sign Up</Link>
+               <Link href="/docs" className="btn-secondary">Learn More</Link>
             </div>
          </div>
       </section>

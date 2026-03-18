@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Users, Trophy, ChevronRight, Clock, Shield } from 'lucide-react';
 import { Hackathon } from '@/types';
 import Link from 'next/link';
+import Loader from '@/components/ui/Loader';
 
 const HackathonsPage = () => {
   const [hackathons, setHackathons] = useState<Hackathon[]>([]);
@@ -15,7 +16,7 @@ const HackathonsPage = () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
         const res = await fetch(`${baseUrl}/hackathons`);
-        if (!res.ok) throw new Error('System failed to synchronize hackathons.');
+        if (!res.ok) throw new Error('Failed to load hackathons.');
         const data = await res.json();
         
         // Transform MongoDB _id to id
@@ -35,8 +36,9 @@ const HackathonsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505] flex items-center justify-center">
-        <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase">Loading Hackathons...</div>
+      <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505] flex flex-col items-center justify-center space-y-6">
+        <Loader />
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Loading Hackathons...</p>
       </div>
     );
   }
@@ -71,9 +73,9 @@ const HackathonsPage = () => {
                     <Calendar className="w-3.5 h-3.5 text-blue-500/50" />
                     <span>{new Date(hackathons[0].start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(hackathons[0].end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                   </div>
-                  <div className="flex items-center space-x-2">
+                   <div className="flex items-center space-x-2">
                     <Clock className="w-3.5 h-3.5 text-blue-500/50" />
-                    <span>48H Sprint</span>
+                    <span>48 Hours</span>
                   </div>
                   <div className="flex items-center space-x-2">
                      <Users className="w-3.5 h-3.5 text-blue-500/50" />
@@ -93,7 +95,7 @@ const HackathonsPage = () => {
         <div className="space-y-4">
           <div className="flex items-center space-x-2 mb-8 ml-1">
              <Trophy className="w-3.5 h-3.5 text-gray-700" />
-             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600">All Events</p>
+             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600">Upcoming Events</p>
           </div>
           {hackathons.map((hack, idx) => (
             <motion.div
@@ -107,7 +109,7 @@ const HackathonsPage = () => {
                 <div className="flex-grow">
                   <div className="flex items-center space-x-3 mb-2">
                      <h4 className="text-xs font-bold uppercase tracking-tight text-gray-200 group-hover:text-blue-500 transition-colors">{hack.title}</h4>
-                     <span className="px-1.5 py-0.5 text-[8px] font-bold bg-emerald-500/5 text-emerald-500/80 rounded uppercase tracking-tighter">Registration Open</span>
+                     <span className="px-1.5 py-0.5 text-[8px] font-bold bg-emerald-500/5 text-emerald-500/80 rounded uppercase tracking-tighter">Join Now</span>
                   </div>
                   <p className="text-gray-600 text-[10px] font-medium uppercase tracking-tighter max-w-2xl">
                     {hack.description}
@@ -116,7 +118,7 @@ const HackathonsPage = () => {
                 
                 <div className="flex items-center space-x-10">
                   <div className="text-right">
-                    <p className="text-[8px] text-gray-700 uppercase font-bold tracking-widest mb-1">Grant Pool</p>
+                     <p className="text-[8px] text-gray-700 uppercase font-bold tracking-widest mb-1">Prize Pool</p>
                     <p className="text-sm font-bold text-white italic">{hack.prize_pool}</p>
                   </div>
                   <Link 

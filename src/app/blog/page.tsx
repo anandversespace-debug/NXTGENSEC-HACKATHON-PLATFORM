@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, User, ArrowRight, Bookmark, Search, Clock } from 'lucide-react';
 import Link from 'next/link';
+import Loader from '@/components/ui/Loader';
 
 interface BlogEntry {
   id: string;
@@ -70,10 +71,11 @@ const BlogPage = () => {
 
         {/* Blog Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-[450px] animate-pulse bg-white/5 rounded-2xl border border-white/5"></div>
-            ))}
+          <div className="py-40 text-center space-y-6">
+             <div className="flex justify-center">
+                <Loader />
+             </div>
+             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Loading Blog Posts...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">

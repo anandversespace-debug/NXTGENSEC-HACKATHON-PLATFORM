@@ -18,7 +18,7 @@ export default function UserNotificationsPage() {
       id: 1,
       type: 'security',
       title: 'Login Detected from New IP',
-      message: 'Node access recorded from 192.168.1.1. If this was not you, please rotate your cryptographic key immediately.',
+      message: 'A login was detected from a new location. If this was not you, please change your password immediately.',
       time: '10 mins ago',
       read: false,
       icon: ShieldAlert,
@@ -28,8 +28,8 @@ export default function UserNotificationsPage() {
     {
       id: 2,
       type: 'hackathon',
-      title: 'Audit Phase Initiated',
-      message: 'The CyberShield Global 2024 sprint has transitioned into the audit phase. Judgments will be processed over the next 72 hours.',
+      title: 'Judging Started',
+      message: 'The CyberShield Global 2024 hackathon has ended. Judging is now in progress and results will be available soon.',
       time: '2 hours ago',
       read: false,
       icon: Trophy,
@@ -39,8 +39,8 @@ export default function UserNotificationsPage() {
     {
       id: 3,
       type: 'system',
-      title: 'Architectural Submission Accepted',
-      message: 'Your payload "ZeroKnowledge Protocol Auth" has been successfully injected into the ecosystem repository.',
+      title: 'Project Accepted',
+      message: 'Your project "ZeroKnowledge Protocol Auth" has been successfully submitted.',
       time: '1 day ago',
       read: true,
       icon: CheckCircle,
@@ -53,15 +53,15 @@ export default function UserNotificationsPage() {
     <div className="max-w-4xl mx-auto space-y-6 pb-10">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold mb-0.5">System Broadcasts</h1>
-          <p className="text-xs text-gray-400 font-medium tracking-tight">Monitor inbound network alerts, payload status, and clearance updates.</p>
+          <h1 className="text-xl font-bold mb-0.5">Notifications</h1>
+          <p className="text-xs text-gray-400 font-medium tracking-tight">View your latest updates, project status, and alerts.</p>
         </div>
         <div className="flex gap-4">
           <button className="text-[10px] font-bold uppercase tracking-widest text-blue-500 hover:text-blue-400 transition-colors">
-            Mark All Verified
+            Mark All Read
           </button>
           <button className="text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:text-red-500 transition-colors flex items-center space-x-1">
-            <Trash2 className="w-3.5 h-3.5" /> <span>Flush Logs</span>
+            <Trash2 className="w-3.5 h-3.5" /> <span>Clear All</span>
           </button>
         </div>
       </header>
@@ -118,8 +118,8 @@ export default function UserNotificationsPage() {
               <div className="w-16 h-16 bg-white/[0.02] border border-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
                  <Bell className="w-6 h-6 text-gray-600" />
               </div>
-              <h3 className="text-lg font-bold text-white uppercase tracking-tight italic mb-2">Zero Broadcasts Found</h3>
-              <p className="text-xs text-gray-400 font-medium">Your telemetry logs are currently clear.</p>
+              <h3 className="text-lg font-bold text-white uppercase tracking-tight italic mb-2">No Notifications</h3>
+              <p className="text-xs text-gray-400 font-medium">Your notification list is currently empty.</p>
             </div>
          )}
       </div>

@@ -1,11 +1,46 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Rocket, Code, Users, Trophy, Shield } from 'lucide-react';
 import Link from 'next/link';
 
 const Hero = () => {
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalProjects: 0,
+    activeHackathons: 0,
+    uptime: '99.9%'
+  });
+
+  useEffect(() => {
+    const fetchGlobalStats = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/users/admin-stats`);
+        if (res.ok) {
+          const data = await res.json();
+          setStats({
+            totalUsers: data.totalUsers || 0,
+            totalProjects: data.totalProjects || 0,
+            activeHackathons: data.activeHackathons || 0,
+            uptime: '99.9%' // Static for now as per design
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch global telemetry:', err);
+      }
+    };
+    fetchGlobalStats();
+  }, []);
+
+  const statItems = [
+    { label: 'Projects', value: stats.totalProjects > 0 ? stats.totalProjects.toString() : '...', icon: Code },
+    { label: 'Hackathons', value: stats.activeHackathons > 0 ? stats.activeHackathons.toString() : '...', icon: Trophy },
+    { label: 'Members', value: stats.totalUsers > 0 ? (stats.totalUsers > 1000 ? (stats.totalUsers / 1000).toFixed(1) + 'k' : stats.totalUsers.toString()) : '...', icon: Users },
+    { label: 'Uptime', value: stats.uptime, icon: Shield },
+  ];
+
   return (
     <section className="relative pt-40 pb-20 overflow-hidden border-b border-white/[0.02]">
       {/* Background Grid */}
@@ -20,9 +55,7 @@ const Hero = () => {
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center"
           >
-            
-            
-            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight uppercase italic leading-[1.1]">
+            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight uppercase italic leading-[1.1] text-white">
               Build the <span className="text-blue-600">Future</span><br />
               of Innovation
             </h1>
@@ -48,18 +81,14 @@ const Hero = () => {
             transition={{ duration: 1, delay: 0.4 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-24 w-full"
           >
-            {[
-              { label: 'Projects Built', value: '500+', icon: Code },
-              { label: 'Hackathons Hosted', value: '18', icon: Trophy },
-              { label: 'Developers Joined', value: '2.4k', icon: Users },
-              { label: 'Platform Uptime', value: '99.9%', icon: Shield },
-            ].map((stat, idx) => (
-              <div key={idx} className="bg-[#080808] border border-white/5 p-6 rounded group hover:bg-white/[0.01] transition-colors">
+            {statItems.map((stat, idx) => (
+              <div key={idx} className="bg-[#080808] border border-white/5 p-6 rounded group hover:bg-white/[0.01] transition-colors relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-blue-600/10 group-hover:bg-blue-600/30 transition-colors"></div>
                 <div className="flex items-center justify-between mb-4">
                   <stat.icon className="w-3.5 h-3.5 text-gray-700 group-hover:text-blue-600 transition-colors" />
                   <span className="text-[10px] font-bold text-gray-800 uppercase tracking-widest leading-none">0{idx + 1}</span>
                 </div>
-                <p className="text-2xl font-black text-gray-200 mb-0.5">{stat.value}</p>
+                <p className="text-2xl font-black text-gray-200 mb-0.5 italic">{stat.value}</p>
                 <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">{stat.label}</p>
               </div>
             ))}
@@ -71,3 +100,4 @@ const Hero = () => {
 };
 
 export default Hero;
+

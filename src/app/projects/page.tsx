@@ -8,6 +8,7 @@ import Link from 'next/link';
 import ProjectCard from '@/components/ui/ProjectCard';
 import SearchBar from '@/components/ui/SearchBar';
 import ProjectFilter from '@/components/ui/ProjectFilter';
+import Loader from '@/components/ui/Loader';
 
 const ProjectsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,10 +86,11 @@ const ProjectsPage = () => {
         {/* Project Grid */}
         <div className="min-h-[400px]">
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="bg-[#0c0c0c] border border-white/5 h-[160px] animate-pulse rounded-lg" />
-              ))}
+            <div className="py-32 text-center space-y-6">
+               <div className="flex justify-center">
+                  <Loader />
+               </div>
+               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Loading Projects...</p>
             </div>
           ) : (
             <AnimatePresence mode="popLayout">

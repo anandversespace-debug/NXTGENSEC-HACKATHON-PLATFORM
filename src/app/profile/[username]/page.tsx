@@ -7,6 +7,7 @@ import { User, Github, Globe, Award, Code, Shield, Mail, ArrowLeft, Twitter, Ext
 import Link from 'next/link';
 import { Project } from '@/types';
 import { cn } from '@/lib/utils';
+import Loader from '@/components/ui/Loader';
 
 const PublicProfilePage = () => {
   const params = useParams();
@@ -46,10 +47,9 @@ const PublicProfilePage = () => {
   }, [params.username, router]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-      <div className="w-10 h-10 bg-blue-600 rounded flex items-center justify-center animate-pulse shadow-2xl shadow-blue-500/20">
-         <Shield className="w-5 h-5 text-white animate-spin" />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] space-y-6">
+       <Loader />
+       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Loading Profile...</p>
     </div>
   );
 
@@ -123,12 +123,12 @@ const PublicProfilePage = () => {
            <div className="lg:col-span-2 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                  {[
-                   { label: 'Reputation', value: (profile.contributions || 0).toLocaleString(), icon: Zap },
-                   { label: 'Projects Built', value: projects.length.toString(), icon: Code },
-                   { label: 'Member Since', value: new Date(profile.createdAt || Date.now()).getFullYear().toString(), icon: User }
+                   { label: 'Points', value: (profile.contributions || 0).toLocaleString(), icon: Zap },
+                   { label: 'Projects', value: projects.length.toString(), icon: Code },
+                   { label: 'Joined', value: new Date(profile.createdAt || Date.now()).getFullYear().toString(), icon: User }
                  ].map((stat, i) => (
                    <div key={i} className="bg-[#0c0c0c] border border-white/5 p-6 flex flex-col items-center text-center rounded-lg">
-                      <stat.icon className={cn("w-4 h-4 mb-4", stat.label === 'Reputation' ? "text-amber-500" : "text-blue-500")} />
+                      <stat.icon className={cn("w-4 h-4 mb-4", stat.label === 'Points' ? "text-amber-500" : "text-blue-500")} />
                       <p className="text-xl font-black mb-1 italic text-gray-200">{stat.value}</p>
                       <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest">{stat.label}</p>
                    </div>
@@ -139,7 +139,7 @@ const PublicProfilePage = () => {
                  <div className="flex items-center justify-between px-1">
                     <div className="flex items-center space-x-2">
                        <Terminal className="w-3.5 h-3.5 text-blue-600" />
-                       <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Recent Projects</h2>
+                       <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Projects</h2>
                     </div>
                     <span className="text-[10px] text-gray-700 font-bold uppercase tracking-tighter italic">{projects.length} Found</span>
                  </div>
@@ -160,7 +160,7 @@ const PublicProfilePage = () => {
                                  <span key={t} className="px-1.5 py-0.5 bg-white/[0.02] border border-white/5 rounded text-[8px] font-bold text-gray-600 uppercase tracking-tighter">{t}</span>
                                ))}
                             </div>
-                            <Link href={`/projects/${project.id}`} className="text-[9px] font-bold text-blue-600 hover:text-blue-500 uppercase tracking-widest">Detail →</Link>
+                            <Link href={`/projects/${project.id}`} className="text-[9px] font-bold text-blue-600 hover:text-blue-500 uppercase tracking-widest">View →</Link>
                          </div>
                       </motion.div>
                     ))}
@@ -176,15 +176,15 @@ const PublicProfilePage = () => {
                  <div className="absolute top-0 right-0 p-4 opacity-5">
                     <User className="w-24 h-24" />
                  </div>
-                 <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-6 underline underline-offset-8 decoration-white/5">Bio</h2>
-                 <p className="text-gray-600 text-[11px] font-medium uppercase tracking-tighter leading-snug mb-8 max-w-lg">{profile.bio || 'Member has not written a bio yet.'}</p>
+                 <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-6 underline underline-offset-8 decoration-white/5">About</h2>
+                 <p className="text-gray-600 text-[11px] font-medium uppercase tracking-tighter leading-snug mb-8 max-w-lg">{profile.bio || 'This member has not written about themselves yet.'}</p>
                  <div className="flex items-center space-x-6">
                     <div className="flex -space-x-2">
                        {[1,2,3,4].map(i => (
                          <div key={i} className="w-7 h-7 rounded-full border-2 border-[#0c0c0c] bg-white/5 flex items-center justify-center text-[9px] font-bold text-gray-700">U{i}</div>
                        ))}
                     </div>
-                    <span className="text-[9px] text-gray-800 font-bold uppercase tracking-widest italic">Connected to various platform hubs</span>
+                    <span className="text-[9px] text-gray-800 font-bold uppercase tracking-widest italic">Member of the community</span>
                  </div>
               </div>
            </div>

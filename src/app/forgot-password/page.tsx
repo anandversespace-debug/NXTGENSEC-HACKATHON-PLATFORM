@@ -28,11 +28,11 @@ export default function ForgotPasswordPage() {
       if (res.ok) {
         setSent(true);
       } else {
-        setError(data.error || 'Failed to dispatch recovery email.');
+        setError(data.error || 'Failed to send reset email.');
       }
     } catch (err) {
       console.error(err);
-      setError('Internal dispatch error. Try again later.');
+      setError('Error sending email. Try again later.');
     } finally {
       setLoading(false);
     }
@@ -48,23 +48,23 @@ export default function ForgotPasswordPage() {
           <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-6">
              <ShieldCheck className="w-6 h-6 text-blue-500" />
           </div>
-          <h1 className="text-2xl font-black italic uppercase tracking-tight text-white mb-2">Reset Credentials</h1>
+          <h1 className="text-2xl font-black italic uppercase tracking-tight text-white mb-2">Reset Password</h1>
           <p className="text-gray-400 text-xs font-medium leading-relaxed max-w-[280px] mx-auto">
-            Enter your node address. We will dispatch a secure recovery token directly to your inbox.
+            Enter your email address. We will send a password reset link to your inbox.
           </p>
         </div>
 
         {sent ? (
           <div className="text-center space-y-6 relative z-10">
             <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-               <p className="text-sm font-bold text-emerald-500 mb-1">Dispatch Successful</p>
-               <p className="text-[10px] text-emerald-500/70 uppercase tracking-widest font-mono">Token Transmitted</p>
+               <p className="text-sm font-bold text-emerald-500 mb-1">Email Sent</p>
+               <p className="text-[10px] text-emerald-500/70 uppercase tracking-widest font-mono">Check your inbox</p>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed">
                Please check <strong>{email}</strong> for instructions on how to reset your password. The link will expire shortly for security purposes.
             </p>
             <Link href="/login" className="btn-primary block w-full py-4 text-xs">
-              Return to Authentication
+              Back to Login
             </Link>
           </div>
         ) : (
@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
             
             <div className="space-y-2">
               <label htmlFor="email" className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 flex items-center">
-                 <Mail className="w-3 h-3 mr-1.5" /> Node Address
+                 <Mail className="w-3 h-3 mr-1.5" /> Email Address
               </label>
               <input
                 id="email"
@@ -95,12 +95,12 @@ export default function ForgotPasswordPage() {
               disabled={loading || !email}
               className="w-full btn-primary py-4 text-xs flex justify-center items-center disabled:opacity-50 transition-all hover:scale-[1.02] active:scale-95"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Request Recovery Token</span>}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Send Reset Link</span>}
             </button>
 
             <div className="text-center pt-4">
               <Link href="/login" className="inline-flex items-center text-[10px] font-bold text-gray-500 hover:text-white uppercase tracking-widest transition-colors">
-                <ArrowLeft className="w-3 h-3 mr-1" /> Abort & Return
+                <ArrowLeft className="w-3 h-3 mr-1" /> Back to Login
               </Link>
             </div>
           </form>

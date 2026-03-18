@@ -76,7 +76,7 @@ const LeaderboardPage = () => {
               Community <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500">Leaderboard</span>
             </h1>
             <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xl uppercase tracking-tighter text-left">
-              Celebrating our top contributors based on successful projects, hackathon wins, and community reputation points.
+              Celebrating our top contributors based on successful projects, hackathon wins, and community points.
             </p>
           </div>
           
@@ -148,7 +148,7 @@ const LeaderboardPage = () => {
 
                    <div className="w-full space-y-4">
                       <div className="bg-white/5 rounded-xl p-4 text-center border border-white/5 group-hover:border-white/10 transition-colors">
-                         <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-1">Reputation Score</p>
+                         <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-1">Total Points</p>
                          <p className="text-2xl font-black text-white italic tracking-tighter">{(user.contributions || 0).toLocaleString()} <span className="text-xs text-blue-500">Pts</span></p>
                       </div>
                    </div>
@@ -188,7 +188,7 @@ const LeaderboardPage = () => {
                        <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Rank</th>
                        <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Member</th>
                        <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider">Role</th>
-                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider text-right">Reputation</th>
+                       <th className="px-8 py-5 text-[9px] font-bold uppercase text-gray-500 tracking-wider text-right">Points</th>
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-white/[0.03]">

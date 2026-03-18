@@ -120,7 +120,7 @@ const AdminProjects = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Purge this project from registry?')) return;
+    if (!confirm('Delete this project?')) return;
     try {
       const token = localStorage.getItem('token');
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -158,14 +158,14 @@ const AdminProjects = () => {
     <div className="space-y-6 text-left">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-xl font-black uppercase tracking-tighter italic">Projects Hub</h1>
-          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none mt-1">Audit, moderate and manage ecosystem codebases.</p>
+          <h1 className="text-xl font-black uppercase tracking-tighter italic">Projects</h1>
+          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none mt-1">Review and manage all projects.</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex bg-[#0c0c0c] border border-white/5 rounded-xl p-1 w-64 focus-within:border-blue-500/30 transition-all">
             <input 
               type="text" 
-              placeholder="Search codebases..." 
+              placeholder="Search projects..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-transparent border-none focus:outline-none px-3 py-1.5 flex-grow text-white text-[11px]"
@@ -179,7 +179,7 @@ const AdminProjects = () => {
              className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl flex items-center space-x-2 transition-all shadow-xl shadow-blue-900/20 active:scale-95 italic"
           >
              <Plus className="w-4 h-4" />
-             <span>Deploy Project Node</span>
+             <span>Add Project</span>
           </button>
         </div>
       </header>
@@ -211,7 +211,7 @@ const AdminProjects = () => {
               <div className="flex items-center space-x-12 md:w-1/3 justify-center py-4 md:py-0">
                  <div className="text-center">
                     <p className="text-base font-black text-white italic tracking-tighter leading-none">{project.stars || 0}</p>
-                    <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-2 italic shadow-sm">Reputation</p>
+                    <p className="text-[9px] text-gray-600 font-black uppercase tracking-widest mt-2 italic shadow-sm">Stars</p>
                  </div>
                  <div className="flex flex-wrap items-center gap-2 justify-center max-w-[150px]">
                     {(project.tech_stack || []).slice(0, 3).map(t => (
@@ -246,7 +246,7 @@ const AdminProjects = () => {
           {filteredProjects.length === 0 && (
             <div className="py-24 text-center border border-dashed border-white/5 rounded-3xl">
                <FolderLock className="w-12 h-12 text-gray-800 mx-auto mb-4 opacity-30" />
-               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 italic">No project nodes found in registry.</p>
+               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 italic">No projects found.</p>
             </div>
           )}
         </div>
@@ -259,42 +259,42 @@ const AdminProjects = () => {
              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-black/70 backdrop-blur-md" />
              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-3xl bg-[#080808] border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
                 <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
-                   <h2 className="text-xs font-black uppercase tracking-[0.2em] text-white italic">{editingProject ? 'Modify Project Configuration' : 'Initialize Project Node'}</h2>
+                   <h2 className="text-xs font-black uppercase tracking-[0.2em] text-white italic">{editingProject ? 'Edit Project' : 'Add New Project'}</h2>
                    <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white"><X className="w-5 h-5" /></button>
                 </div>
                 <form onSubmit={handleCreateOrUpdate} className="p-8 space-y-6">
                    <div className="grid grid-cols-2 gap-6">
                       <div className="col-span-2">
-                         <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Core Identifier (Title)</label>
-                         <input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all font-black uppercase italic italic tracking-tight" placeholder="PROJECT_CODENAME" />
+                         <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Project Title</label>
+                         <input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all font-black uppercase italic italic tracking-tight" placeholder="Project Name" />
                       </div>
                       <div className="col-span-2">
-                         <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Cyber Descriptor (Description)</label>
-                         <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all resize-none italic font-medium leading-relaxed" placeholder="Detailed architectural description..." />
+                         <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Description</label>
+                         <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all resize-none italic font-medium leading-relaxed" placeholder="Project description..." />
                       </div>
                       <div>
                          <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Repository Link (GitHub)</label>
-                         <input required value={formData.github_url} onChange={e => setFormData({...formData, github_url: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all font-mono" placeholder="https://github.com/node/repo" />
+                         <input required value={formData.github_url} onChange={e => setFormData({...formData, github_url: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all font-mono" placeholder="https://github.com/user/repo" />
                       </div>
                       <div>
                          <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Access Link (Demo)</label>
-                         <input value={formData.demo_url} onChange={e => setFormData({...formData, demo_url: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all font-mono" placeholder="https://demo.node.xyz" />
+                         <input value={formData.demo_url} onChange={e => setFormData({...formData, demo_url: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all font-mono" placeholder="https://demo-link.com" />
                       </div>
                       <div>
                          <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Tech Stack (comma separated)</label>
                          <input required value={formData.tech_stack} onChange={e => setFormData({...formData, tech_stack: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all font-mono" placeholder="React, Node.js, Rust" />
                       </div>
                       <div>
-                         <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Verification State</label>
+                         <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Status</label>
                          <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white uppercase font-black appearance-none focus:border-blue-500 transition-all cursor-pointer italic">
-                            <option value="pending">Awaiting Audit (Pending)</option>
-                            <option value="verified">Verified Node (Verified)</option>
-                            <option value="flagged">Vulnerability Detected (Flagged)</option>
+                            <option value="pending">Pending</option>
+                            <option value="verified">Verified</option>
+                            <option value="flagged">Flagged</option>
                          </select>
                       </div>
                    </div>
                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl flex items-center justify-center space-x-3 transition-all shadow-xl shadow-blue-900/20 active:scale-[0.98]">
-                      <span className="text-[10px] font-black uppercase tracking-widest">{editingProject ? 'Synchronize Matrix' : 'Initialize Node'}</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{editingProject ? 'Save Changes' : 'Add Project'}</span>
                       <CheckCircle2 className="w-4 h-4" />
                    </button>
                 </form>

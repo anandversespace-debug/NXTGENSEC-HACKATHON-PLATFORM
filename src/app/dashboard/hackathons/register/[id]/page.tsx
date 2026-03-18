@@ -20,7 +20,7 @@ export default function HackathonRegistrationPage() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
         const res = await fetch(`${baseUrl}/hackathons/${params.id}`);
-        if (!res.ok) throw new Error('Hackathon identity not found in registry.');
+        if (!res.ok) throw new Error('Hackathon not found.');
         const data = await res.json();
         setHackathon(data);
       } catch (err) {
@@ -57,10 +57,10 @@ export default function HackathonRegistrationPage() {
         router.push('/dashboard/hackathons?registered=true');
       } else {
         const data = await res.json();
-        setError(data.error || 'Failed to establish project binding.');
+        setError(data.error || 'Registration failed.');
       }
     } catch (err) {
-      setError('Network handshake failed. Connection to registry node lost.');
+      setError('Network error. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -68,7 +68,7 @@ export default function HackathonRegistrationPage() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-      <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Accessing Enrollment Protocols...</div>
+      <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Loading...</div>
     </div>
   );
 
@@ -80,10 +80,10 @@ export default function HackathonRegistrationPage() {
               <div className="absolute inset-0 bg-blue-600/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
               <ShieldCheck className="w-8 h-8 text-blue-500" />
            </div>
-           <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-2">Protocol Enrollment</h1>
-           <p className="text-xs text-gray-500 font-bold uppercase tracking-widest leading-loose">
-              Binding network identity <span className="text-blue-500 italic">:: NODE_AUTH_SECURED</span> to mission <span className="text-white italic">{hackathon.title}</span>
-           </p>
+           <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-2">Join Hackathon</h1>
+            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest leading-loose">
+               You are joining <span className="text-white italic">{hackathon.title}</span>
+            </p>
         </header>
 
         <motion.div 
@@ -102,33 +102,33 @@ export default function HackathonRegistrationPage() {
 
               <div className="space-y-4">
                  <div className="bg-[#080808] border border-white/5 p-6 rounded-2xl">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600 mb-4 italic">Mission Parameters</h3>
+                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600 mb-4 italic">About the Event</h3>
                     <div className="grid grid-cols-2 gap-4">
                        <div>
-                          <p className="text-[8px] font-bold text-gray-700 uppercase tracking-widest mb-1">Target</p>
+                          <p className="text-[8px] font-bold text-gray-700 uppercase tracking-widest mb-1">Event</p>
                           <p className="text-xs font-bold text-gray-300 uppercase tracking-tight">{hackathon.title}</p>
                        </div>
                        <div>
-                          <p className="text-[8px] font-bold text-gray-700 uppercase tracking-widest mb-1">Reward Pool</p>
-                          <p className="text-xs font-black text-emerald-500 italic tracking-tighter">{hackathon.prize_pool || 'TBD'}</p>
+                          <p className="text-[8px] font-bold text-gray-700 uppercase tracking-widest mb-1">Prize Pool</p>
+                           <p className="text-xs font-black text-emerald-500 italic tracking-tighter">{hackathon.prize_pool || 'Coming Soon'}</p>
                        </div>
                     </div>
                  </div>
 
                  <div className="space-y-3">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 italic">Assign Node / Team Alias</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 italic">Team Name</label>
                     <div className="relative group">
                        <input 
                          type="text"
                          required
                          value={teamName}
                          onChange={(e) => setTeamName(e.target.value)}
-                         placeholder="e.g. ALPHA_VANGUARD_NODE"
+                         placeholder="e.g. Dream Team"
                          className="w-full bg-[#050505] border border-white/10 rounded-xl py-4 px-6 text-xs text-white focus:outline-none focus:border-blue-500/50 transition-all font-bold uppercase tracking-widest placeholder:text-gray-800"
                        />
                        <Users className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-800 group-focus-within:text-blue-500 transition-colors" />
                     </div>
-                    <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest ml-1">This alias will be permanently etched into the mission's block registry.</p>
+                    <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest ml-1">This name will be used for your team in this hackathon.</p>
                  </div>
               </div>
 
@@ -142,7 +142,7 @@ export default function HackathonRegistrationPage() {
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       <>
-                        <span>Confirm Enrollment Binding</span>
+                         <span>Join Now</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}

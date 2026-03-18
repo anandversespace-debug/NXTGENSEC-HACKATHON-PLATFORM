@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, Trophy, MapPin, Users, ArrowLeft, Shield, Users2, BrainCircuit, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import Loader from '@/components/ui/Loader';
 
 const HackathonDetailPage = () => {
   const params = useParams();
@@ -32,10 +33,9 @@ const HackathonDetailPage = () => {
   }, [params.id, router]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-      <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center animate-pulse shadow-2xl shadow-blue-500/20">
-         <Shield className="w-6 h-6 text-white animate-spin" />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] space-y-6">
+       <Loader />
+       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Loading Hackathon...</p>
     </div>
   );
 
@@ -57,7 +57,7 @@ const HackathonDetailPage = () => {
               <div className="absolute bottom-12 left-12 right-12">
                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
                     <div className="text-left">
-                       <span className="inline-block px-3 py-1 bg-blue-600/10 border border-blue-600/20 text-blue-500 text-[10px] font-black rounded mb-4 uppercase tracking-[0.2em] italic shadow-2xl">STATUS: OPEN FOR ENTRY</span>
+                       <span className="inline-block px-3 py-1 bg-blue-600/10 border border-blue-600/20 text-blue-500 text-[10px] font-black rounded mb-4 uppercase tracking-[0.2em] italic shadow-2xl">REGISTRATION OPEN</span>
                        <h1 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter text-white drop-shadow-2xl leading-none">{hackathon.title}</h1>
                     </div>
                     <Link href={`/dashboard/hackathons/register/${hackathon._id}`} className="bg-blue-600 hover:bg-blue-500 text-white py-5 px-14 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-[0_0_40px_rgba(37,99,235,0.3)] hover:scale-105 active:scale-95 italic">
@@ -78,9 +78,9 @@ const HackathonDetailPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                  {[
-                   { label: 'Event Duration', value: '48 Hours', icon: Clock },
-                   { label: 'Location Format', value: 'Global / Virtual', icon: MapPin },
-                   { label: 'Member Capacity', value: '500+ Expected', icon: Users }
+                   { label: 'Duration', value: '48 Hours', icon: Clock },
+                   { label: 'Location', value: 'Online', icon: MapPin },
+                   { label: 'Participants', value: '500+ Expected', icon: Users }
                  ].map((item, i) => (
                    <div key={i} className="bg-[#0c0c0c] border border-white/5 p-8 rounded-2xl group hover:border-blue-500/20 transition-all text-left shadow-2xl">
                       <div className="w-10 h-10 rounded-xl bg-[#050505] border border-white/5 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-blue-600/10 group-hover:border-blue-500/20 transition-all">
@@ -98,15 +98,15 @@ const HackathonDetailPage = () => {
                  </div>
                  <h3 className="text-2xl font-black mb-12 flex items-center space-x-4 text-white italic uppercase tracking-tighter">
                     <Trophy className="w-8 h-8 text-amber-500" />
-                    <span>Prize Distribution</span>
+                    <span>Prizes</span>
                  </h3>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
                     <div className="p-10 bg-amber-500/5 border border-amber-500/10 rounded-2xl group-hover:border-amber-500/30 transition-all text-left">
-                       <p className="text-[10px] font-black text-amber-500 mb-2 uppercase tracking-widest italic">First Place: Elite Rank</p>
+                       <p className="text-[10px] font-black text-amber-500 mb-2 uppercase tracking-widest italic">1st Place</p>
                        <p className="text-5xl font-black text-white italic tracking-tighter transform group-hover:scale-105 transition-transform origin-left leading-none">$5,000</p>
                     </div>
                     <div className="p-10 bg-white/[0.02] border border-white/10 rounded-2xl group-hover:border-blue-500/20 transition-all text-left">
-                       <p className="text-[10px] font-black text-gray-500 mb-2 uppercase tracking-widest italic">Second Place: Pro Rank</p>
+                       <p className="text-[10px] font-black text-gray-500 mb-2 uppercase tracking-widest italic">2nd Place</p>
                        <p className="text-5xl font-black text-white italic tracking-tighter transform group-hover:scale-105 transition-transform origin-left leading-none">$3,000</p>
                     </div>
                  </div>
@@ -119,13 +119,13 @@ const HackathonDetailPage = () => {
                  <div className="absolute top-0 right-0 p-6 opacity-[0.03]">
                     <Clock className="w-20 h-20 text-blue-900" />
                  </div>
-                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 mb-12 border-l-2 border-blue-500 pl-6 italic">Event Schedule</h3>
+                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 mb-12 border-l-2 border-blue-500 pl-6 italic">Schedule</h3>
                  <div className="space-y-12 relative">
                     <div className="absolute left-[7px] top-2 bottom-2 w-[1px] bg-white/5"></div>
                     {[
-                      { title: 'Kickoff Start', time: 'April 15, 09:00', status: 'upcoming' },
-                      { title: 'Development Phase', time: 'April 15 - 17', status: 'pending' },
-                      { title: 'Final Review', time: 'April 17, 16:00', status: 'pending' }
+                      { title: 'Starts', time: 'April 15, 09:00', status: 'upcoming' },
+                      { title: 'Hacking Period', time: 'April 15 - 17', status: 'pending' },
+                      { title: 'Judging', time: 'April 17, 16:00', status: 'pending' }
                     ].map((step, i) => (
                       <div key={i} className="flex items-start space-x-8 relative z-10 group/item text-left">
                          <div className={cn(
@@ -142,19 +142,19 @@ const HackathonDetailPage = () => {
               </div>
 
               <div className="bg-[#0c0c0c] border border-white/5 p-12 rounded-3xl shadow-2xl text-left">
-                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 mb-10 border-l-2 border-indigo-500 pl-6 italic">Support Hub</h3>
+                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 mb-10 border-l-2 border-indigo-500 pl-6 italic">Resources</h3>
                  <div className="space-y-4">
                     <button className="w-full text-left p-6 bg-white/[0.01] border border-white/5 rounded-2xl hover:bg-white/[0.04] hover:border-blue-500/20 transition-all flex items-center justify-between group/btn">
                        <div className="flex items-center space-x-4">
                           <BrainCircuit className="w-5 h-5 text-indigo-500 group-hover/btn:scale-110 transition-transform" />
-                          <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover/btn:text-white transition-colors italic leading-none">Technical Docs</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover/btn:text-white transition-colors italic leading-none">Docs</span>
                        </div>
                        <ChevronRight className="w-4 h-4 text-gray-800 group-hover/btn:text-blue-500 transition-colors" />
                     </button>
                     <button className="w-full text-left p-6 bg-white/[0.01] border border-white/5 rounded-2xl hover:bg-white/[0.04] hover:border-emerald-500/20 transition-all flex items-center justify-between group/btn">
                        <div className="flex items-center space-x-4">
                           <Shield className="w-5 h-5 text-emerald-500 group-hover/btn:scale-110 transition-transform" />
-                          <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover/btn:text-white transition-colors italic leading-none">Official Rules</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover/btn:text-white transition-colors italic leading-none">Rules</span>
                        </div>
                        <ChevronRight className="w-4 h-4 text-gray-800 group-hover/btn:text-emerald-500 transition-colors" />
                     </button>

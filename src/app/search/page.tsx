@@ -21,6 +21,7 @@ import {
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import Loader from '@/components/ui/Loader';
 
 function SearchContent() {
   const searchParams = useSearchParams();
@@ -29,6 +30,13 @@ function SearchContent() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const categories = [
+    { id: 'all', label: 'All Resources', icon: Globe },
+    { id: 'projects', label: 'Projects', icon: Code2 },
+    { id: 'hackathons', label: 'Events', icon: Trophy },
+    { id: 'developers', label: 'Members', icon: Users },
+  ];
 
   // Update URL search query as user types (debounced)
   useEffect(() => {
@@ -43,13 +51,6 @@ function SearchContent() {
     }, 400);
     return () => clearTimeout(timeout);
   }, [searchQuery, searchParams, router]);
-
-  const categories = [
-    { id: 'all', label: 'All Resources', icon: Globe },
-    { id: 'projects', label: 'Projects', icon: Code2 },
-    { id: 'hackathons', label: 'Events', icon: Trophy },
-    { id: 'developers', label: 'Members', icon: Users },
-  ];
 
   useEffect(() => {
     const performSearch = async () => {
@@ -82,7 +83,7 @@ function SearchContent() {
         <header className="mb-12 space-y-4">
            <div className="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1">
               <Search className="w-3 h-3 text-blue-500" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-blue-400 italic">Global Registry Search</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-blue-400 italic">Global Platform Search</span>
            </div>
            <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">Find your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">Next Sprint</span></h1>
         </header>
@@ -131,7 +132,7 @@ function SearchContent() {
               <div className="bg-gradient-to-br from-[#0c0c0c] to-[#080808] border border-white/5 rounded-2xl p-6">
                  <div className="flex items-center space-x-2 mb-4">
                     <Zap className="w-4 h-4 text-amber-500" />
-                    <h3 className="text-[10px] font-black text-white uppercase tracking-widest italic">Live Telemetry</h3>
+                    <h3 className="text-[10px] font-black text-white uppercase tracking-widest italic">Platform Status</h3>
                  </div>
                  <div className="space-y-3">
                     <div className="flex items-center justify-between text-[9px] font-bold">
@@ -149,15 +150,17 @@ function SearchContent() {
            {/* Results Area */}
            <div className="lg:col-span-3 space-y-6">
              {loading ? (
-                <div className="py-20 text-center space-y-4">
-                   <Activity className="w-8 h-8 text-blue-500 mx-auto animate-spin opacity-50" />
-                   <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Scanning global project registry...</p>
+                <div className="py-20 text-center space-y-6">
+                   <div className="flex justify-center">
+                      <Loader />
+                   </div>
+                   <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Searching projects and members...</p>
                 </div>
              ) : (
                 <>
                   <div className="flex items-center justify-between mb-8 border-b border-white/[0.03] pb-4">
                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 italic">
-                        Found <span className="text-white">{results.length}</span> results in current sector
+                        Found <span className="text-white">{results.length}</span> results
                      </p>
                   </div>
 
@@ -204,8 +207,8 @@ function SearchContent() {
                     {results.length === 0 && !loading && (
                        <div className="py-20 text-center bg-[#0c0c0c] border border-dashed border-white/5 rounded-3xl">
                           <Shield className="w-12 h-12 text-gray-800 mx-auto mb-6 opacity-30" />
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic mb-2">Registry Entry Not Found</h3>
-                          <p className="text-[10px] text-gray-800 font-bold uppercase tracking-widest">No nodes matches your current search credentials.</p>
+                          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic mb-2">No Results Found</h3>
+                          <p className="text-[10px] text-gray-800 font-bold uppercase tracking-widest">No items match your search.</p>
                        </div>
                     )}
                   </div>
@@ -222,7 +225,7 @@ export default function SearchPage() {
   return (
     <Suspense fallback={
        <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-          <Activity className="w-10 h-10 text-blue-500 animate-spin opacity-50" />
+          <Loader />
        </div>
     }>
        <SearchContent />

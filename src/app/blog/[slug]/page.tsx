@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Calendar, User as UserIcon, ArrowLeft, Bookmark, Share2, MessageCircle, Send, Shield } from 'lucide-react';
 import Link from 'next/link';
+import Loader from '@/components/ui/Loader';
 
 interface Comment {
   _id: string;
@@ -27,7 +28,7 @@ const BlogDetailPage = () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
         const res = await fetch(`${baseUrl}/blogs/${params.slug}`);
-        if (!res.ok) throw new Error('Blog entry not found in archive.');
+        if (!res.ok) throw new Error('Blog post not found.');
         const data = await res.json();
         setBlog(data);
       } catch (err) {
@@ -47,7 +48,7 @@ const BlogDetailPage = () => {
     // Placeholder for backend comment integration
     const comment = {
       _id: Date.now().toString(),
-      user: { name: 'Anonymous Entity' },
+      user: { name: 'Anonymous' },
       content: newComment,
       createdAt: new Date().toISOString()
     };
@@ -57,10 +58,9 @@ const BlogDetailPage = () => {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-      <div className="w-12 h-12 bg-blue-600 rounded flex items-center justify-center animate-pulse shadow-2xl shadow-blue-500/20">
-         <Shield className="w-6 h-6 text-white animate-spin" />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] space-y-6">
+       <Loader />
+       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Loading Post...</p>
     </div>
   );
 
@@ -71,7 +71,7 @@ const BlogDetailPage = () => {
       <div className="max-w-4xl mx-auto">
         <Link href="/blog" className="flex items-center space-x-2 text-gray-500 hover:text-white transition-colors mb-12 group uppercase tracking-widest text-[10px] font-black italic">
            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-           <span className="font-bold">Back to Insights Register</span>
+           <span className="font-bold">Back to Blog</span>
         </Link>
 
         {/* Article Header */}
@@ -85,8 +85,8 @@ const BlogDetailPage = () => {
                     {blog.author?.name?.[0] || 'U'}
                  </div>
                  <div>
-                    <p className="text-[11px] font-black text-white uppercase tracking-tighter italic">{blog.author?.name || 'Anonymous Researcher'}</p>
-                    <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Security Node: {blog.author?.role || 'Contributor'}</p>
+                    <p className="text-[11px] font-black text-white uppercase tracking-tighter italic">{blog.author?.name || 'Anonymous'}</p>
+                    <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Role: {blog.author?.role || 'Contributor'}</p>
                  </div>
               </div>
               <div className="flex items-center space-x-6">
@@ -116,17 +116,17 @@ const BlogDetailPage = () => {
                  <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
                     <Shield className="w-32 h-32" />
                  </div>
-                 <h3 className="text-xl font-black italic uppercase tracking-tight text-white mb-6">Abstract: Cyber-Ecosystem Resilience</h3>
-                 <p className="text-[13px] leading-relaxed text-gray-400">The integration of zero-trust architecture is no longer optional in the current threat landscape. As we scale decentralized applications, the surface area for potential exploits increases exponentially. Developers must prioritize cryptographic verification at every touchpoint.</p>
+                  <h3 className="text-xl font-black italic uppercase tracking-tight text-white mb-6">Introduction</h3>
+                 <p className="text-[13px] leading-relaxed text-gray-400">Security is essential for any modern application. As we build more complex tools, we must ensure that our data and identities are always protected. Developers should focus on building trust through clear and secure systems.</p>
               </div>
-              <h3 className="text-white text-2xl font-black italic uppercase tracking-tight mb-6">Key Engineering Strategies</h3>
+               <h3 className="text-white text-2xl font-black italic uppercase tracking-tight mb-6">Main Points</h3>
               <ul className="list-disc pl-6 space-y-4 mb-12 text-[14px]">
-                 <li>Hardware Security Module (HSM) based key derivation for sub-milli latency verification</li>
-                 <li>End-to-end identity rotation via ZK-proofs across distributed node network</li>
-                 <li>Heuristic-based rate limiting on sensitive API endpoints utilizing tokenized traffic</li>
+                 <li>Smart security for faster verification</li>
+                 <li>Easy identity management across the platform</li>
+                 <li>Advanced protection for all users</li>
               </ul>
-              <div className="bg-blue-600/5 border border-blue-600/20 rounded-2xl p-8 italic text-blue-500 font-black text-center uppercase tracking-widest scale-95 group-hover:scale-100 transition-transform">
-                 "Security is not a feature, it is a foundation. Without trust, the ecosystem cannot scale to the next billion nodes."
+               <div className="bg-blue-600/5 border border-blue-600/20 rounded-2xl p-8 italic text-blue-500 font-black text-center uppercase tracking-widest scale-95 group-hover:scale-100 transition-transform">
+                 "Security is the foundation of everything we build. Without it, we cannot grow together as a community."
               </div>
            </article>
         </div>
@@ -135,7 +135,7 @@ const BlogDetailPage = () => {
         <section className="pt-12 border-t border-white/5">
            <h3 className="text-xl font-black italic uppercase tracking-tight text-white mb-10 flex items-center space-x-3">
               <MessageCircle className="w-6 h-6 text-blue-500" />
-              <span>Discussion Archive ({blog.comments?.length || 0})</span>
+              <span>Comments ({blog.comments?.length || 0})</span>
            </h3>
 
            <form onSubmit={handleCommentSubmit} className="mb-12">
@@ -143,7 +143,7 @@ const BlogDetailPage = () => {
                  <textarea 
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Broadcast your technical perspective to the network..."
+                   placeholder="Write your comment here..."
                   className="w-full bg-[#0c0c0c] border border-white/10 rounded-2xl p-8 min-h-[140px] text-white focus:outline-none focus:border-blue-500/30 transition-all resize-none text-xs font-bold uppercase tracking-widest placeholder:text-gray-800"
                  />
                  <button 
@@ -172,7 +172,7 @@ const BlogDetailPage = () => {
               ))}
               {(blog.comments || []).length === 0 && (
                 <div className="text-center py-10 opacity-20">
-                   <p className="text-[9px] font-black uppercase tracking-[0.4em]">Discussion node offline</p>
+                   <p className="text-[9px] font-black uppercase tracking-[0.4em]">No comments yet</p>
                 </div>
               )}
            </div>

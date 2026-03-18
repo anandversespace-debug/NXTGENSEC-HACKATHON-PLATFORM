@@ -85,7 +85,7 @@ const AdminSubmissions = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Reject and purge this submission?')) return;
+    if (!confirm('Delete this submission?')) return;
     try {
       const token = localStorage.getItem('token');
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -115,8 +115,8 @@ const AdminSubmissions = () => {
     <div className="space-y-6 text-left">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-xl font-black uppercase tracking-tighter italic">Audit Queue</h1>
-          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none mt-1">Evaluate event entries and finalize rankings for live events.</p>
+          <h1 className="text-xl font-black uppercase tracking-tighter italic">Submissions</h1>
+          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none mt-1">Review and approve projects submitted to hackathons.</p>
         </div>
         <div className="flex bg-[#0c0c0c] border border-white/5 rounded-xl p-1 w-64 focus-within:border-blue-500/30 transition-all">
           <input 
@@ -141,9 +141,9 @@ const AdminSubmissions = () => {
           <table className="w-full text-left">
             <thead className="bg-white/[0.02] border-b border-white/5">
               <tr>
-                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Project Entry</th>
-                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Target Event</th>
-                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Audit Score</th>
+                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Project</th>
+                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Hackathon</th>
+                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Score</th>
                 <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Status</th>
                 <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em] text-right">Actions</th>
               </tr>
@@ -170,7 +170,7 @@ const AdminSubmissions = () => {
                      {sub.score ? (
                         <span className="text-base font-black text-white italic">{sub.score}<span className="text-blue-500 text-[11px] ml-1">Pts</span></span>
                      ) : (
-                        <span className="text-[10px] text-gray-600 italic font-bold uppercase tracking-widest leading-none">Awaiting evaluation</span>
+                        <span className="text-[10px] text-gray-600 italic font-bold uppercase tracking-widest leading-none">Pending Review</span>
                      )}
                   </td>
                   <td className="px-8 py-5 text-left">
@@ -205,7 +205,7 @@ const AdminSubmissions = () => {
           {filteredSubmissions.length === 0 && (
             <div className="py-24 text-center border-t border-white/5">
                 <Gavel className="w-12 h-12 text-gray-800 mx-auto mb-4 opacity-30" />
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 italic">Audit queue is currently empty.</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 italic">No submissions found.</p>
             </div>
           )}
         </div>
@@ -219,7 +219,7 @@ const AdminSubmissions = () => {
              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-lg bg-[#080808] border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-8">
                 <div className="flex items-start justify-between mb-8">
                    <div>
-                      <h2 className="text-lg font-black text-white uppercase tracking-tight italic">Evaluate Entry</h2>
+                      <h2 className="text-lg font-black text-white uppercase tracking-tight italic">Review Submission</h2>
                       <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{selectedSub.title}</p>
                    </div>
                    <button onClick={() => setSelectedSub(null)} className="p-2 text-gray-500 hover:text-white"><X className="w-5 h-5" /></button>
@@ -229,23 +229,23 @@ const AdminSubmissions = () => {
                    <div className="grid grid-cols-2 gap-4">
                       <div className="col-span-2 p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-between">
                          <div className="text-left">
-                            <p className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 italic">Submission Score</p>
+                            <p className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 italic">Score</p>
                             <input type="number" value={formData.score} onChange={e => setFormData({...formData, score: parseInt(e.target.value) || 0})} className="bg-transparent text-3xl font-black text-white focus:outline-none w-24 italic" />
                          </div>
                          <Trophy className="w-8 h-8 text-amber-500/30" />
                       </div>
                       <div className="col-span-2">
-                         <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Status Assignment</label>
+                         <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Status</label>
                          <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white uppercase font-black appearance-none focus:border-blue-500 transition-all cursor-pointer italic">
                             <option value="pending">Under Review (Pending)</option>
-                            <option value="verified">Verified Node (Approved)</option>
-                            <option value="winner">Event Winner (Trophy)</option>
+                            <option value="verified">Verified (Approved)</option>
+                            <option value="winner">Winner (Trophy)</option>
                          </select>
                       </div>
                    </div>
 
                    <button type="submit" disabled={grading} className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl flex items-center justify-center space-x-3 transition-all shadow-xl shadow-blue-900/20 active:scale-[0.98]">
-                      {grading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span className="text-[10px] font-black uppercase tracking-widest">Commit Evaluation</span> <CheckCircle2 className="w-4 h-4" /></>}
+                      {grading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span className="text-[10px] font-black uppercase tracking-widest">Save Review</span> <CheckCircle2 className="w-4 h-4" /></>}
                    </button>
                 </form>
              </motion.div>

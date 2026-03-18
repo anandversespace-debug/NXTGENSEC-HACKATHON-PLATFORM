@@ -59,7 +59,7 @@ const DashboardHeader = () => {
           <Search className="w-3.5 h-3.5 text-gray-500 mr-2" />
           <input 
             type="text" 
-            placeholder="Search terminal..." 
+            placeholder="Search..." 
             className="bg-transparent border-none focus:outline-none text-[10px] text-gray-300 w-full font-bold tracking-tight"
           />
         </div>

@@ -93,7 +93,7 @@ const AdminHackathons = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Purge this event node from history?')) return;
+    if (!confirm('Delete this hackathon?')) return;
     try {
       const token = localStorage.getItem('token');
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -127,15 +127,15 @@ const AdminHackathons = () => {
     <div className="space-y-6 text-left">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-black uppercase tracking-tighter italic">Global Events Registry</h1>
-          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none mt-1">Deploy and moderate ecosystem competitions.</p>
+          <h1 className="text-xl font-black uppercase tracking-tighter italic">Hackathons</h1>
+          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none mt-1">Manage and host upcoming challenges.</p>
         </div>
         <button 
           onClick={() => { setEditingEvent(null); setFormData({ title: '', description: '', start_date: '', end_date: '', location: '', prize_pool: '', registration_link: '' }); setShowModal(true); }}
           className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl flex items-center space-x-2 transition-all shadow-xl shadow-blue-900/20 active:scale-95 italic"
         >
            <Plus className="w-4 h-4" />
-           <span>Deploy Event Node</span>
+           <span>Add Hackathon</span>
         </button>
       </header>
 
@@ -185,10 +185,10 @@ const AdminHackathons = () => {
 
                 <div className="mt-auto flex gap-3">
                   <button className="flex-1 flex items-center justify-center space-x-2 py-3 bg-white/[0.02] border border-white/5 rounded-xl hover:bg-white/[0.05] transition-all text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-gray-300 italic">
-                     <Eye className="w-3.5 h-3.5" /> <span>Intel</span>
+                     <Eye className="w-3.5 h-3.5" /> <span>View</span>
                   </button>
                   <button onClick={() => openEdit(event)} className="flex-1 flex items-center justify-center space-x-2 py-3 bg-blue-600/10 border border-blue-500/10 rounded-xl hover:bg-blue-600/20 transition-all text-[9px] font-black uppercase tracking-widest text-blue-500 italic">
-                     <Edit2 className="w-3.5 h-3.5" /> <span>Configure</span>
+                     <Edit2 className="w-3.5 h-3.5" /> <span>Edit</span>
                   </button>
                 </div>
               </motion.div>
@@ -197,7 +197,7 @@ const AdminHackathons = () => {
           {events.length === 0 && (
             <div className="col-span-full py-24 text-center border border-dashed border-white/5 rounded-3xl">
                <Trophy className="w-12 h-12 text-gray-800 mx-auto mb-4 opacity-30" />
-               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 italic">No events found in registry nodes.</p>
+               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 italic">No hackathons found.</p>
             </div>
           )}
         </div>
@@ -210,7 +210,7 @@ const AdminHackathons = () => {
              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-black/70 backdrop-blur-md" />
              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-2xl bg-[#080808] border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
                 <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
-                   <h2 className="text-xs font-black uppercase tracking-[0.2em] text-white italic">{editingEvent ? 'Reconfigure Event Node' : 'Deploy New Competition Node'}</h2>
+                   <h2 className="text-xs font-black uppercase tracking-[0.2em] text-white italic">{editingEvent ? 'Edit Hackathon' : 'Add New Hackathon'}</h2>
                    <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white"><X className="w-5 h-5" /></button>
                 </div>
                 <form onSubmit={handleCreateOrUpdate} className="p-8 grid grid-cols-2 gap-6">
@@ -219,28 +219,28 @@ const AdminHackathons = () => {
                       <input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all" placeholder="E.g., Quantum Secure 2024" />
                    </div>
                    <div className="col-span-2">
-                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Cyber Descriptor</label>
-                      <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all resize-none" placeholder="Detailed mission objectives..." />
+                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Description</label>
+                      <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all resize-none" placeholder="Event description..." />
                    </div>
                    <div>
-                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Start Timestamp</label>
+                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Start Date</label>
                       <input type="date" required value={formData.start_date} onChange={e => setFormData({...formData, start_date: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all" />
                    </div>
                    <div>
-                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">End Timestamp</label>
+                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">End Date</label>
                       <input type="date" required value={formData.end_date} onChange={e => setFormData({...formData, end_date: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all" />
                    </div>
                    <div>
-                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Deployment Zone</label>
+                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Location</label>
                       <input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all" placeholder="Virtual / Physical Location" />
                    </div>
                    <div>
-                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Reputation Pool</label>
-                      <input value={formData.prize_pool} onChange={e => setFormData({...formData, prize_pool: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all" placeholder="$50,000 + Credits" />
+                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Prize Pool</label>
+                      <input value={formData.prize_pool} onChange={e => setFormData({...formData, prize_pool: e.target.value})} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500 transition-all" placeholder="$5,000" />
                    </div>
                    <div className="col-span-2">
                       <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl flex items-center justify-center space-x-3 transition-all shadow-xl shadow-blue-900/20 active:scale-[0.98]">
-                         <span className="text-[10px] font-black uppercase tracking-widest">{editingEvent ? 'Synchronize Matrix' : 'Initialize Deployment'}</span>
+                         <span className="text-[10px] font-black uppercase tracking-widest">{editingEvent ? 'Save Changes' : 'Add Hackathon'}</span>
                          <CheckCircle2 className="w-4 h-4" />
                       </button>
                    </div>

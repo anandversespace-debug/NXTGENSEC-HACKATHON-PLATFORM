@@ -21,8 +21,8 @@ export default function UserSettingsPage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
 
   const handleDelete = () => {
-    if (confirm('CRITICAL ACTION: Are you sure you wish to terminate this node? This action is irreversible and all data will be cryptographically shredded.')) {
-      alert('Node deletion sequence initiated.');
+    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      alert('Account deleted.');
     }
   };
 
@@ -30,8 +30,8 @@ export default function UserSettingsPage() {
     <div className="space-y-6 pb-12">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold mb-0.5">Security Parameters</h1>
-          <p className="text-xs text-gray-400 font-medium tracking-tight">Configure core internal mechanics and cryptographic keys.</p>
+          <h1 className="text-xl font-bold mb-0.5">Settings</h1>
+          <p className="text-xs text-gray-400 font-medium tracking-tight">Manage your account security and notifications.</p>
         </div>
       </header>
 
@@ -43,7 +43,7 @@ export default function UserSettingsPage() {
              <div className="absolute left-0 top-0 w-1 h-full bg-white/[0.02] rounded-full">
                 <div className="w-1 h-8 bg-blue-500 rounded-full transition-all"></div>
              </div>
-             {['Authentication', 'Notifications', 'Preferences', 'Danger Zone'].map((item, i) => (
+             {['Security', 'Notifications', 'Options', 'Delete Account'].map((item, i) => (
                 <li key={item} className={`px-5 py-2 cursor-pointer transition-colors text-[10px] font-bold uppercase tracking-widest ${i === 0 ? 'text-blue-400' : 'text-gray-500 hover:text-gray-300'}`}>
                   {item}
                 </li>
@@ -61,13 +61,13 @@ export default function UserSettingsPage() {
                     <Key className="w-4 h-4 text-blue-500" />
                  </div>
                  <div>
-                    <h2 className="text-lg font-bold uppercase tracking-tight italic">Root Key Reconfiguration</h2>
+                    <h2 className="text-lg font-bold uppercase tracking-tight italic">Change Password</h2>
                  </div>
               </div>
 
               <div className="bg-[#0c0c0c] border border-white/5 rounded-xl p-8 space-y-6">
                  <div>
-                    <label className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2 block ml-1"><Lock className="w-3 h-3 inline-block mr-1 -mt-0.5" /> Current Cryptographic Key</label>
+                    <label className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2 block ml-1"><Lock className="w-3 h-3 inline-block mr-1 -mt-0.5" /> Current Password</label>
                     <div className="relative">
                       <input 
                         type={showCurrentPassword ? 'text' : 'password'} 
@@ -81,7 +81,7 @@ export default function UserSettingsPage() {
                  </div>
 
                  <div>
-                    <label className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2 block ml-1"><Lock className="w-3 h-3 inline-block mr-1 -mt-0.5" /> New Cryptographic Key</label>
+                    <label className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2 block ml-1"><Lock className="w-3 h-3 inline-block mr-1 -mt-0.5" /> New Password</label>
                     <div className="relative">
                       <input 
                         type={showNewPassword ? 'text' : 'password'} 
@@ -96,7 +96,7 @@ export default function UserSettingsPage() {
                  
                  <div className="pt-2 flex justify-end">
                     <button type="button" className="btn-primary py-2.5 px-6 text-xs font-bold uppercase tracking-widest bg-blue-600">
-                      Rotate Key
+                      Save Password
                     </button>
                  </div>
               </div>
@@ -109,15 +109,15 @@ export default function UserSettingsPage() {
                     <Bell className="w-4 h-4 text-emerald-500" />
                  </div>
                  <div>
-                    <h2 className="text-lg font-bold uppercase tracking-tight italic">System Broadcasts</h2>
+                    <h2 className="text-lg font-bold uppercase tracking-tight italic">Email Notifications</h2>
                  </div>
               </div>
 
               <div className="bg-[#0c0c0c] border border-white/5 rounded-xl p-8 divide-y divide-white/[0.05]">
                  {[
-                   { id: '1', title: 'Critical System Alerts', desc: 'Mandatory security patches and core infrastructure events.', checked: true, req: true },
-                   { id: '2', title: 'Hackathon Triggers', desc: 'Updates regarding hackathons you are actively participating in or judging.', checked: true },
-                   { id: '3', title: 'Ecosystem Newsletter', desc: 'Weekly digests on the Web3 and Decentralized Protocol security landscape.', checked: false }
+                   { id: '1', title: 'Security Updates', desc: 'Important updates about your account security.', checked: true, req: true },
+                   { id: '2', title: 'Hackathon Updates', desc: 'Notifications about hackathons you are participating in.', checked: true },
+                   { id: '3', title: 'Weekly Newsletter', desc: 'Stay updated with the latest news and trends.', checked: false }
                  ].map((opt) => (
                     <div key={opt.id} className="py-5 first:pt-0 last:pb-0 flex items-center justify-between">
                        <div>
@@ -143,7 +143,7 @@ export default function UserSettingsPage() {
                     <Trash2 className="w-4 h-4 text-red-500" />
                  </div>
                  <div>
-                    <h2 className="text-lg font-bold uppercase tracking-tight italic text-red-500">Node Termination</h2>
+                    <h2 className="text-lg font-bold uppercase tracking-tight italic text-red-500">Delete Account</h2>
                  </div>
               </div>
 
@@ -151,14 +151,14 @@ export default function UserSettingsPage() {
                  <div>
                     <p className="text-xs font-black text-red-400 uppercase tracking-widest mb-2 flex items-center"><MailWarning className="w-3.5 h-3.5 mr-1" /> Warning</p>
                     <p className="text-[11px] font-medium text-gray-400 leading-relaxed max-w-lg">
-                      Deleting your network entity will permanently erase all contributions, reputation logic, and registered project architectures. This action cannot be undone by system administrators.
+                      Deleting your account will permanently remove all your projects, points, and account data. This action cannot be undone.
                     </p>
                  </div>
                  <button 
                    onClick={handleDelete}
                    className="shrink-0 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/30 hover:border-transparent transition-all px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(239,68,68,0.1)]"
                  >
-                   Self-Destruct
+                   Delete Account
                  </button>
                </div>
            </motion.section>

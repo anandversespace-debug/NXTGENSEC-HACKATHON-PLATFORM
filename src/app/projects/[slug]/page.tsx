@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Github, Globe, Star, Calendar, User, ArrowLeft, Shield, Share2, Terminal, Code } from 'lucide-react';
 import { Project } from '@/types';
 import Link from 'next/link';
+import Loader from '@/components/ui/Loader';
 
 const ProjectDetailPage = () => {
   const params = useParams();
@@ -32,10 +33,9 @@ const ProjectDetailPage = () => {
   }, [params.slug, router]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-      <div className="w-12 h-12 bg-blue-600 rounded flex items-center justify-center animate-pulse shadow-2xl shadow-blue-500/20">
-         <Shield className="w-6 h-6 text-white animate-spin" />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] space-y-6">
+       <Loader />
+       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Loading Project...</p>
     </div>
   );
 
@@ -54,7 +54,7 @@ const ProjectDetailPage = () => {
               <button className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
                 <Share2 className="w-4 h-4 text-gray-400" />
               </button>
-              <button className="bg-blue-600 hover:bg-blue-500 text-white py-3 px-8 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all shadow-xl shadow-blue-900/20 italic">Support Project</button>
+              <button className="bg-blue-600 hover:bg-blue-500 text-white py-3 px-8 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all shadow-xl shadow-blue-900/20 italic">Like Project</button>
            </div>
         </div>
 
@@ -80,10 +80,10 @@ const ProjectDetailPage = () => {
                  <div className="bg-[#0c0c0c] border border-white/5 p-8 group overflow-hidden relative rounded-2xl text-left">
                     <div className="absolute inset-0 bg-blue-600/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                     <Github className="w-10 h-10 text-blue-500 mb-6 group-hover:scale-110 transition-transform relative z-10" />
-                    <h3 className="text-xl font-bold mb-2 relative z-10 text-white italic">Source Code</h3>
-                    <p className="text-[11px] text-gray-600 mb-6 relative z-10 uppercase tracking-tighter leading-snug font-bold">View the code for this project on GitHub and contribute to its development.</p>
+                    <h3 className="text-xl font-bold mb-2 relative z-10 text-white italic">GitHub</h3>
+                    <p className="text-[11px] text-gray-600 mb-6 relative z-10 uppercase tracking-tighter leading-snug font-bold">View the source code on GitHub.</p>
                     <a href={project.github_url} target="_blank" className="text-blue-400 font-bold text-xs flex items-center space-x-2 group relative z-10 uppercase tracking-widest hover:text-blue-300 transition-colors">
-                       <span>View Repository</span>
+                       <span>View Code</span>
                        <ArrowLeft className="w-4 h-4 rotate-180" />
                     </a>
                  </div>
@@ -91,8 +91,8 @@ const ProjectDetailPage = () => {
                     <div className="bg-[#0c0c0c] border border-white/5 p-8 group overflow-hidden relative rounded-2xl text-left">
                        <div className="absolute inset-0 bg-indigo-600/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                        <Globe className="w-10 h-10 text-indigo-500 mb-6 group-hover:scale-110 transition-transform relative z-10" />
-                       <h3 className="text-xl font-bold mb-2 relative z-10 text-white italic">Live Demo</h3>
-                       <p className="text-[11px] text-gray-600 mb-6 relative z-10 uppercase tracking-tighter leading-snug font-bold">See the project in action with a live demonstration hosted on the web.</p>
+                       <h3 className="text-xl font-bold mb-2 relative z-10 text-white italic">Website</h3>
+                       <p className="text-[11px] text-gray-600 mb-6 relative z-10 uppercase tracking-tighter leading-snug font-bold">Check out the live demo.</p>
                        <a href={project.demo_url} target="_blank" className="text-indigo-400 font-bold text-xs flex items-center space-x-2 group relative z-10 uppercase tracking-widest hover:text-indigo-300 transition-colors">
                           <span>Open Demo</span>
                           <ArrowLeft className="w-4 h-4 rotate-180" />
@@ -107,15 +107,15 @@ const ProjectDetailPage = () => {
                <div className="absolute top-0 left-0 w-2 h-full bg-blue-600/20"></div>
                <h2 className="text-2xl font-bold mb-8 flex items-center space-x-3 text-white italic uppercase tracking-tight">
                   <Terminal className="w-6 h-6 text-blue-500" />
-                  <span>Project Overview</span>
+                  <span>About</span>
                </h2>
                <div className="prose prose-invert max-w-none text-gray-400 font-medium uppercase tracking-tighter leading-relaxed">
                   <p className="mb-6">{project.detailed_description || 'No detailed documentation available for this project yet.'}</p>
-                  <h4 className="text-white mb-4 italic tracking-widest">Technical Highlights:</h4>
+                  <h4 className="text-white mb-4 italic tracking-widest">Key Features:</h4>
                   <ul className="list-disc pl-6 space-y-3 mb-12">
-                     <li>Secure authentication and data handling</li>
-                     <li>Scalable infrastructure and modular design</li>
-                     <li>Modern tech stack with high performance</li>
+                     <li>Safe and secure login</li>
+                     <li>Fast and reliable system</li>
+                     <li>Built with the latest technologies</li>
                   </ul>
                   <div className="bg-[#050505] p-6 rounded-xl border border-white/5 font-mono text-xs shadow-inner">
                      <span className="text-blue-400">// Project core initialization</span><br />
@@ -133,23 +133,23 @@ const ProjectDetailPage = () => {
                <div className="absolute top-0 right-0 p-3 opacity-20">
                   <Code className="w-8 h-8 text-blue-900" />
                </div>
-               <h3 className="text-[10px] font-bold uppercase text-gray-600 tracking-widest mb-8 border-l-2 border-blue-500 pl-4">Project Details</h3>
+               <h3 className="text-[10px] font-bold uppercase text-gray-600 tracking-widest mb-8 border-l-2 border-blue-500 pl-4">Information</h3>
                <div className="space-y-6">
                   <div className="flex items-center justify-between">
                      <span className="flex items-center space-x-2 text-[10px] uppercase font-bold text-gray-500 tracking-widest">
-                        <User className="w-3.5 h-3.5" /> <span>Author</span>
+                        <User className="w-3.5 h-3.5" /> <span>Created By</span>
                      </span>
                      <span className="text-xs font-bold text-gray-200 tracking-tight italic">{project.created_by?.name || 'Anonymous'}</span>
                   </div>
                   <div className="flex items-center justify-between">
                      <span className="flex items-center space-x-2 text-[10px] uppercase font-bold text-gray-500 tracking-widest">
-                        <Calendar className="w-3.5 h-3.5" /> <span>Submitted</span>
+                        <Calendar className="w-3.5 h-3.5" /> <span>Published On</span>
                      </span>
                      <span className="text-xs font-bold text-gray-200 tracking-tight">{new Date(project.created_at || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                   </div>
                   <div className="flex items-center justify-between">
                      <span className="flex items-center space-x-2 text-[10px] uppercase font-bold text-gray-500 tracking-widest">
-                        <Star className="w-3.5 h-3.5" /> <span>Project ID</span>
+                        <Star className="w-3.5 h-3.5" /> <span>ID</span>
                      </span>
                      <span className="text-xs font-bold text-blue-500 italic">#{project._id?.slice(-4).toUpperCase() || 'CORE'}</span>
                   </div>
@@ -160,9 +160,9 @@ const ProjectDetailPage = () => {
                <div className="absolute bottom-0 right-0 p-2 opacity-10">
                   <Trophy className="w-16 h-16 text-blue-500" />
                </div>
-               <h3 className="text-[10px] font-bold uppercase text-gray-600 tracking-widest mb-8 border-l-2 border-indigo-500 pl-4">Platform Stats</h3>
+               <h3 className="text-[10px] font-bold uppercase text-gray-600 tracking-widest mb-8 border-l-2 border-indigo-500 pl-4">Stats</h3>
                <div className="flex items-end justify-between mb-4">
-                  <p className="text-3xl font-black italic text-white tracking-widest">{(project.stars || 0) + 95}<span className="text-blue-600 text-lg uppercase font-bold not-italic">pts</span></p>
+                  <p className="text-3xl font-black italic text-white tracking-widest">{(project.stars || 0) + 95}<span className="text-blue-600 text-lg uppercase font-bold not-italic">Points</span></p>
                   <span className="text-emerald-500 text-[9px] font-black uppercase tracking-widest">Trending</span>
                </div>
                <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">

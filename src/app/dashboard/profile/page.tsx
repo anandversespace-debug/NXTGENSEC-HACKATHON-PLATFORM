@@ -75,13 +75,13 @@ export default function DashboardProfilePage() {
       if (res.ok) {
         const updatedUser = await res.json();
         setUser(updatedUser);
-        alert('Profile configurations securely synchronized.');
+        alert('Profile updated successfully.');
       } else {
-        alert('Failed to synchronize identity data.');
+        alert('Failed to update profile.');
       }
     } catch (err) {
       console.error(err);
-      alert('Network transmission failed.');
+      alert('Error saving profile.');
     } finally {
       setLoading(false);
     }
@@ -95,13 +95,13 @@ export default function DashboardProfilePage() {
     <div className="space-y-6 pb-12">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold mb-0.5">Edit Configuration</h1>
-          <p className="text-xs text-gray-400 font-medium tracking-tight">Modify your public developer identity parameters.</p>
+          <h1 className="text-xl font-bold mb-0.5">Edit Profile</h1>
+          <p className="text-xs text-gray-400 font-medium tracking-tight">Update your personal details and social links.</p>
         </div>
       </header>
 
       <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-         {/* Identity Preview & Avatar */}
+         {/* Profile Preview */}
          <div className="lg:col-span-1 space-y-6">
             <div className="bg-[#0c0c0c] border border-white/5 rounded-xl p-8 text-center relative overflow-hidden group">
                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-500 to-indigo-500"></div>
@@ -118,22 +118,22 @@ export default function DashboardProfilePage() {
                
                <div className="mt-8 flex justify-center space-x-2 border-t border-white/[0.03] pt-6">
                   <button type="button" className="text-[9px] font-bold text-gray-400 border border-white/10 px-4 py-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-colors uppercase tracking-widest">
-                    Upload Avatar
+                    Change Photo
                   </button>
                </div>
             </div>
          </div>
 
-         {/* Configuration Form */}
+         {/* Profile Settings */}
          <div className="lg:col-span-2 space-y-6">
             <div className="bg-[#0c0c0c] border border-white/5 rounded-xl p-8 md:p-10">
                <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-white/[0.03] pb-4 flex items-center">
-                 <User className="w-3.5 h-3.5 mr-2" /> Basic Variables
+                 <User className="w-3.5 h-3.5 mr-2" /> Basic Info
                </h3>
                
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                   <div>
-                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Identity Tag (Name)</label>
+                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Full Name</label>
                     <input 
                       type="text" 
                       name="fullName"
@@ -143,7 +143,7 @@ export default function DashboardProfilePage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Network Alias (Username)</label>
+                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Username</label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 font-mono text-xs">@</span>
                       <input 
@@ -158,7 +158,7 @@ export default function DashboardProfilePage() {
                </div>
 
                <div className="mb-8">
-                  <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Mission Strategy (Bio)</label>
+                  <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block ml-1">Bio</label>
                   <textarea 
                     name="bio"
                     rows={4}
@@ -170,7 +170,7 @@ export default function DashboardProfilePage() {
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                   <div>
-                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center ml-1"><MapPin className="w-3 h-3 mr-1" /> Geo-Location</label>
+                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center ml-1"><MapPin className="w-3 h-3 mr-1" /> Location</label>
                     <input 
                       type="text" 
                       name="location"
@@ -180,7 +180,7 @@ export default function DashboardProfilePage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center ml-1"><Code2 className="w-3 h-3 mr-1" /> Tech Stack (Comma Separated)</label>
+                    <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center ml-1"><Code2 className="w-3 h-3 mr-1" /> Skills (Comma Separated)</label>
                     <input 
                       type="text" 
                       name="skills"
@@ -192,7 +192,7 @@ export default function DashboardProfilePage() {
                </div>
 
                <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-white/[0.03] pb-4 flex items-center mt-12">
-                 <Globe className="w-3.5 h-3.5 mr-2" /> External Nodes
+                 <Globe className="w-3.5 h-3.5 mr-2" /> Social Links
                </h3>
 
                <div className="space-y-4">
@@ -237,7 +237,7 @@ export default function DashboardProfilePage() {
                     disabled={loading}
                     className="btn-primary py-3 px-8 text-xs font-bold uppercase tracking-widest flex items-center space-x-2 disabled:opacity-50"
                   >
-                     {loading ? <span className="animate-pulse">Synchronizing...</span> : <><span>Save Preferences</span> <Save className="w-3.5 h-3.5" /></>}
+                     {loading ? <span className="animate-pulse">Saving...</span> : <><span>Save Changes</span> <Save className="w-3.5 h-3.5" /></>}
                   </button>
                </div>
             </div>

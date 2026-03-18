@@ -40,7 +40,7 @@ const AdminUsers = () => {
         setUsers(data);
       }
     } catch (err) {
-      console.error('Failed to sync node identities:', err);
+      console.error('Failed to sync users:', err);
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,7 @@ const AdminUsers = () => {
         body: JSON.stringify({ email: inviteEmail, role: inviteRole })
       });
       if(res.ok) {
-        alert('Platform Invitation dispatched securely.');
+        alert('Invitation sent successfully.');
         setShowInviteModal(false);
         setInviteEmail('');
       } else {
@@ -73,14 +73,14 @@ const AdminUsers = () => {
       }
     } catch(err) {
       console.error(err);
-      alert('Network transmission failed');
+      alert('Failed to send invitation.');
     } finally {
       setInviting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to purge this identity node?')) return;
+    if (!confirm('Are you sure you want to delete this user?')) return;
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/${id}`, {
         method: 'DELETE',
@@ -125,14 +125,14 @@ const AdminUsers = () => {
     <div className="space-y-6 text-left">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-black uppercase tracking-tighter italic">Identities Registry</h1>
-          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none mt-1">Platform access control and node management.</p>
+          <h1 className="text-xl font-black uppercase tracking-tighter italic">Users</h1>
+          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none mt-1">Manage user accounts, roles, and access.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex bg-[#0c0c0c] border border-white/5 rounded-xl p-1 w-64 focus-within:border-blue-500/30 transition-all">
             <input 
               type="text" 
-              placeholder="Filter entities..." 
+              placeholder="Search users..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-transparent border-none focus:outline-none px-3 py-1.5 flex-grow text-white text-[11px]"
@@ -146,7 +146,7 @@ const AdminUsers = () => {
              className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl flex items-center space-x-2 transition-all shadow-xl shadow-blue-900/20 italic"
           >
              <Mail className="w-3.5 h-3.5" />
-             <span>Issue Invitation</span>
+             <span>Invite User</span>
           </button>
         </div>
       </header>
@@ -160,10 +160,10 @@ const AdminUsers = () => {
           <table className="w-full text-left">
             <thead className="bg-white/[0.02] border-b border-white/5">
               <tr>
-                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Entity</th>
-                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Privilege</th>
-                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Reputation</th>
-                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">State</th>
+                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">User</th>
+                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Role</th>
+                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Points</th>
+                <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Status</th>
                 <th className="px-8 py-5 text-[9px] font-black uppercase text-gray-700 tracking-[0.2em] text-right">Actions</th>
               </tr>
             </thead>
@@ -226,7 +226,7 @@ const AdminUsers = () => {
           {filteredUsers.length === 0 && (
             <div className="py-24 text-center">
                <Users className="w-12 h-12 text-gray-800 mx-auto mb-4 opacity-30" />
-               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 italic">No identity matches found in registry.</p>
+               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 italic">No users found.</p>
             </div>
           )}
         </div>
@@ -239,24 +239,24 @@ const AdminUsers = () => {
              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowInviteModal(false)} className="absolute inset-0 bg-black/70 backdrop-blur-md" />
              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-sm bg-[#080808] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
                 <div className="p-6 border-b border-white/5 flex justify-between items-center">
-                   <h2 className="text-xs font-black uppercase tracking-[0.2em] text-white italic">Dispatch Invitation</h2>
+                   <h2 className="text-xs font-black uppercase tracking-[0.2em] text-white italic">Invite User</h2>
                    <button onClick={() => setShowInviteModal(false)} className="text-gray-500 hover:text-white"><X className="w-4 h-4" /></button>
                 </div>
                 <form onSubmit={handleInvite} className="p-8 space-y-6">
-                   <div>
-                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Target Email Address</label>
-                      <input type="email" required value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500/50 focus:outline-none transition-all" placeholder="subject@node.com" />
+                    <div>
+                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Email Address</label>
+                      <input type="email" required value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white focus:border-blue-500/50 focus:outline-none transition-all" placeholder="user@example.com" />
                    </div>
                    <div>
-                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Access Clearance</label>
+                      <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Role</label>
                       <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white uppercase tracking-wider font-bold appearance-none focus:border-blue-500/50 focus:outline-none transition-all cursor-pointer">
-                         <option value="developer">Developer Node</option>
-                         <option value="judge">Auditor / Judge</option>
-                         <option value="admin">System Admin</option>
+                         <option value="developer">Developer</option>
+                         <option value="judge">Judge</option>
+                         <option value="admin">Admin</option>
                       </select>
                    </div>
                    <button type="submit" disabled={inviting || !inviteEmail} className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl disabled:opacity-50 flex items-center justify-center space-x-3 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/20">
-                     {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span className="text-[10px] font-black uppercase tracking-widest">Transmit Authorization</span> <Send className="w-3.5 h-3.5" /></>}
+                     {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span className="text-[10px] font-black uppercase tracking-widest">Send Invitation</span> <Send className="w-3.5 h-3.5" /></>}
                    </button>
                 </form>
              </motion.div>
@@ -280,7 +280,7 @@ const AdminUsers = () => {
                          <p className="text-[10px] text-gray-600 font-mono tracking-tighter mt-1">{selectedUser.email}</p>
                          <div className="flex items-center space-x-2 mt-2">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Identity Verified</span>
+                            <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Verified</span>
                          </div>
                       </div>
                    </div>
@@ -290,8 +290,8 @@ const AdminUsers = () => {
                 <div className="grid grid-cols-2 gap-4 mb-8">
                    {[
                      { label: 'Alias', value: '@' + selectedUser.username, icon: Users },
-                     { label: 'Clearance', value: selectedUser.role, icon: Shield },
-                     { label: 'Reputation', value: selectedUser.contributions + ' CP', icon: Activity },
+                     { label: 'Role', value: selectedUser.role, icon: Shield },
+                     { label: 'Points', value: selectedUser.contributions + ' CP', icon: Activity },
                      { label: 'Joined', value: new Date(selectedUser.createdAt).toLocaleDateString(), icon: Calendar },
                    ].map((item, i) => (
                      <div key={i} className="p-4 bg-white/[0.02] border border-white/5 rounded-xl group hover:border-white/10 transition-colors">
@@ -303,12 +303,12 @@ const AdminUsers = () => {
 
                 <div className="space-y-6">
                    <div className="p-5 bg-white/[0.01] border border-white/5 rounded-xl border-l-2 border-l-blue-600">
-                      <p className="text-[9px] font-black text-gray-700 uppercase mb-3 tracking-widest italic">Node Metadata</p>
-                      <p className="text-xs text-gray-400 italic leading-relaxed">"{selectedUser.bio || 'No descriptor found for this identity node.'}"</p>
+                      <p className="text-[9px] font-black text-gray-700 uppercase mb-3 tracking-widest italic">Bio</p>
+                      <p className="text-xs text-gray-400 italic leading-relaxed">"{selectedUser.bio || 'No bio found for this user.'}"</p>
                    </div>
                    <div className="flex gap-4">
-                      <button onClick={() => handleUpdateUser(selectedUser._id, { status: 'suspended' })} className="flex-1 py-3 bg-red-600/10 border border-red-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500/20 transition-colors italic">Suspend Node</button>
-                      <button onClick={() => handleDelete(selectedUser._id)} className="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors italic">Flush Identity</button>
+                      <button onClick={() => handleUpdateUser(selectedUser._id, { status: 'suspended' })} className="flex-1 py-3 bg-red-600/10 border border-red-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500/20 transition-colors italic">Suspend User</button>
+                      <button onClick={() => handleDelete(selectedUser._id)} className="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors italic">Delete User</button>
                    </div>
                 </div>
              </motion.div>

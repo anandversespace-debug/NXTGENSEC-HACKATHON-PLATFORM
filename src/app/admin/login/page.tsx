@@ -32,12 +32,12 @@ const AdminLoginPage = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'Authentication failure.');
+        throw new Error(data.error || 'Login failed.');
       }
 
       // Check if user is admin
       if (data.user?.role !== 'admin' && data.user?.role !== 'judge') {
-          throw new Error('Access denied. Admin credentials required.');
+          throw new Error('Access denied. Admin account required.');
       }
 
       // Store JWT token
@@ -83,8 +83,8 @@ const AdminLoginPage = () => {
              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-900/40">
                 <Shield className="w-6 h-6 text-white" />
              </div>
-            <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white mb-1 leading-none">Admin <span className="text-blue-500">Access</span></h1>
-            <p className="text-[9px] text-gray-700 font-bold uppercase tracking-[0.3em]">Authorized Personnel Only</p>
+            <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white mb-1 leading-none">Admin <span className="text-blue-500">Login</span></h1>
+            <p className="text-[9px] text-gray-700 font-bold uppercase tracking-[0.3em]">Welcome Back</p>
           </div>
 
           {error && (
@@ -96,7 +96,7 @@ const AdminLoginPage = () => {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[9px] font-black text-gray-700 uppercase tracking-[0.2em] ml-1">Admin Email</label>
+              <label className="text-[9px] font-black text-gray-700 uppercase tracking-[0.2em] ml-1">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700" />
                 <input
@@ -111,7 +111,7 @@ const AdminLoginPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[9px] font-black text-gray-700 uppercase tracking-[0.2em] ml-1">Secret Key</label>
+              <label className="text-[9px] font-black text-gray-700 uppercase tracking-[0.2em] ml-1">Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700" />
                 <input
@@ -131,10 +131,10 @@ const AdminLoginPage = () => {
               className="bg-blue-600 hover:bg-blue-500 text-white w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center justify-center space-x-3 shadow-xl shadow-blue-900/40 disabled:opacity-50 mt-10 italic"
             >
               {loading ? (
-                <span className="animate-pulse">Verifying...</span>
+                <span className="animate-pulse">Logging in...</span>
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>Login</span>
                   <LogIn className="w-4 h-4" />
                 </>
               )}

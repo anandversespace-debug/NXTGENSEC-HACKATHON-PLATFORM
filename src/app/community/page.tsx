@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import Loader from '@/components/ui/Loader';
 
 const CommunityPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -60,8 +61,9 @@ const CommunityPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505] flex items-center justify-center">
-        <div className="text-blue-500 font-bold italic animate-pulse tracking-widest uppercase text-xs">Loading community members...</div>
+      <div className="min-h-screen pt-24 pb-20 px-6 bg-[#050505] flex flex-col items-center justify-center space-y-6">
+        <Loader />
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 italic">Loading Members...</p>
       </div>
     );
   }
@@ -81,10 +83,10 @@ const CommunityPage = () => {
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-400">Community</span>
              </div>
              <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white mb-4">
-                Developer <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 italic">Directory</span>
+                Community <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 italic">Members</span>
              </h1>
              <p className="text-gray-500 text-sm font-bold uppercase tracking-tighter leading-relaxed max-w-xl text-left">
-                Connect with the best developers, security experts, and designers in the ecosystem. Every member contributes to the growth and security of the platform.
+                Connect with developers, designers, and creators. Every member helps the platform grow.
              </p>
           </div>
           <div className="flex bg-[#0c0c0c] border border-white/5 rounded-xl p-6 md:p-8 space-x-12 shrink-0">
@@ -166,7 +168,7 @@ const CommunityPage = () => {
                 </div>
 
                 <p className="text-[10px] text-gray-500 leading-relaxed font-bold uppercase tracking-tighter h-10 mb-8 border-l-2 border-white/5 pl-4 group-hover:border-blue-500/30 transition-colors line-clamp-2 text-left">
-                  {dev.bio || 'Member has not set up their public profile yet.'}
+                  {dev.bio || 'This member has not written about themselves yet.'}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-8 h-[52px] content-start overflow-hidden">
@@ -177,14 +179,14 @@ const CommunityPage = () => {
 
                 <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/[0.03]">
                    <div className="text-left">
-                      <p className="text-[8px] text-gray-700 font-bold uppercase tracking-widest mb-1.5 italic">User ID</p>
+                       <p className="text-[8px] text-gray-700 font-bold uppercase tracking-widest mb-1.5 italic">ID</p>
                       <div className="flex items-center space-x-2">
                         <Activity className="w-3.5 h-3.5 text-blue-500" />
                         <span className="text-xs font-black text-gray-300 italic">#{dev._id.slice(-4).toUpperCase()}</span>
                       </div>
                    </div>
                    <div className="text-left">
-                      <p className="text-[8px] text-gray-700 font-bold uppercase tracking-widest mb-1.5 italic">Reputation</p>
+                       <p className="text-[8px] text-gray-700 font-bold uppercase tracking-widest mb-1.5 italic">Points</p>
                       <div className="flex items-center space-x-2">
                         <Zap className="w-3.5 h-3.5 text-amber-500" />
                         <span className="text-xs font-black text-gray-300 italic">{(dev.contributions || 0).toLocaleString()}</span>

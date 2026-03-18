@@ -60,9 +60,7 @@ export default function SignupPage() {
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to create account.');
-      }
+        throw new Error(data.error || 'Failed to sign up.');
 
       setSuccess(true);
       
@@ -101,8 +99,8 @@ export default function SignupPage() {
              <div className="w-12 h-12 bg-white/[0.02] border border-white/10 rounded-xl flex items-center justify-center mx-auto mb-6 group hover:border-blue-500/30 transition-all duration-500">
                 <ShieldCheck className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />
              </div>
-            <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white mb-1">Create <span className="text-blue-500">Account</span></h1>
-            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Join the NxtGenSec Community</p>
+            <h1 className="text-2xl font-black italic uppercase tracking-tighter text-white mb-1">Sign <span className="text-blue-500">Up</span></h1>
+            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em]">Join Us</p>
           </div>
 
           {success ? (
@@ -114,7 +112,7 @@ export default function SignupPage() {
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-16 border-2 border-emerald-500/30 rounded-full animate-ping opacity-20"></div>
                </div>
                <div className="text-left">
-                  <h3 className="text-xl font-bold text-white uppercase tracking-tight mb-2 text-center">Registration Successful!</h3>
+                  <h3 className="text-xl font-bold text-white uppercase tracking-tight mb-2 text-center">Sign Up Successful!</h3>
                   <p className="text-xs text-gray-500 font-medium leading-relaxed text-center">Your account has been created. Please check your email for a verification link.</p>
                </div>
             </motion.div>
@@ -218,10 +216,10 @@ export default function SignupPage() {
                 className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl text-[10px] uppercase tracking-[0.3em] transition-all shadow-xl shadow-blue-900/20 flex items-center justify-center space-x-3 group disabled:opacity-50 mt-4 italic"
               >
                 {loading ? (
-                  <span className="animate-pulse">Setting up account...</span>
+                  <span className="animate-pulse">Signing up...</span>
                 ) : (
                   <>
-                    <span>Create Account</span>
+                    <span>Sign Up</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
@@ -233,7 +231,7 @@ export default function SignupPage() {
             <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
               Already have an account?{' '}
               <Link href="/login" className="text-blue-500 hover:text-blue-400 transition-colors ml-1 italic underline underline-offset-4 decoration-blue-500/20">
-                Sign In
+                Login
               </Link>
             </p>
           </div>

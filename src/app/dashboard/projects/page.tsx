@@ -42,14 +42,14 @@ export default function DashboardProjectsPage() {
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-black uppercase tracking-tight italic mb-8 text-white">Project Registry</h1>
-          <p className="text-xs text-gray-500 font-bold uppercase tracking-widest leading-loose">Manage deployed node architectures and applications associated with your network identity.</p>
+          <h1 className="text-xl font-black uppercase tracking-tight italic mb-8 text-white">My Projects</h1>
+          <p className="text-xs text-gray-500 font-bold uppercase tracking-widest leading-loose">Manage your projects and see how they are doing.</p>
         </div>
         <div className="flex items-center space-x-3">
           <div className="flex bg-[#0c0c0c] border border-white/5 rounded-lg p-1 w-64 transition-colors focus-within:border-blue-500/30">
             <input 
               type="text" 
-              placeholder="Search active deployments..." 
+              placeholder="Search projects..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-transparent border-none focus:outline-none px-3 py-1.5 flex-grow text-white text-[11px] font-bold uppercase tracking-widest placeholder:text-gray-800"
@@ -60,14 +60,14 @@ export default function DashboardProjectsPage() {
           </div>
           <Link href="/dashboard/projects/new" className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black italic uppercase tracking-widest px-6 py-2.5 rounded-lg flex items-center space-x-2 transition-all shadow-xl shadow-blue-900/10">
             <Plus className="w-3.5 h-3.5" />
-            <span>Deploy Node</span>
+            <span>Add Project</span>
           </Link>
         </div>
       </header>
 
       {loading ? (
         <div className="py-20 text-center">
-           <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Synchronizing Personal Registry...</div>
+           <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Loading...</div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -85,7 +85,7 @@ export default function DashboardProjectsPage() {
                  </div>
                  <div className="flex items-center space-x-2">
                     <span className="text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-tighter border bg-emerald-500/10 text-emerald-500 border-emerald-500/20 italic">
-                      Operational
+                      Active
                     </span>
                  </div>
               </div>
@@ -131,7 +131,7 @@ export default function DashboardProjectsPage() {
           {filteredProjects.length === 0 && (
             <div className="col-span-full py-20 text-center border border-dashed border-white/5 rounded-3xl">
                <FolderCode className="w-12 h-12 text-gray-800 mx-auto mb-4 opacity-50" />
-               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 italic">No node deployments detected in personal registry.</p>
+               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 italic">No projects yet.</p>
             </div>
           )}
         </div>
