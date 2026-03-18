@@ -228,7 +228,7 @@ function OnboardingContent() {
 
                <div className="mt-12 flex justify-between items-center">
                   <button onClick={prevStep} className="text-[10px] font-bold text-gray-600 hover:text-white uppercase tracking-widest transition-colors">
-                    Backtrack
+                    Back
                   </button>
                   <button onClick={nextStep} className="group btn-primary px-8 py-4 text-xs flex items-center space-x-3 bg-indigo-600 hover:bg-indigo-500">
                     <span>Next Step</span>
@@ -292,7 +292,7 @@ function OnboardingContent() {
 
                <div className="mt-12 flex justify-between items-center">
                   <button onClick={prevStep} className="text-[10px] font-bold text-gray-600 hover:text-white uppercase tracking-widest transition-colors">
-                    Backtrack
+                    Back
                   </button>
                   <button 
                     onClick={handleComplete} 

@@ -37,13 +37,13 @@ export default function Home() {
 
     fetch(`${baseUrl}/projects/featured`)
       .then(res => res.json())
-      .then(data => setProjects(data))
+      .then(data => setProjects(Array.isArray(data) ? data : []))
       .catch(err => console.error('Featured projects fetch error:', err))
       .finally(() => setLoadingProjects(false));
 
     fetch(`${baseUrl}/hackathons`)
       .then(res => res.json())
-      .then(data => setHackathons(data.slice(0, 2)))
+      .then(data => setHackathons(Array.isArray(data) ? data.slice(0, 2) : []))
       .catch(err => console.error('Hackathons fetch error:', err))
       .finally(() => setLoadingHackathons(false));
   }, []);
