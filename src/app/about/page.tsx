@@ -15,10 +15,10 @@ import Link from 'next/link';
 
 export default function AboutPage() {
   const stats = [
-    { label: 'Community Members', value: '12,500+', icon: Users },
-    { label: 'Bug Reports', value: '450+', icon: ShieldCheck },
-    { label: 'Projects Audited', value: '3,200+', icon: Terminal },
-    { label: 'Prizes Awarded', value: '$1.2M+', icon: Cpu },
+    { label: 'Community Members', value: '...', icon: Users },
+    { label: 'Bug Reports', value: '...', icon: ShieldCheck },
+    { label: 'Projects Audited', value: '...', icon: Terminal },
+    { label: 'Prizes Awarded', value: '...', icon: Cpu },
   ];
 
   return (

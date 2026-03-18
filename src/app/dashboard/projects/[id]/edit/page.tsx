@@ -19,14 +19,40 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Mock Form Data simulating a fetched Project
   const [formData, setFormData] = useState({
-    title: 'ZeroKnowledge Protocol Auth',
-    description: 'We implemented a recursive zk-SNARK architecture to allow immediate, zero-trust authentication via any decentralized wallet. This limits exposure of the main network layer to malicious interception.',
-    tech_stack: 'Rust, Solidity, Circom',
-    github_url: 'https://github.com/nxtgensec/zk-auth',
-    demo_url: 'https://zk-auth-demo.nxtgensec.com'
+    title: '',
+    description: '',
+    tech_stack: '',
+    github_url: '',
+    demo_url: ''
   });
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/projects/${params.id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Unrecognized node.');
+        const data = await res.json();
+        setFormData({
+          title: data.title || '',
+          description: data.description || '',
+          tech_stack: Array.isArray(data.tech_stack) ? data.tech_stack.join(', ') : (data.tech_stack || ''),
+          github_url: data.github_url || '',
+          demo_url: data.demo_url || ''
+        });
+      } catch (err) {
+        console.error('Failed to load project:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProject();
+  }, [params.id]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

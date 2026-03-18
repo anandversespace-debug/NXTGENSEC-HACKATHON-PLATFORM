@@ -32,44 +32,7 @@ const SearchPage = () => {
     { id: 'developers', label: 'Members', icon: Users },
   ];
 
-  const results = [
-    {
-      id: 'r1',
-      category: 'projects',
-      title: 'ZeroKnowledge Protocol Auth',
-      description: 'A recursive zk-SNARK architecture for zero-trust authentication.',
-      tags: ['Rust', 'Circom', 'React'],
-      metrics: '1.2k Stars',
-      link: '/projects/zk-auth'
-    },
-    {
-      id: 'r2',
-      category: 'hackathons',
-      title: 'Global Hackathon 2024',
-      description: 'Annual flagship event focused on blockchain and protocol security.',
-      tags: ['DeFi', 'Security', 'Web3'],
-      metrics: '$100k Prize',
-      link: '/hackathons/h1'
-    },
-    {
-      id: 'r3',
-      category: 'developers',
-      title: 'Alex "Cipher" Chen',
-      description: 'Core Auditor specialized in zero-knowledge proof optimization.',
-      tags: ['Auditor', 'Elite'],
-      metrics: '15.2k Points',
-      link: '/profile/alex-chen'
-    },
-    {
-      id: 'r4',
-      category: 'projects',
-      title: 'L2 Scalability Bridge',
-      description: 'Cross-chain bridging protocol with mathematically verifiable state transitions.',
-      tags: ['Solidity', 'Go', 'Substrate'],
-      metrics: '850 Stars',
-      link: '/projects/l2-bridge'
-    }
-  ];
+  const results: any[] = [];
 
   const filteredResults = activeCategory === 'all' 
     ? results 
@@ -162,7 +125,7 @@ const SearchPage = () => {
                               <p className="text-[11px] font-medium text-gray-500 max-w-lg mb-4 leading-relaxed line-clamp-2">{result.description}</p>
                               
                               <div className="flex flex-wrap gap-2">
-                                 {result.tags.map(tag => (
+                                 {result.tags.map((tag: string) => (
                                    <span key={tag} className="text-[8px] bg-white/[0.03] border border-white/5 px-2 py-0.5 rounded text-gray-500 font-bold uppercase tracking-widest">{tag}</span>
                                  ))}
                               </div>

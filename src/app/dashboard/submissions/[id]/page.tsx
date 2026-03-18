@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
@@ -16,22 +16,36 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-export default function DashboardSubmissionDetailsPage() {
+export default function DashboardSubmissionDetailsPage({ params }: { params: { id: string } }) {
+  const [submission, setSubmission] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [score, setScore] = useState<string>('');
   const [feedback, setFeedback] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Mock Detail
-  const submission = {
-    id: 'sub_1',
-    project_title: 'ZeroKnowledge Protocol Auth',
-    team: 'Team Alpha',
-    hackathon: 'CyberShield Global 2024',
-    description: 'We implemented a recursive zk-SNARK architecture to allow immediate, zero-trust authentication via any decentralized wallet. This limits exposure of the main network layer to malicious interception.',
-    github_url: 'https://github.com/nxtgensec/zk-auth',
-    demo_url: 'https://zk-auth-demo.nxtgensec.com',
-    status: 'pending' // pending or reviewed
-  };
+  useEffect(() => {
+    const fetchSubmission = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/projects/${params.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (!res.ok) throw new Error('Unrecognized submission hash.');
+        const data = await res.json();
+        setSubmission(data);
+        if (data.score) setScore(data.score.toString());
+        if (data.feedback) setFeedback(data.feedback);
+      } catch (err) {
+        console.error('Fetch detail error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSubmission();
+  }, [params.id]);
 
   const handleScoreSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +56,18 @@ export default function DashboardSubmissionDetailsPage() {
       alert('Audit log compiled and securely documented.');
     }, 1000);
   };
+
+  if (loading) return (
+    <div className="py-32 text-center">
+       <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Accessing Submission Matrix Sector...</div>
+    </div>
+  );
+
+  if (!submission) return (
+    <div className="py-32 text-center text-gray-500">
+       <span className="text-[10px] font-black uppercase tracking-widest italic">Submission Node Not Recognized</span>
+    </div>
+  );
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-10">
@@ -55,13 +81,13 @@ export default function DashboardSubmissionDetailsPage() {
         <div className="absolute top-0 left-0 w-2 h-full bg-blue-600"></div>
         
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
-           <div>
+            <div>
               <div className="flex items-center space-x-3 mb-4">
                  <span className="text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-tighter border bg-amber-500/10 text-amber-500 border-amber-500/20">Pending Audit</span>
-                 <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest flex items-center"><Trophy className="w-3 h-3 mr-1" /> {submission.hackathon}</span>
+                 <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest flex items-center"><Trophy className="w-3 h-3 mr-1" /> {submission.hackathon_id?.title || 'General'}</span>
               </div>
-              <h1 className="text-3xl font-black italic tracking-tight uppercase mb-2">{submission.project_title}</h1>
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Submitted by <span className="text-gray-300">{submission.team}</span></p>
+              <h1 className="text-3xl font-black italic tracking-tight uppercase mb-2">{submission.title}</h1>
+              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Submitted by <span className="text-gray-300">{submission.created_by?.name || 'Authorized Member'}</span></p>
            </div>
         </div>
 
