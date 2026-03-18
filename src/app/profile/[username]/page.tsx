@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { User, Github, Globe, Award, Code, Shield, Mail, ArrowLeft, Twitter, ExternalLink, Terminal, Activity, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { Project } from '@/types';
+import { cn } from '@/lib/utils';
 
 const PublicProfilePage = () => {
   const params = useParams();
