@@ -58,7 +58,7 @@ function OnboardingContent() {
 
   const handleComplete = async () => {
     if (!user) {
-      alert('Authentication required to synchronize identity.');
+      alert('Please login to continue.');
       router.push('/login');
       return;
     }
@@ -93,11 +93,11 @@ function OnboardingContent() {
         setStep(4); // Success step
         setTimeout(() => router.push('/dashboard'), 2000);
       } else {
-        alert('Failed to synchronize identity registry.');
+        alert('Failed to save profile.');
       }
     } catch (err) {
       console.error(err);
-      alert('Registry synchronization failure.');
+      alert('Error saving profile.');
     } finally {
       setLoading(false);
     }
@@ -122,12 +122,12 @@ function OnboardingContent() {
                   <Terminal className="w-5 h-5 text-blue-500" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-black italic uppercase tracking-tighter">Identity <span className="text-blue-500">Synthesis</span></h1>
-                  <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Protocol Version 2.0.26</p>
+                  <h1 className="text-xl font-black italic uppercase tracking-tighter">Profile <span className="text-blue-500">Setup</span></h1>
+                  <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Welcome to NxtGenSec</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Clearance Level</p>
+                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Step</p>
                 <p className="text-xs font-black text-white italic">{step} / {totalSteps}</p>
               </div>
             </div>
@@ -152,12 +152,12 @@ function OnboardingContent() {
             >
                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 to-transparent"></div>
                <h2 className="text-lg font-bold text-white uppercase tracking-tight mb-8 flex items-center">
-                 <User className="w-5 h-5 mr-3 text-blue-500" /> Professional Identity
+                 <User className="w-5 h-5 mr-3 text-blue-500" /> About You
                </h2>
                
                <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Mission Strategy (Bio)</label>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Bio</label>
                     <textarea 
                       name="bio"
                       value={formData.bio}
@@ -169,7 +169,7 @@ function OnboardingContent() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Physical Node Location</label>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Location</label>
                     <div className="relative">
                       <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
                       <input 
@@ -186,7 +186,7 @@ function OnboardingContent() {
 
                <div className="mt-12 flex justify-end">
                   <button onClick={nextStep} className="group btn-primary px-8 py-4 text-xs flex items-center space-x-3">
-                    <span>Analyze & Continue</span>
+                    <span>Next Step</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                </div>
@@ -203,12 +203,12 @@ function OnboardingContent() {
             >
                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-600 to-transparent"></div>
                <h2 className="text-lg font-bold text-white uppercase tracking-tight mb-8 flex items-center">
-                 <Code2 className="w-5 h-5 mr-3 text-indigo-500" /> Technical Arsenal
+                 <Code2 className="w-5 h-5 mr-3 text-indigo-500" /> Your Skills
                </h2>
 
                <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Tech Stack (Comma Separated)</label>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Skills (Comma Separated)</label>
                     <div className="relative">
                       <Terminal className="absolute left-4 top-4 w-4 h-4 text-indigo-500" />
                       <textarea 
@@ -221,7 +221,7 @@ function OnboardingContent() {
                       />
                     </div>
                     <p className="text-[9px] text-gray-600 font-bold uppercase tracking-tighter mt-2 ml-1 italic">
-                      // Input your primary cryptographic and development languages
+                      // Add the technologies you know best
                     </p>
                   </div>
                </div>
@@ -231,7 +231,7 @@ function OnboardingContent() {
                     Backtrack
                   </button>
                   <button onClick={nextStep} className="group btn-primary px-8 py-4 text-xs flex items-center space-x-3 bg-indigo-600 hover:bg-indigo-500">
-                    <span>Register Skills</span>
+                    <span>Next Step</span>
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                </div>
@@ -248,7 +248,7 @@ function OnboardingContent() {
             >
                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-600 to-transparent"></div>
                <h2 className="text-lg font-bold text-white uppercase tracking-tight mb-8 flex items-center">
-                 <Globe className="w-5 h-5 mr-3 text-emerald-500" /> Connection Nodes
+                 <Globe className="w-5 h-5 mr-3 text-emerald-500" /> Social Links
                </h2>
 
                <div className="space-y-5">
@@ -281,12 +281,12 @@ function OnboardingContent() {
                       name="portfolio"
                       value={formData.portfolio}
                       onChange={handleChange}
-                      placeholder="Portfolio / Personal Registry"
+                      placeholder="Portfolio Website"
                       className="w-full bg-[#050505] border border-white/10 rounded-xl py-4 pl-12 pr-4 text-xs text-gray-300 focus:outline-none focus:border-emerald-500/50 transition-all font-mono"
                     />
                   </div>
                   <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest text-center mt-4">
-                    Optional fields. Identity remains secure regardless.
+                    These fields are optional.
                   </p>
                </div>
 
@@ -302,11 +302,11 @@ function OnboardingContent() {
                     {loading ? (
                        <>
                          <Loader2 className="w-4 h-4 animate-spin" />
-                         <span>Syncing Registry...</span>
+                         <span>Saving Profile...</span>
                        </>
                     ) : (
                        <>
-                         <span>Authorize Initialization</span>
+                         <span>Complete Setup</span>
                          <Rocket className="w-4 h-4 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                        </>
                     )}
@@ -328,8 +328,8 @@ function OnboardingContent() {
                   </div>
                   <div className="absolute top-0 left-0 w-full h-full border-4 border-emerald-500/30 rounded-full animate-ping opacity-20"></div>
                </div>
-               <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-4">Node Identity <span className="text-emerald-500">Established</span></h2>
-               <p className="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-10">Broadcasting Status: Active // Deployment: Successful</p>
+               <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-4">Profile <span className="text-emerald-500">Created</span></h2>
+               <p className="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-10">You are all set!</p>
                <div className="flex justify-center space-x-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse delay-75"></div>
@@ -343,7 +343,7 @@ function OnboardingContent() {
       {/* Footer Info */}
       {step < 4 && (
         <div className="mt-12 flex items-center space-x-8 opacity-30 select-none pointer-events-none">
-           {['VERIFIED_SECURE', 'PULSE_SYNC_ON', 'LATENCY_SUB_10MS'].map(label => (
+           {['SECURE', 'CONNECTED', 'READY'].map(label => (
              <div key={label} className="flex items-center space-x-2">
                 <div className="w-1 h-1 rounded-full bg-blue-500"></div>
                 <span className="text-[8px] font-black tracking-widest text-gray-400">{label}</span>
@@ -359,7 +359,7 @@ export default function OnboardingPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-         <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Synchronizing Identity Protocol...</div>
+         <div className="text-blue-500 font-black italic animate-pulse tracking-widest uppercase text-xs">Loading...</div>
       </div>
     }>
       <OnboardingContent />
