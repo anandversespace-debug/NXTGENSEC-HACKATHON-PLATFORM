@@ -18,8 +18,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { SignalListener } from '@/components/layout/SignalListener';
-
 export default function RootLayout({
   children,
 }: {
@@ -30,7 +28,6 @@ export default function RootLayout({
       <body className={inter.className}>
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
           <AuthProvider>
-            <SignalListener />
             <LayoutWrapper>
               {children}
             </LayoutWrapper>
