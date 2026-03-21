@@ -33,9 +33,17 @@ export const SignalListener = () => {
     const baseUrl = getBaseUrl();
     
     if (!socket) {
+      // Vercel Serverless Optimization: Sockets are not supported in standard Vercel functions.
+      // We skip initialization if the host contains 'vercel.app' or matches the Vercel production domain.
+      if (baseUrl.includes('vercel.app') || baseUrl.includes('anandverse.space')) {
+        console.warn('[SIGNAL] Socket telemetry disabled for Serverless host.');
+        return;
+      }
+
       socket = io(baseUrl, {
         withCredentials: true,
-        transports: ['websocket', 'polling']
+        transports: ['websocket', 'polling'],
+        reconnectionAttempts: 3 // Limit retries to avoid spam
       });
 
       socket.on('connect', () => {
