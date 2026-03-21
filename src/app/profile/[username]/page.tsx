@@ -69,9 +69,13 @@ const PublicProfilePage = () => {
               <div className="bg-[#0c0c0c] border border-white/5 p-8 rounded-lg relative overflow-hidden text-center">
                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-transparent to-blue-600"></div>
                  <div className="relative mb-6">
-                    <div className="w-24 h-24 rounded border border-white/5 bg-white/[0.02] mx-auto overflow-hidden flex items-center justify-center text-3xl font-black text-gray-400 italic shadow-2xl">
-                       {profile.name?.[0] || 'U'}
-                    </div>
+                     <div className="w-24 h-24 rounded border border-white/5 bg-white/[0.02] mx-auto overflow-hidden flex items-center justify-center text-3xl font-black text-gray-400 italic shadow-2xl">
+                       {profile.picture || profile.avatar_url ? (
+                         <img src={profile.picture || profile.avatar_url} alt={profile.name} className="w-full h-full object-cover" />
+                       ) : (
+                         profile.name?.[0] || 'U'
+                       )}
+                     </div>
                     <div className="absolute -bottom-1 right-1/2 translate-x-12 bg-blue-600 p-1.5 rounded border border-[#0c0c0c] shadow-lg">
                        <Shield className="w-3.5 h-3.5 text-white" />
                     </div>

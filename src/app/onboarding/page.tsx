@@ -122,8 +122,8 @@ function OnboardingContent() {
                   <Terminal className="w-5 h-5 text-blue-500" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-black italic uppercase tracking-tighter">Profile <span className="text-blue-500">Setup</span></h1>
-                  <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Welcome to NxtGenSec</p>
+                   <h1 className="text-xl font-black italic uppercase tracking-tighter">Set Up Your <span className="text-blue-500">Profile</span></h1>
+                   <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Welcome to the platform</p>
                 </div>
               </div>
               <div className="text-right">
@@ -163,7 +163,7 @@ function OnboardingContent() {
                       value={formData.bio}
                       onChange={handleChange}
                       rows={4}
-                      placeholder="e.g. Systems architect focused on ZK-proofs and secure node consensus..."
+                      placeholder="e.g. I am a full-stack developer who loves building web apps and joining hackathons..."
                       className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all resize-none font-medium leading-relaxed"
                     />
                   </div>
@@ -177,7 +177,7 @@ function OnboardingContent() {
                         name="location"
                         value={formData.location}
                         onChange={handleChange}
-                        placeholder="e.g. San Francisco, CA or Distributed"
+                         placeholder="e.g. London, UK or Remote"
                         className="w-full bg-[#050505] border border-white/10 rounded-xl py-4 pl-12 pr-4 text-xs text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all font-medium"
                       />
                     </div>
@@ -328,8 +328,8 @@ function OnboardingContent() {
                   </div>
                   <div className="absolute top-0 left-0 w-full h-full border-4 border-emerald-500/30 rounded-full animate-ping opacity-20"></div>
                </div>
-               <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-4">Profile <span className="text-emerald-500">Created</span></h2>
-               <p className="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-10">You are all set!</p>
+                <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-4">Profile <span className="text-emerald-500">Created</span></h2>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-10">You are all set!</p>
                <div className="flex justify-center space-x-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse delay-75"></div>
@@ -343,7 +343,7 @@ function OnboardingContent() {
       {/* Footer Info */}
       {step < 4 && (
         <div className="mt-12 flex items-center space-x-8 opacity-30 select-none pointer-events-none">
-           {['SECURE', 'CONNECTED', 'READY'].map(label => (
+           {['SECURE', 'FAST', 'EASY'].map(label => (
              <div key={label} className="flex items-center space-x-2">
                 <div className="w-1 h-1 rounded-full bg-blue-500"></div>
                 <span className="text-[8px] font-black tracking-widest text-gray-400">{label}</span>

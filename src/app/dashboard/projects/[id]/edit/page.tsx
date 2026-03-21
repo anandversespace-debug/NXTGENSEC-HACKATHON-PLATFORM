@@ -54,21 +54,70 @@ export default function DashboardProjectEditPage({ params }: { params: { id: str
     fetchProject();
   }, [params.id]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem('token');
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        tech_stack: formData.tech_stack.split(',').map(s => s.trim()).filter(s => s),
+        github_url: formData.github_url,
+        demo_url: formData.demo_url
+      };
+
+      const res = await fetch(`${baseUrl}/projects/${params.id}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert('Project updated successfully.');
+        router.push('/dashboard/projects');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Update failed.');
+      }
+    } catch (err) {
+      console.error('Update Error:', err);
+      alert('Network failure.');
+    } finally {
       setLoading(false);
-      alert('Project updated successfully.');
-    }, 800);
+    }
   };
 
-  const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this project? This will remove it from all hackathons.')) {
-       alert('Project deleted.');
-       router.push('/dashboard/projects');
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this project? This will remove it from all hackathons.')) return;
+    
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${baseUrl}/projects/${params.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (res.ok) {
+        alert('Project purged from system.');
+        router.push('/dashboard/projects');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Deactivation failed.');
+      }
+    } catch (err) {
+      console.error('Delete Error:', err);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));

@@ -42,14 +42,15 @@ const AdminSidebar = () => {
   const handleLogout = async () => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const endpoint = baseUrl.endsWith('/api') ? '/auth/logout' : '/api/auth/logout';
-      await fetch(`${baseUrl}${endpoint}`, { credentials: 'include' });
+      const logoutUrl = `${baseUrl.replace(/\/$/, '')}/auth/logout`;
+      await fetch(logoutUrl, { method: 'GET', credentials: 'include' }).catch(() => {});
     } catch (err) {
-      console.error('Logout failed:', err);
+      console.warn('Admin logout signal failed, purging locally.');
+    } finally {
+      localStorage.removeItem('token');
+      logout();
+      window.location.href = '/login';
     }
-    localStorage.removeItem('token');
-    logout();
-    window.location.href = '/admin/login';
   };
 
   return (
@@ -106,12 +107,41 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAdminLogin = pathname === '/admin/login';
+  const { role, isAuthenticated, isLoading } = useAuthStore();
+  const isAdminLogin = pathname === '/login';
 
   if (isAdminLogin) {
     return (
       <div className="min-h-screen bg-[#050505] text-white">
         {children}
+      </div>
+    );
+  }
+
+  // Handle Loading state to prevent flickering
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+         <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // Handle Unauthorized state
+  // We use an "Access Denied" message instead of a hard redirect to prevent loops with the middleware
+  if (!isAuthenticated || (role !== 'admin' && role !== 'organizer')) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-6">
+          <ShieldAlert className="w-8 h-8 text-red-500" />
+        </div>
+        <h1 className="text-xl font-bold mb-2 uppercase tracking-tighter">Access Denied</h1>
+        <p className="text-gray-500 text-xs font-bold uppercase tracking-widest leading-loose mb-8 max-w-xs">
+          Your node does not have the administrative clearance required for this sector.
+        </p>
+        <Link href="/login" className="px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-black uppercase tracking-widest transition-all">
+          Re-authenticate
+        </Link>
       </div>
     );
   }

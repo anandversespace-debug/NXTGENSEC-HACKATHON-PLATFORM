@@ -12,6 +12,10 @@ const AdminLoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  
+  React.useEffect(() => {
+    router.replace('/login');
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

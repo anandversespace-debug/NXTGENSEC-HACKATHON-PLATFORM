@@ -25,6 +25,7 @@ const AdminUsers = () => {
   const [inviteRole, setInviteRole] = useState('developer');
   const [inviting, setInviting] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
+  const [target, setTarget] = useState('all'); // all, developers, organizers
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -33,7 +34,8 @@ const AdminUsers = () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-        }
+        },
+        credentials: 'include'
       });
       if(res.ok) {
         const data = await res.json();
@@ -61,6 +63,7 @@ const AdminUsers = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
         },
+        credentials: 'include',
         body: JSON.stringify({ email: inviteEmail, role: inviteRole })
       });
       if(res.ok) {
@@ -188,7 +191,7 @@ const AdminUsers = () => {
                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-[9px] font-black text-gray-400 uppercase tracking-widest focus:outline-none focus:border-blue-500/50 appearance-none hover:text-white transition-colors cursor-pointer"
                      >
                         <option value="developer">Developer</option>
-                        <option value="judge">Judge</option>
+                        <option value="organizer">Organizer</option>
                         <option value="admin">System Admin</option>
                      </select>
                   </td>
@@ -250,9 +253,9 @@ const AdminUsers = () => {
                    <div>
                       <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Role</label>
                       <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white uppercase tracking-wider font-bold appearance-none focus:border-blue-500/50 focus:outline-none transition-all cursor-pointer">
-                         <option value="developer">Developer</option>
-                         <option value="judge">Judge</option>
-                         <option value="admin">Admin</option>
+                          <option value="developer">Developer</option>
+                          <option value="organizer">Organizer</option>
+                          <option value="admin">Admin</option>
                       </select>
                    </div>
                    <button type="submit" disabled={inviting || !inviteEmail} className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl disabled:opacity-50 flex items-center justify-center space-x-3 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/20">

@@ -1,23 +1,53 @@
 import { MetadataRoute } from 'next';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://nxtgensec.vercel.app';
+const BASE_URL = 'http://localhost:3000'; // Replace with production URL when deploying
 
-  // Public routes that should be indexed
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Static Routes
   const routes = [
     '',
-    '/projects',
+    '/community',
+    '/leaderboard',
     '/hackathons',
-    '/blog',
-    '/docs',
-    '/login',
-    '/signup',
+    '/about',
+    '/policies',
+    '/terms',
   ].map((route) => ({
-    url: `${baseUrl}${route}`,
+    url: `${BASE_URL}${route}`,
     lastModified: new Date(),
-    changeFrequency: 'daily' as const,
+    changeFrequency: 'weekly' as const,
     priority: route === '' ? 1 : 0.8,
   }));
 
-  return routes;
+  // Potential Dynamic Content Fetch (Projects & Users)
+  try {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    
+    // Fetch Projects
+    const projectsRes = await fetch(`${apiBase}/projects`);
+    const projects = projectsRes.ok ? await projectsRes.json() : [];
+    
+    const projectRoutes = projects.map((p: any) => ({
+      url: `${BASE_URL}/projects/${p._id}`,
+      lastModified: new Date(p.updatedAt || p.createdAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }));
+
+    // Fetch Users
+    const usersRes = await fetch(`${apiBase}/users`);
+    const users = usersRes.ok ? await usersRes.json() : [];
+    
+    const userRoutes = users.map((u: any) => ({
+      url: `${BASE_URL}/profile/${u.username}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
+    }));
+
+    return [...routes, ...projectRoutes, ...userRoutes];
+  } catch (err) {
+    console.warn('[SEO_SITEMAP] Critical Fetch Error:', err);
+    return routes;
+  }
 }

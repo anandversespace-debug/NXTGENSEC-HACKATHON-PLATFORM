@@ -3,13 +3,13 @@ import { UserProfile } from '@/types';
 
 interface AuthState {
   user: UserProfile | null;
-  role: 'admin' | 'judge' | 'developer' | 'viewer' | null;
+  role: 'admin' | 'organizer' | 'developer' | 'viewer' | 'judge' | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   setUser: (user: UserProfile | null) => void;
   setLoading: (isLoading: boolean) => void;
   logout: () => void;
-  updateRole: (role: 'admin' | 'judge' | 'developer' | 'viewer' | null) => void;
+  updateRole: (role: 'admin' | 'organizer' | 'developer' | 'viewer' | 'judge' | null) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({

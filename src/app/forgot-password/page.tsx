@@ -1,111 +1,118 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShieldCheck, Mail, ArrowLeft, Loader2 } from 'lucide-react';
+import { Mail, ArrowLeft, Loader2, ShieldAlert, ShieldCheck, ChevronRight, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import AuthSection from '@/components/auth/AuthSection';
+import { cn } from '@/lib/utils';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
-    
-    setLoading(true);
+    setIsLoading(true);
     setError('');
-    
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/mail/forgot-password`, {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const endpoint = baseUrl.endsWith('/api') ? '/mail/forgot-password' : '/api/mail/forgot-password';
+
+      const res = await fetch(`${baseUrl}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-      
-      const data = await res.json();
+
       if (res.ok) {
-        setSent(true);
+        setSuccess(true);
       } else {
-        setError(data.error || 'Failed to send reset email.');
+        const data = await res.json();
+        setError(data.error || 'Account not found.');
       }
     } catch (err) {
-      console.error(err);
-      setError('Error sending email. Try again later.');
+      setError('Network error. Connection lost.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505] p-6">
-      <div className="w-full max-w-md bg-[#0c0c0c] border border-white/5 rounded-2xl p-8 relative overflow-hidden">
-        {/* Subtle background glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-[100px] bg-blue-600/20 blur-[60px] pointer-events-none" />
-        
-        <div className="text-center mb-10 relative z-10">
-          <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-6">
-             <ShieldCheck className="w-6 h-6 text-blue-500" />
-          </div>
-          <h1 className="text-2xl font-black italic uppercase tracking-tight text-white mb-2">Reset Password</h1>
-          <p className="text-gray-400 text-xs font-medium leading-relaxed max-w-[280px] mx-auto">
-            Enter your email address. We will send a password reset link to your inbox.
-          </p>
-        </div>
-
-        {sent ? (
-          <div className="text-center space-y-6 relative z-10">
-            <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-               <p className="text-sm font-bold text-emerald-500 mb-1">Email Sent</p>
-               <p className="text-[10px] text-emerald-500/70 uppercase tracking-widest font-mono">Check your inbox</p>
-            </div>
-            <p className="text-xs text-gray-400 leading-relaxed">
-               Please check <strong>{email}</strong> for instructions on how to reset your password. The link will expire shortly for security purposes.
-            </p>
-            <Link href="/login" className="btn-primary block w-full py-4 text-xs">
-              Back to Login
-            </Link>
-          </div>
+    <AuthSection 
+       title="Reset Password" 
+       subtitle="Enter your email to receive a password reset link."
+    >
+        {success ? (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-left space-y-6 py-6">
+             <div className="p-6 bg-blue-600/10 border border-blue-600/20 rounded-2xl flex items-center space-x-4 shadow-xl shadow-blue-900/10">
+                <div className="w-12 h-12 bg-blue-600/10 rounded-xl flex items-center justify-center border border-blue-500/10 shadow-lg">
+                   <ShieldCheck className="w-6 h-6 text-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.2)]" />
+                </div>
+                <div className="flex flex-col text-left">
+                   <p className="text-[11px] font-black text-white uppercase tracking-tighter italic">Link Sent</p>
+                   <p className="text-[9px] text-blue-500/60 uppercase tracking-widest font-black mt-1 italic">Check your email</p>
+                </div>
+             </div>
+             <p className="text-[11px] text-gray-700 font-bold uppercase tracking-widest leading-relaxed italic max-w-sm">
+                We have sent a reset link to your email. Please follow the instructions to reset your password.
+             </p>
+          </motion.div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-            {error && (
-               <div className="p-3 bg-red-500/10 border border-red-500/20 rounded text-xs text-red-500 font-medium text-center">
-                 {error}
-               </div>
-            )}
-            
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 flex items-center">
-                 <Mail className="w-3 h-3 mr-1.5" /> Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#050505] border border-white/10 rounded-xl py-3 px-4 text-sm font-medium text-white focus:outline-none focus:border-blue-500/50 transition-colors placeholder:text-gray-600"
-                placeholder="developer@example.com"
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-6 text-left">
+             {error && (
+               <motion.div 
+                 initial={{ opacity: 0, scale: 0.95 }}
+                 animate={{ opacity: 1, scale: 1 }}
+                 className="bg-red-500/5 border border-red-500/10 p-4 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center space-x-3 italic text-red-500 shadow-sm"
+               >
+                  <ShieldAlert className="w-4 h-4 shrink-0" />
+                  <span>{error}</span>
+               </motion.div>
+             )}
 
-            <button
-              type="submit"
-              disabled={loading || !email}
-              className="w-full btn-primary py-4 text-xs flex justify-center items-center disabled:opacity-50 transition-all hover:scale-[1.02] active:scale-95"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Send Reset Link</span>}
-            </button>
+             <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-700 uppercase tracking-widest ml-1 italic">Email Address</label>
+                <div className="relative group">
+                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-blue-500 transition-colors" />
+                   <input 
+                     type="email"
+                     required
+                     value={email}
+                     onChange={(e) => setEmail(e.target.value)}
+                     placeholder="you@example.com"
+                     className="w-full bg-[#0a0b14] border border-white/5 rounded-xl py-4 pl-12 pr-6 text-xs text-white placeholder-gray-800 focus:outline-none focus:border-blue-600/40 transition-all font-medium italic"
+                   />
+                </div>
+             </div>
 
-            <div className="text-center pt-4">
-              <Link href="/login" className="inline-flex items-center text-[10px] font-bold text-gray-500 hover:text-white uppercase tracking-widest transition-colors">
-                <ArrowLeft className="w-3 h-3 mr-1" /> Back to Login
-              </Link>
-            </div>
+             <button 
+               type="submit" 
+               disabled={isLoading}
+               className="group w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center space-x-3 shadow-lg disabled:opacity-20 italic active:scale-95"
+             >
+                {isLoading ? (
+                   <Loader2 className="w-4 h-4 animate-spin mx-auto text-white" />
+                ) : (
+                  <>
+                     <Zap className="w-3.5 h-3.5 group-hover:animate-pulse" />
+                     <span>Send Reset Link</span>
+                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+             </button>
           </form>
         )}
-      </div>
-    </div>
+
+        <div className="mt-12 text-center border-t border-white/[0.03] pt-6 italic">
+           <Link href="/login" className="flex items-center justify-center space-x-2 text-gray-700 hover:text-white transition-all group active:scale-95">
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-[10px] font-black uppercase tracking-widest underline underline-offset-8 decoration-white/5">Back to Login</span>
+           </Link>
+        </div>
+    </AuthSection>
   );
 }

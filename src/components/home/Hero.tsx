@@ -17,7 +17,7 @@ const Hero = () => {
     const fetchGlobalStats = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-        const res = await fetch(`${baseUrl}/users/admin-stats`);
+        const res = await fetch(`${baseUrl}/users/public-stats`);
         if (res.ok) {
           const data = await res.json();
           setStats({

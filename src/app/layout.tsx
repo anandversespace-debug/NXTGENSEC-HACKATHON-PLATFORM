@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/layout/AuthProvider';
 import LayoutWrapper from '@/components/layout/LayoutWrapper';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { SignalListener } from '@/components/layout/SignalListener';
+
 export default function RootLayout({
   children,
 }: {
@@ -25,11 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <AuthProvider>
-          <LayoutWrapper>
-            {children}
-          </LayoutWrapper>
-        </AuthProvider>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+          <AuthProvider>
+            <SignalListener />
+            <LayoutWrapper>
+              {children}
+            </LayoutWrapper>
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

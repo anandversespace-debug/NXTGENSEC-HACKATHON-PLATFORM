@@ -46,7 +46,7 @@ export default function AboutPage() {
             transition={{ delay: 0.1 }}
             className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white leading-tight"
           >
-            Securing the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 text-left">Modern</span> Future
+            Building a <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 text-left">Secure</span> Future
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -95,7 +95,7 @@ export default function AboutPage() {
                  <Network className="w-3.5 h-3.5 text-blue-500" />
                  <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Our Method</span>
               </div>
-              <h2 className="text-2xl font-black italic uppercase tracking-tight text-white leading-tight">Collective Intelligence for Better Code.</h2>
+              <h2 className="text-2xl font-black italic uppercase tracking-tight text-white leading-tight">Building Better Software Together.</h2>
               <div className="space-y-4 text-xs text-gray-400 leading-relaxed font-medium uppercase tracking-tight">
                 <p>
                   Building secure software should be a community effort. We believe that by bringing together thousands of developers, we can find and fix issues faster than any single team.
@@ -127,7 +127,7 @@ export default function AboutPage() {
                  </div>
                  <pre className="text-[10px] font-mono text-gray-400 leading-wider overflow-x-hidden">
                     <code>
-                      <span className="text-blue-400">import</span> {'{'} SecurityCore {'}'} <span className="text-blue-400">from</span> '@nxtgensec/core';<br/><br/>
+                       <span className="text-blue-400">import</span> {'{'} SecurityCore {'}'} <span className="text-blue-400">from</span> &apos;@nxtgensec/core&apos;;<br/><br/>
                       <span className="text-purple-400">const</span> initPlatform = <span className="text-blue-400">async</span> () ={'>'} {'{'}<br/>
                       &nbsp;&nbsp;<span className="text-gray-500">// Connect to community network</span><br/>
                       &nbsp;&nbsp;<span className="text-amber-300">await</span> SecurityCore.syncMembers();<br/>

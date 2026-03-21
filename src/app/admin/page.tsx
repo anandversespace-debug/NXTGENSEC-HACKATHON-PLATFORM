@@ -13,7 +13,7 @@ export default function AdminPage() {
         // but if we are here, we just push to dashboard.
         router.push('/admin/dashboard');
     } else {
-        router.push('/admin/login');
+        router.push('/login');
     }
   }, [router]);
 

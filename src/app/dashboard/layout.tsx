@@ -47,14 +47,16 @@ const DashboardSidebar = () => {
   const handleLogout = async () => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const endpoint = baseUrl.endsWith('/api') ? '/auth/logout' : '/api/auth/logout';
-      await fetch(`${baseUrl}${endpoint}`, { credentials: 'include' });
+      // Robust URL joining
+      const logoutUrl = `${baseUrl.replace(/\/$/, '')}/auth/logout`;
+      await fetch(logoutUrl, { method: 'GET', credentials: 'include' }).catch(() => {});
     } catch (err) {
-      console.error('Logout failed:', err);
+      console.warn('Network logout signal failed, proceeding with local purge.');
+    } finally {
+      localStorage.removeItem('token');
+      logout();
+      window.location.href = '/login';
     }
-    localStorage.removeItem('token');
-    logout();
-    window.location.href = '/login';
   };
 
   return (
@@ -89,30 +91,35 @@ const DashboardSidebar = () => {
           );
         })}
 
-        {/* Judge specific section if applicable */}
-        {(role === 'judge' || role === 'admin') && (
+        {/* Organizer specific section if applicable */}
+        {(role === 'organizer' || role === 'admin') && (
           <>
-            <div className="pt-6 pb-2">
-               <p className="text-[9px] font-bold uppercase text-gray-700 tracking-wider ml-3">Judging Panel</p>
+            <div className="pt-8 pb-3">
+               <p className="text-[9px] font-black uppercase text-gray-700 tracking-[0.2em] ml-3 italic">Autonomous Organizer</p>
             </div>
-            {judgeExtraItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group",
-                    isActive 
-                      ? "bg-amber-600/10 text-amber-500 border border-amber-500/20" 
-                      : "text-gray-500 hover:text-gray-200 hover:bg-white/[0.02] border border-transparent"
-                  )}
-                >
-                  <item.icon className={cn("w-4 h-4", isActive ? "text-amber-500" : "text-gray-700 group-hover:text-gray-500")} />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
+            <Link
+              href="/organizer"
+              className={cn(
+                "flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-black transition-all group",
+                pathname.startsWith('/organizer')
+                  ? "bg-amber-600/10 text-amber-500 border border-amber-500/20 shadow-lg shadow-amber-900/10" 
+                  : "text-gray-500 hover:text-amber-400 hover:bg-amber-600/[0.05] border border-transparent"
+              )}
+            >
+              <Gavel className="w-4 h-4 text-amber-500" />
+              <span className="uppercase tracking-tighter italic">Organizer Portal</span>
+            </Link>
+            
+            {/* Keeping submission link as it was useful for evaluation before */}
+            <Link
+              href="/dashboard/submissions"
+              className={cn(
+                "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group mt-2 text-gray-500 hover:text-gray-300 hover:bg-white/[0.02]"
+              )}
+            >
+              <CheckSquare className="w-4 h-4 text-gray-700" />
+              <span>Submission Queue</span>
+            </Link>
           </>
         )}
       </nav>
@@ -145,7 +152,7 @@ export default function DashboardLayout({
         <DashboardSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <DashboardHeader />
-          <main className="ml-56 pt-24 pb-12 px-8 overflow-x-hidden">
+          <main className="ml-56 pt-24 pb-12 px-8">
             <div className="max-w-6xl mx-auto">
               {children}
             </div>

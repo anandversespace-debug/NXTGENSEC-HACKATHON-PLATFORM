@@ -84,7 +84,12 @@ const Navbar = () => {
           
           {isAuthenticated ? (
             <div className="flex items-center space-x-4 lg:space-x-6">
-              {(role === 'admin' || role === 'judge') && (
+              {(role === 'admin' || role === 'organizer' || role === 'judge') && (
+                <Link href="/organizer" className="text-[10px] font-bold uppercase text-emerald-500 hover:text-emerald-400 tracking-[0.2em] transition-colors border-r border-white/10 pr-4 lg:pr-6">
+                  Organizer
+                </Link>
+              )}
+              {role === 'admin' && (
                 <Link href="/admin" className="text-[10px] font-bold uppercase text-blue-500 hover:text-blue-400 tracking-[0.2em] transition-colors border-r border-white/10 pr-4 lg:pr-6">
                   Admin
                 </Link>

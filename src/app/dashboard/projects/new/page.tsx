@@ -46,6 +46,7 @@ export default function DashboardProjectNewPage() {
       const res = await fetch(`${baseUrl}/uploads/single`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
+        credentials: 'include',
         body: fd
       });
       
@@ -87,6 +88,7 @@ export default function DashboardProjectNewPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}` 
         },
+        credentials: 'include',
         body: JSON.stringify(payload)
       });
 

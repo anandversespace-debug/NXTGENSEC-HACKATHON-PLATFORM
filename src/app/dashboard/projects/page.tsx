@@ -19,7 +19,8 @@ export default function DashboardProjectsPage() {
         const res = await fetch(`${baseUrl}/projects/my`, {
           headers: {
             'Authorization': `Bearer ${token}`
-          }
+          },
+          credentials: 'include'
         });
         if (!res.ok) throw new Error('Failed to fetch personal projects.');
         const data = await res.json();
@@ -32,6 +33,28 @@ export default function DashboardProjectsPage() {
     };
     fetchMyProjects();
   }, []);
+
+  const handleDeleteProject = async (projectId: string) => {
+    if (!confirm('Are you sure you want to delete this project? This operation cannot be undone.')) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${baseUrl}/projects/${projectId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (res.ok) {
+        setProjects(prev => prev.filter(p => p._id !== projectId));
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete project.');
+      }
+    } catch (err) {
+      console.error('Delete Project Error:', err);
+    }
+  };
 
   const filteredProjects = projects.filter(p => 
     p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -85,7 +108,7 @@ export default function DashboardProjectsPage() {
                  </div>
                  <div className="flex items-center space-x-2">
                     <span className="text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-tighter border bg-emerald-500/10 text-emerald-500 border-emerald-500/20 italic">
-                      Active
+                      {project.status || 'Active'}
                     </span>
                  </div>
               </div>
@@ -101,7 +124,7 @@ export default function DashboardProjectsPage() {
 
               <div className="mt-8 pt-6 border-t border-white/[0.03] flex flex-col gap-4 relative z-10">
                  <div className="flex flex-wrap gap-2">
-                    {(project.technologies || []).map((t: string) => (
+                    {(project.tech_stack || []).map((t: string) => (
                       <span key={t} className="text-[8px] font-bold text-gray-600 bg-white/5 border border-white/5 px-2 py-0.5 rounded-sm uppercase tracking-widest group-hover:text-gray-400 transition-colors">{t}</span>
                     ))}
                  </div>
@@ -115,7 +138,10 @@ export default function DashboardProjectsPage() {
                        <Link href={`/dashboard/projects/${project._id}/edit`} className="p-2 text-gray-700 hover:text-white transition-all bg-white/5 rounded-lg border border-transparent hover:border-white/10">
                           <Edit3 className="w-3.5 h-3.5" />
                        </Link>
-                       <button className="p-2 text-gray-700 hover:text-red-500 transition-all bg-white/5 rounded-lg border border-transparent hover:border-red-500/20">
+                       <button 
+                         onClick={() => handleDeleteProject(project._id)}
+                         className="p-2 text-gray-700 hover:text-red-500 transition-all bg-white/5 rounded-lg border border-transparent hover:border-red-500/20"
+                       >
                           <Trash2 className="w-3.5 h-3.5" />
                        </button>
                     </div>
@@ -131,7 +157,7 @@ export default function DashboardProjectsPage() {
           {filteredProjects.length === 0 && (
             <div className="col-span-full py-20 text-center border border-dashed border-white/5 rounded-3xl">
                <FolderCode className="w-12 h-12 text-gray-800 mx-auto mb-4 opacity-50" />
-               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 italic">No projects yet.</p>
+               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-700 italic">No projects found.</p>
             </div>
           )}
         </div>

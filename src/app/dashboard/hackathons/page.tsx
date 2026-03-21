@@ -18,7 +18,8 @@ export default function DashboardHackathonsPage() {
         const res = await fetch(`${baseUrl}/hackathons/my`, {
           headers: {
             'Authorization': `Bearer ${token}`
-          }
+          },
+          credentials: 'include'
         });
         if (!res.ok) throw new Error('Failed to fetch your hackathons.');
         const data = await res.json();

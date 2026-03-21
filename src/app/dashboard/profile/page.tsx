@@ -20,6 +20,8 @@ export default function DashboardProfilePage() {
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -30,7 +32,8 @@ export default function DashboardProfilePage() {
     github: user?.github || '',
     twitter: user?.twitter || '',
     portfolio: user?.portfolio || '',
-    skills: Array.isArray(user?.skills) ? user.skills.join(', ') : (user?.skills || '')
+    skills: Array.isArray(user?.skills) ? user.skills.join(', ') : (user?.skills || ''),
+    picture: user?.picture || user?.avatar_url || ''
   });
 
   // Sync with store once user is loaded
@@ -44,10 +47,46 @@ export default function DashboardProfilePage() {
         github: user.github || '',
         twitter: user.twitter || '',
         portfolio: user.portfolio || '',
-        skills: Array.isArray(user.skills) ? user.skills.join(', ') : (user.skills || '')
+        skills: Array.isArray(user.skills) ? user.skills.join(', ') : (user.skills || ''),
+        picture: user.picture || user.avatar_url || ''
       });
     }
   }, [user]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setUploading(true);
+    setError('');
+    try {
+      const token = localStorage.getItem('token');
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const fd = new FormData();
+      fd.append('file', file);
+      
+      const res = await fetch(`${baseUrl}/uploads/single`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        credentials: 'include',
+        body: fd
+      });
+      
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setFormData(prev => ({ ...prev, picture: data.url }));
+        // Also update backend immediately to persist profile pic change if user wants
+        // Or wait for save. Waiting for save is better.
+      } else {
+        setError('Image upload failed.');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Upload failed.');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,12 +102,13 @@ export default function DashboardProfilePage() {
         skills: formData.skills.split(',').map((s: string) => s.trim()).filter((s: string) => s !== '')
       };
 
-      const res = await fetch(`${baseUrl}/users/${user?.id}`, {
+      const res = await fetch(`${baseUrl}/users/${user?.id || user?._id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify(payload)
       });
 
@@ -106,20 +146,28 @@ export default function DashboardProfilePage() {
             <div className="bg-[#0c0c0c] border border-white/5 rounded-xl p-8 text-center relative overflow-hidden group">
                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-500 to-indigo-500"></div>
                
-               <div className="w-24 h-24 mx-auto bg-[#050505] border border-white/10 rounded-2xl flex items-center justify-center mb-6 relative group-hover:border-blue-500/50 transition-colors">
-                  <User className="w-10 h-10 text-gray-500 group-hover:scale-110 transition-transform duration-500" />
-                  <div className="absolute -bottom-2 -right-2 bg-blue-600 border-2 border-[#0c0c0c] rounded-full p-1 cursor-pointer hover:bg-blue-500">
-                     <Cpu className="w-3" />
-                  </div>
+               <div className="w-24 h-24 mx-auto bg-[#050505] border border-white/10 rounded-2xl flex items-center justify-center mb-6 relative group-hover:border-blue-500/50 transition-colors overflow-hidden">
+                  {formData.picture ? (
+                    <img src={formData.picture} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-10 h-10 text-gray-500 group-hover:scale-110 transition-transform duration-500" />
+                  )}
+                  {uploading && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                       <Cpu className="w-5 animate-spin text-blue-500" />
+                    </div>
+                  )}
                </div>
 
-               <h2 className="text-lg font-black italic uppercase text-white mb-1 tracking-tight">{formData.fullName}</h2>
+               <h2 className="text-lg font-black italic uppercase text-white mb-1 tracking-tight truncate">{formData.fullName}</h2>
                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest font-mono">@{formData.username}</p>
                
-               <div className="mt-8 flex justify-center space-x-2 border-t border-white/[0.03] pt-6">
-                  <button type="button" className="text-[9px] font-bold text-gray-400 border border-white/10 px-4 py-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-colors uppercase tracking-widest">
-                    Change Photo
-                  </button>
+               <div className="mt-8 flex flex-col items-center border-t border-white/[0.03] pt-6">
+                  <label className="cursor-pointer text-[9px] font-bold text-gray-400 border border-white/10 px-6 py-2.5 rounded-lg bg-white/[0.02] hover:bg-blue-600/10 hover:border-blue-500/20 hover:text-blue-500 transition-all uppercase tracking-widest italic">
+                    {uploading ? 'Processing...' : 'Upload Signal'}
+                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
+                  </label>
+                  {error && <p className="text-[8px] text-red-500 mt-2 font-black uppercase tracking-widest">{error}</p>}
                </div>
             </div>
          </div>

@@ -19,27 +19,24 @@ export async function middleware(request: NextRequest) {
   }
 
   const user = token ? decodeJWT(token) : null;
-  const isAdmin = user?.role === 'admin' || user?.role === 'judge';
+  const isAdmin = user?.role === 'admin' || user?.role === 'organizer';
 
-  // 1. Handle Admin Routes
+  // 1. Handle Admin Routes & Consolidate Login
+  if (pathname === '/admin/login') {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
   if (pathname === '/admin') {
     if (isAdmin) {
        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
     } else {
-       return NextResponse.redirect(new URL('/admin/login', request.url));
+       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  if (pathname.startsWith('/admin')) {
     if (!isAdmin) {
-      const adminLoginUrl = new URL('/admin/login', request.url);
-      return NextResponse.redirect(adminLoginUrl);
-    }
-  }
-
-  if (pathname === '/admin/login') {
-    if (isAdmin) {
-      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
@@ -52,12 +49,15 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Handle Auth Pages (Login, Signup) for users
+  // 3. Handle Auth Pages (Login, Signup) for already authenticated users
   if (pathname === '/login' || pathname === '/signup') {
     if (token) {
-      // If an admin tries to visit /login, they probably want dashboard too, 
-      // but maybe they want the admin panel? Let's just go to dashboard if user exists.
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+      // Role-based auto-redirection if already logged in
+      if (isAdmin) {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+      } else {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
     }
   }
 

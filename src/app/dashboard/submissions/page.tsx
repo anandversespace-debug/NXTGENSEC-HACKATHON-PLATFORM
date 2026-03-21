@@ -34,7 +34,8 @@ export default function DashboardSubmissionsPage() {
         const res = await fetch(`${baseUrl}/projects/submissions`, {
           headers: {
             'Authorization': `Bearer ${token}`
-          }
+          },
+          credentials: 'include'
         });
         if (!res.ok) throw new Error('Failed to fetch submission registry.');
         const data = await res.json();
@@ -53,7 +54,7 @@ export default function DashboardSubmissionsPage() {
     sub.hackathon_id?.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const isJudge = user?.role === 'judge' || user?.role === 'admin';
+  const isJudge = user?.role === 'organizer' || user?.role === 'admin';
 
   return (
     <div className="space-y-6">

@@ -1,133 +1,59 @@
-# NxtGenSec Innovation Ecosystem | Platform Documentation
+# NxtGenSec | Frontend Engine Documentation
 
-## Platform Overview
-The **NxtGenSec Innovation Ecosystem** is a centralized developer hub and innovation registry. It serves as a comprehensive platform for managing digital solutions, hosting community hackathons, publishing technical audits/blogs, and orchestrating a robust user/admin hierarchy. 
+[![Framework: Next.js 16](https://img.shields.io/badge/Framework-Next.js%2016-black.svg)](https://nextjs.org)
+[![UI: Tailwind CSS v4](https://img.shields.io/badge/UI-Tailwind%20CSS%20v4-blue.svg)](https://tailwindcss.com)
+[![State: Zustand](https://img.shields.io/badge/State-Zustand-orange.svg)](https://zustand-demo.pmnd.rs)
 
----
-
-## 🚀 Tech Stack
-
-### Frontend Architecture
-- **Framework**: Next.js 16 (App Router)
-- **UI Library**: React 19
-- **Styling**: Tailwind CSS v4
-- **Animations**: Framer Motion
-- **Icons**: Lucide React
-- **State Management**: Zustand
-- **Form/Validation**: Native React + Controlled inputs
-- **Build Tool**: Next.js compiler
-
-### Backend Architecture
-- **Server**: Node.js & Express.js 
-- **Database**: MongoDB Atlas (via Mongoose ODM)
-- **Authentication**: Custom JWT-based stateless auth (HTTP-only cookies & headers)
-- **File Storage**: Cloudinary (integrated via Multer)
-- **Communications**: Nodemailer (SMTP fallback systems)
-- **Security**: Helmet headers, Express Rate Limiting, CORS configuration, BcryptJS
+The **NxtGenSec Frontend** is a high-fidelity, React-powered interface designed for millisecond-latency interaction and real-time achievement broadcasting. It leverages Next.js 16's App Router for optimized server-side rendering and edge delivery.
 
 ---
 
-## 📂 Core Directory Structure
+## 🏛️ UI/UX Architecture
 
-### `/BACKEND`
-The Node.js and Express backend handles robust business logic, validations, and database interactions:
-- **`config/`**: Database and Cloudinary configuration files.
-- **`controllers/`**: Logic for models (auth, blog, email, hackathon, notification, project, upload, user).
-- **`middleware/`**: JWT authentication and role-based access control.
-- **`models/`**: Mongoose schemas (`Blog`, `Comment`, `Hackathon`, `Project`, `Registration`, `User`).
-- **`routes/`**: Express route definitions mapped to controllers.
-- **`utils/`**: Helper methods like error handling, token generation.
+Our design system follows a **"Cyber-Premium"** aesthetic, utilizing high-contrast HSL color palettes, Glassmorphism, and Framer Motion micro-animations.
 
-### `/frontend/src`
-The Next.js 16 application:
-- **`app/`**: Next.js App Router implementation. Contains all public and protected routes.
-- **`components/`**: Reusable UI, layout, and functional components.
-- **`lib/`**: Utility functions, API interceptors, system settings.
-- **`store/`**: Zustand global state slices.
-- **`types/`**: TypeScript interfaces and definitions.
+### Key Components
+- **`SignalListener`**: Root-level real-time engine that processes incoming Socket.io achievement and status nodes without UI blocking.
+- **`Telemetry Hub`**: Interactive React-based charts using **Recharts** for visualized platform growth.
+- **`Search Intelligence`**: Client-side and server-side search providers integrated with the backend global crawler.
 
 ---
 
-## 🗺️ Navigation Topology (Routes Matrix)
+## 📂 Internal Directory Map
 
-### 1. Global Presence & Authentication
-- **`/`**: The landing interface. Showcases the core mission and ecosystem highlights.
-- **`/login`**, **`/signup`**: User identity verification and self-registration.
-- **`/forgot-password`**, **`/reset-password`**: Credential recovery flow.
-- **`/onboarding`**: Initial setup and profile completion for new nodes.
-
-### 2. Community Layer
-- **`/projects`**: Decentralized repository for platform innovations.
-- **`/projects/[id]`**: Detailed technical specifications and audit status for a solution.
-- **`/hackathons`**: Registry of active sprint challenges and developmental events.
-- **`/hackathons/[id]`**: Individual event details and registration requirements.
-- **`/blog`**: Platform updates, ecosystem news, and technical audits.
-- **`/leaderboard`**: Gamified ranking of users based on contributions and hackathon placements.
-- **`/hub`**, **`/community`**: Centralized interaction zones.
-
-### 3. User Workspace
-- **`/dashboard`**: Personal operations center. View active projects, participation metrics, and recent activity.
-- **`/profile`**: Primary identity management interface.
-- **`/about`**, **`/contact`**, **`/docs`**: Static information and support modules.
-
-### 4. Administrative Control (Protected `Role: Admin`)
-- **`/admin`**: Global dashboard for ecosystem metrics.
-- **`/admin/users`**: User lifecycle management and identity verification.
-- **`/admin/projects`**: Global project management and audit reviews.
-- **`/admin/hackathons`**: Orchestration of community events.
-- **`/admin/notifications`**: Broadcast system to send alerts.
+- **`app/`**: Route definitions following the Next.js 16 App Router standard.
+  - **`admin/`**: Elevated clearance dashboards for L3 system management.
+  - **`organizer/`**: Role-specific terminal for event orchestration.
+  - **`dashboard/`**: Developer workspaces and submission registries.
+  - **`docs/`**: Dynamic knowledge base for platform intelligence.
+- **`components/`**: Modularized UI elements (Dashboards, Tables, Loaders).
+- **`store/`**: Global state management via Zustand (Auth sessions, UI states).
+- **`lib/`**: Axios interceptors, Signal handlers, and identity validation scripts.
 
 ---
 
-## ⚙️ Core Operational Logic
+## 📡 Real-Time Protocol
 
-### Data Flow & State
-The frontend utilizes a combination of Server Components (for SEO and initial load speed) and Client Components (for interactivity) using Next.js 16. **Zustand** manages global client state, particularly for the authenticated User session, ensuring that the UI reflects the user's permissions seamlessly.
-
-### Security
-The platform heavily relies on secure, HttpOnly cookies set by the Node.js backend. The frontend middleware or route guards intercept unauthorized access, checking for valid tokens before rendering private routes like `/dashboard` or `/admin`. The backend validates all requests against JWT signatures and ensures role-based endpoints are restricted.
-
-### Media & Storage
-User avatars, project screenshots, and hackathon banners are streamed through `multer` straight to **Cloudinary**, preventing server bloat and leveraging a global CDN for high-performance delivery.
-
-### Communications
-Notifications and authentication flows (like password resets) utilize standard email delivery via **Nodemailer**, with custom accuracy scripts ensuring validation despite SMTP blockers.
+We utilize **Socket.io-client** to synchronize state between the client and the persistent backend node. 
+- ** achievement_trigger**: Broadcasts high-fidelity signals when projects are verified.
+- ** system_pulse**: Synchronizes platform-wide telemetry without page reloads.
 
 ---
 
-## 🚀 Setup & Execution
+## ⚙️ Development Ignition
 
-### Environment Variables
-You will need `.env` files in both directories.
-
-**Backend `.env`**:
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-FRONTEND_URL=http://localhost:3000
-CLOUDINARY_CLOUD_NAME=your_name
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
-SMTP_HOST=your_smtp
-SMTP_PORT=your_port
-SMTP_USER=your_user
-SMTP_PASS=your_pass
-```
-
-**Frontend `.env.local`**:
+### 1. Configure Local Node
+Ensure `frontend/.env.local` contains the correct backend terminal path:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
 
-### Installation
-1. Navigate to both `/BACKEND` and `/frontend` and run `npm install`.
-2. Start the backend: `npm run dev` (Runs on `localhost:5000`).
-3. Start the frontend: `npm run dev` (Runs on `localhost:3000`).
+### 2. Launch Sequence
+```bash
+npm install
+npm run dev
+```
 
 ---
 
-## 🌐 Deployment
-The platform is optimized for seamless deployment:
-- **Frontend**: Designed for Vercel, utilizing Next.js App Router optimizations.
-- **Backend**: Structured for cloud PaaS (Render, Heroku) or containerized deployment, utilizing MongoDB Atlas for remote data persistence.
+© 2026 NxtGenSec Frontend Group. Built for the future of global innovation.

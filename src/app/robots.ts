@@ -1,20 +1,18 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://nxtgensec.vercel.app';
-
   return {
     rules: {
       userAgent: '*',
       allow: '/',
       disallow: [
-        '/admin/', 
-        '/api/', 
-        '/dashboard/', 
-        '/profile/', 
-        '/settings/'
+        '/admin/',
+        '/dashboard/',
+        '/api/',
+        '/organizer/',
       ],
     },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: 'http://localhost:3000/sitemap.xml',
+    host: 'http://localhost:3000',
   };
 }

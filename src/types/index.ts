@@ -28,10 +28,11 @@ export interface Hackathon {
 
 export interface UserProfile {
   id: string;
+  _id?: string;
   username: string;
   name: string;
   email: string;
-  role: 'admin' | 'judge' | 'developer' | 'viewer';
+  role: 'admin' | 'organizer' | 'developer' | 'viewer' | 'judge' | null;
   avatar_url?: string;
   bio?: string;
   location?: string;
@@ -40,9 +41,18 @@ export interface UserProfile {
   portfolio?: string;
   skills?: string[];
   onboarded?: boolean;
+  picture?: string;
   social_links?: {
     github?: string;
     twitter?: string;
     linkedin?: string;
   };
+  newsletterSubscribed?: boolean;
+  twoFactorEnabled?: boolean;
+  notifications?: {
+    security: boolean;
+    hackathons: boolean;
+    recommendations: boolean;
+  };
+  passkeys?: any[];
 }

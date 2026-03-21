@@ -1,26 +1,47 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { 
   Bell, 
   Search, 
-  User, 
-  ChevronDown,
   LayoutDashboard,
   Trophy,
   FolderLock,
   CheckSquare,
   BarChart2,
-  Settings,
-  BellRing
+  Settings
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/useAuthStore';
+import Link from 'next/link';
 
 const DashboardHeader = () => {
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
+  const [hasUnread, setHasUnread] = useState(false);
+
+  useEffect(() => {
+    const checkUnread = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${baseUrl}/notifications`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setHasUnread(data.some((n: any) => !n.isRead));
+        }
+      } catch (err) {
+        // Silent fail
+      }
+    };
+    checkUnread();
+    // Re-check periodically
+    const interval = setInterval(checkUnread, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const getPageTitle = () => {
     const path = pathname.split('/').pop();
@@ -65,20 +86,26 @@ const DashboardHeader = () => {
         </div>
 
         {/* Notifications */}
-        <button className="relative p-2 text-gray-500 hover:text-white transition-colors group">
+        <Link href="/dashboard/notifications" className="relative p-2 text-gray-500 hover:text-white transition-colors group">
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-blue-500 rounded-full border border-[#050505] animate-pulse shadow-[0_0_5px_rgba(59,130,246,0.5)]"></span>
-        </button>
+          {hasUnread && (
+            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-blue-500 rounded-full border border-[#050505] animate-pulse shadow-[0_0_5px_rgba(59,130,246,0.5)]"></span>
+          )}
+        </Link>
 
         {/* User Profile Summary */}
         <div className="flex items-center space-x-3 pl-6 border-l border-white/5">
-          <div className="text-right hidden sm:block">
-            <p className="text-[10px] font-black text-gray-200 uppercase tracking-tighter leading-none mb-0.5 italic">{user?.name || 'Authorized Node'}</p>
-            <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest leading-none">@{user?.username || 'unknown'}</p>
+          <div className="text-right hidden sm:block text-left">
+            <p className="text-[10px] font-black text-gray-200 uppercase tracking-tighter leading-none mb-0.5 italic text-right">{user?.name || 'Operator Node'}</p>
+            <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest leading-none text-right">@{user?.username || 'unknown'}</p>
           </div>
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600/20 to-violet-600/20 border border-white/10 flex items-center justify-center font-black text-[10px] text-blue-400 shadow-xl shadow-blue-900/10 active:scale-95 transition-transform cursor-pointer">
-            {user?.name?.[0] || 'U'}
-          </div>
+          <Link href="/dashboard/settings" className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600/20 to-violet-600/20 border border-white/10 flex items-center justify-center font-black text-[10px] text-blue-400 shadow-xl shadow-blue-900/10 active:scale-95 transition-transform cursor-pointer overflow-hidden">
+            {user?.picture ? (
+              <img src={user.picture} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              (user?.name?.[0] || 'U').toUpperCase()
+            )}
+          </Link>
         </div>
       </div>
     </header>

@@ -18,7 +18,7 @@ interface AppState {
   // Auth State
   user: UserProfile | null;
   isAuthenticated: boolean;
-  role: 'admin' | 'judge' | 'developer' | 'viewer';
+  role: 'admin' | 'organizer' | 'developer' | 'viewer' | 'judge';
   
   // Data State
   projects: Project[];

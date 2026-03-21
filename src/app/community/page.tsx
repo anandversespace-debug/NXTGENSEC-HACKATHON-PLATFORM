@@ -150,13 +150,13 @@ const CommunityPage = () => {
 
                 <div className="flex items-start space-x-6 mb-8">
                    <div className="relative">
-                      <div className="w-16 h-16 rounded-xl bg-[#050505] border border-white/10 overflow-hidden p-1 group-hover:border-blue-500/30 transition-all duration-700 flex items-center justify-center">
-                         {dev.avatar_url ? (
-                           <img src={dev.avatar_url} alt={dev.name} className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 rounded-lg" />
-                         ) : (
-                           <User className="w-8 h-8 text-gray-800" />
-                         )}
-                      </div>
+                       <div className="w-16 h-16 rounded-xl bg-[#050505] border border-white/10 overflow-hidden p-1 group-hover:border-blue-500/30 transition-all duration-700 flex items-center justify-center">
+                          {dev.picture || dev.avatar_url ? (
+                            <img src={dev.picture || dev.avatar_url} alt={dev.name} className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 rounded-lg" />
+                          ) : (
+                            <User className="w-8 h-8 text-gray-800" />
+                          )}
+                       </div>
                       <div className="absolute -bottom-1 -right-1 bg-blue-600 rounded p-1 border border-[#0c0c0c] shadow-xl">
                          <ShieldCheck className="w-3.5 h-3.5 text-white" />
                       </div>
