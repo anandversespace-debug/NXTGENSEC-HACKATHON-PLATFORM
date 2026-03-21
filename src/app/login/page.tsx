@@ -223,7 +223,7 @@ const LoginPage = () => {
                      <GoogleLogin 
                        onSuccess={(c) => c.credential && handleOAuthSuccess(c.credential, 'google')}
                        onError={() => setError('Google link failed')}
-                       theme="filled_black" shape="pill" width="100%" text="continue_with"
+                       theme="filled_black" shape="pill" width={320} text="continue_with"
                      />
                    </div>
                    

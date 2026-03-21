@@ -22,7 +22,15 @@ export const SignalListener = () => {
       return;
     }
 
-    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
+    const getBaseUrl = () => {
+      try {
+        const url = new URL(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api');
+        return `${url.protocol}//${url.host}`;
+      } catch (e) {
+        return 'http://localhost:5000';
+      }
+    };
+    const baseUrl = getBaseUrl();
     
     if (!socket) {
       socket = io(baseUrl, {
