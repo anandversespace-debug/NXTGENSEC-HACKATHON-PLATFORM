@@ -30,13 +30,14 @@ const AdminSidebar = () => {
 
   const menuItems = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Users', href: '/admin/users', icon: Users },
-    { name: 'Projects', href: '/admin/projects', icon: FolderLock },
-    { name: 'Hackathons', href: '/admin/hackathons', icon: Trophy },
-    { name: 'Submissions', href: '/admin/submissions', icon: Gavel },
-    { name: 'Blogs', href: '/admin/blogs', icon: FileText },
-    { name: 'Analytics', href: '/admin/analytics', icon: PieChart },
-    { name: 'Notifications', href: '/admin/notifications', icon: Bell },
+    { name: 'Nodes & Roles', href: '/admin/users', icon: ShieldAlert },
+    { name: 'Infrastructure', href: '/admin/projects', icon: FolderLock },
+    { name: 'Global Events', href: '/admin/hackathons', icon: Trophy },
+    { name: 'Audit Pipeline', href: '/admin/submissions', icon: Gavel },
+    { name: 'Intelligence', href: '/admin/blogs', icon: FileText },
+    { name: 'Telemetry', href: '/admin/analytics', icon: PieChart },
+    { name: 'Broadcast', href: '/admin/notifications', icon: Bell },
+    { name: 'Configuration', href: '/admin/settings', icon: Settings },
   ];
 
   const handleLogout = async () => {

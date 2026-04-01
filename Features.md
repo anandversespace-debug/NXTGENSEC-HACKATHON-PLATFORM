@@ -1,64 +1,64 @@
 # Platform Features & Integrations Registry
 
-This document serves as the central repository for all functional protocol modules and external mission-critical integrations configured on the Hackathon OS platform.
+This document serves as the central repository for all functional protocol modules and external mission-critical integrations configured on the NxtGenSec Hackathon OS platform.
 
 ## 1. Core Authentication & Identity Node
-The platform utilizes a multi-layer authentication engine designed for maximum security and ease of access.
+The platform utilizes a multi-layer authentication engine designed for maximum security and ease of access across diverse roles.
 
 ### 🛠️ Integration Details
 - **Multi-Source OAuth**: 
-  - **Google**: Integrated using `google-auth-library`. The client-side sends an `idToken` to the server, which is then verified via `OAuth2Client.verifyIdToken()` to extract verified email and identity payloads.
-  - **GitHub**: Implemented via a custom OAuth flow using `axios`. The server initializes a redirect to GitHub, exchanges the `code` for an `access_token`, and fetches primary verified emails to ensure identity integrity.
+  - **Google**: Integrated using `google-auth-library`. Features server-side `idToken` verification for seamless account creation and merging.
+  - **GitHub**: Custom OAuth flow for developer-centric identity verification, including retrieval of verified emails and repository access tokens.
 - **Local Protocol**: 
-  - **Security**: Passwords are multi-layered using `bcryptjs` for hashing (10 salts) and `jsonwebtoken` (JWT) for session persistence.
-  - **Session Management**: Dual-cookie strategy. `nxg_auth` is a secure, `HttpOnly` cookie for server-side validation, while `nxg_user_data` (non-HttpOnly) allows seamless client-side hydration without repeated API calls.
+  - **Security**: Passwords hashed with `bcryptjs` (Cost factor: 10) and session persistence via `jsonwebtoken` (JWT).
+  - **Session Management**: Strategic dual-cookie system. `nxg_auth` (Secure/HttpOnly) handles backend authorization, while `nxg_user_data` hydrates the client-side state machine.
 - **Advanced Security**:
-  - **2FA/MFA**: Time-based One-Time Passwords (TOTP) supported via `speakeasy`, allowing users to link authenticator apps.
-  - **RBAC**: A higher-order function `restrictTo('organizer', 'admin', 'judge')` acts as a middleware gatekeeper for all protected routes.
+  - **2FA/MFA**: Full support for TOTP (Time-based One-Time Passwords) via `speakeasy`, compatible with Google Authenticator and Authy.
+  - **WebAuthn/Passkeys**: Experimental support for biometric-grade authentication (built with `@simplewebauthn`).
+  - **RBAC (Role Based Access Control)**: Granular access control for `admin`, `organizer`, `judge`, `developer`, and `viewer` roles, enforced via specialized HoF middleware.
 
 ## 2. Integrated Hackathon Engine
-A full-stack ecosystem to manage competitive code deployments.
+A robust full-stack ecosystem for managing high-stakes code competitions and project audits.
 
 ### 🛠️ Integration Details
 - **Mission Controller**: 
-  - **CRUD Operations**: Enforced through a unified `Hackathon` model. Organizers can toggle statuses which change site-wide visibility filters in real-time.
+  - **CRUD Operations**: Centralized through a unified `Hackathon` model. Supports live status toggling (Draft, Active, Finished) which propagates site-wide.
 - **Cluster Management (Teams)**:
-  - **Relationship Logic**: Teams are managed as grouped `Registration` nodes. This allows for flexible team membership and leader assignment without a complex standalone "Team" model, optimizing query performance.
+  - **Relational Logic**: Optimized using grouped `Registration` nodes to handle flexible team dynamics and roles without complex overhead.
 - **Submission Registry**: 
-  - **Multi-Format Support**: The platform accepts GitHub repositories (stored as strings), demo URLs, and blob artifacts (ZIP/PDF) managed by the Cloudinary pipeline.
+  - **Audit Ready**: Supports GitHub URI strings, live demo deployments, and binary artifacts managed by the Cloudinary pipeline.
 
-## 3. Organizer Portals & Command Center
-High-density dashboards for system monitoring and participant management.
+## 3. Administrator & Organizer Nerve Center
+High-density, minimalist dashboards for system oversight and community management.
 
 ### 🛠️ Integration Details
 - **Node Telemetry (Stats)**: 
-  - **Data Vis**: Integrated with `Recharts` on the frontend. The backend uses Mongoose `.countDocuments()` and `.aggregate()` (specifically `$group` with `$dateToString`) to generate time-series data for the "Registration Velocity" graphs.
+  - **Visual Intelligence**: Real-time rendering via `Recharts`. Backend utilizes Mongoose aggregation pipelines to calculate registration velocity and role distribution.
+- **Advanced User Management**:
+  - **Invitation System**: Dedicated administrative flow to invite specialists (Judges, Architects) via secure, role-specific invitation tokens.
+  - **Suspension Logic**: Instant administrative "kill-switch" for malicious or non-compliant account nodes.
 - **Broadcast Node**: 
-  - **Communication**: Organizers dispatch broadcasts via the `/api/notifications/broadcast` endpoint, which triggers both a database entry and a real-time socket signal.
+  - **Global Signals**: Real-time broadcast system for technical briefings, dispatching notifications to all connected community nodes simultaneously.
 
-## 4. Real-time Infrastructure & System Modules
-Mission-critical background services and communications.
-
-### 🛠️ Integration Details
-- **Bi-Directional Signal (Socket.io)**: 
-  - **Implementation**: Initialized as a singleton in `config/socket.js`. The server is wrapped with `http.createServer(app)`, allowing the socket engine to share the same port.
-  - **Global Access**: Injected into the Express `req` object via middleware, enabling internal controllers (like `organizerController`) to emit real-time updates as side-effects of CRUD operations.
-- **Mission Queues (BullMQ)**: 
-  - **Async Processing**: Integrated with `ioredis`. High-latency tasks like bulk verification emails are offloaded to background worker threads to keep the main event loop responsive.
-- **Secure Search Engine**: 
-  - **Performance**: Utilizes MongoDB **Text Indexes** on project titles, descriptions, and tech stacks. The `searchRoutes` use the `$text` operator for fast, fuzzy-matching query results.
-
-## 5. Technical Stack & Integrations
+## 4. Technical Stack & Integrations
 
 ### ☁️ Cloud & External Services
 - **Cloudinary Integration**:
-  - **Automated Pipeline**: Integrated via `multer` and `multer-storage-cloudinary`. Files are intercepted by the middleware, uploaded directly to the Cloudinary cloud, and the resulting `secure_url` is passed to the final controller.
-  - **Optimization**: Uses `resource_type: "auto"` to handle diverse payloads (images, docs, archives) through a single endpoint.
-- **Nodemailer / Transactional Mail**:
-  - **Relay**: Configured with a dedicated SMTP pool in `config/nodemailer.js`. 
-  - **Templating**: Uses standardized HTML email templates for verification, password resets, and mission updates.
+  - **Automated Media Pipeline**: Intercepts multi-format payloads via `multer` for direct cloud storage, returning secure, CDN-optimized URLs.
+- **Nodemailer / Transactional Mail Node**:
+  - **Enterprise Relay**: Configured with a dedicated SMTP pool in `config/nodemailer.js`. 
+  - **Standardized Templates**: Features high-fidelity, responsive HTML templates for:
+    - Identity Verification
+    - Secure Password Reset
+    - Administrative/Judge Invitations
+
+### 📡 Real-time & Performance
+- **Bi-Directional Signal (Socket.io)**: Singleton implementation for real-time status updates and notification delivery.
+- **Mission Queues (BullMQ/Redis)**: Offloads high-latency background operations (bulk mailing, verification) to worker threads.
+- **Secure Search Indexing**: MongoDB **Text Indexes** for ultra-fast, fuzzy-matching discovery across Projects and Members.
 
 ---
-**Status**: 🔵 FULLY OPERATIONAL
-**Version**: 2.1.0 "Pulse-Active"
+**Status**: 🟢 FULLY OPERATIONAL (PRO-ACTIVE)
+**Version**: 2.2.0 "Cyber-Active-Pro"
 **Region**: Global Distributed Node
+**Last Updated**: 2026-03-22

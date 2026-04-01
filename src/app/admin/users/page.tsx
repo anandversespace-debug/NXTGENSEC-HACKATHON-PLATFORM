@@ -188,11 +188,13 @@ const AdminUsers = () => {
                      <select 
                        value={user.role} 
                        onChange={(e) => handleUpdateUser(user._id, { role: e.target.value })}
-                       className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-[9px] font-black text-gray-400 uppercase tracking-widest focus:outline-none focus:border-blue-500/50 appearance-none hover:text-white transition-colors cursor-pointer"
+                       className="bg-[#0c0c0c] border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest focus:outline-none focus:border-blue-500/50 appearance-none hover:text-white transition-all cursor-pointer shadow-lg"
                      >
                         <option value="developer">Developer</option>
                         <option value="organizer">Organizer</option>
+                        <option value="judge">Official Judge</option>
                         <option value="admin">System Admin</option>
+                        <option value="viewer">Public Viewer</option>
                      </select>
                   </td>
                   <td className="px-8 py-5 text-left">
@@ -253,9 +255,11 @@ const AdminUsers = () => {
                    <div>
                       <label className="text-[9px] font-black text-gray-700 uppercase tracking-widest mb-2 block italic">Role</label>
                       <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)} className="w-full bg-[#050505] border border-white/10 rounded-xl p-4 text-xs text-white uppercase tracking-wider font-bold appearance-none focus:border-blue-500/50 focus:outline-none transition-all cursor-pointer">
-                          <option value="developer">Developer</option>
-                          <option value="organizer">Organizer</option>
-                          <option value="admin">Admin</option>
+                          <option value="developer">Local Developer</option>
+                          <option value="organizer">Global Organizer</option>
+                          <option value="judge">Official Judge</option>
+                          <option value="admin">System Architect</option>
+                          <option value="viewer">Public Viewer</option>
                       </select>
                    </div>
                    <button type="submit" disabled={inviting || !inviteEmail} className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl disabled:opacity-50 flex items-center justify-center space-x-3 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/20">
